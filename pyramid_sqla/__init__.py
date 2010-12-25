@@ -1,5 +1,5 @@
-
 import sqlalchemy as sa
+from sqlalchemy.ext.declarative import declarative_base
 import sqlalchemy.orm as orm
 from zope.sqlalchemy import ZopeTransactionExtension
 
@@ -9,6 +9,13 @@ _dbengines = {}
 def _count_true(*items):
     true_items = filter(None, items)
     return len(true_items)
+
+# PUBLIC API
+
+__all__ = ["init_dbsession", "add_engine", "get_dbsession", "get_engine",
+    "Base"]
+
+Base = declarative_base()
 
 def init_dbsession(settings=None, name="default", prefix="sqlalchemy.",
                     engine=None, bind_now=True, manage_transaction=True, 
@@ -48,10 +55,8 @@ def add_engine(settings=None, name="default", prefix="sqlalchemy.",
     """
     """
     if _count_true(settings, engine, engine_args) != 1:
-        m = "only one of 'settings', 'engine', or '**engine_args' allowed")
+        m = "only one of 'settings', 'engine', or '**engine_args' allowed"
         raise TypeError(m)
-    if (settings and engine) or (settings and engine_args) or (engine and
-        engine_args):
     if engine:
         e = engine
     elif settings:
