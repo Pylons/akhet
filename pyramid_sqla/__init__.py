@@ -6,34 +6,16 @@ from zope.sqlalchemy import ZopeTransactionExtension
 _dbsession = None
 _dbengines = {}
 
+def _count_true(*items):
+    true_items = filter(None, items)
+    return len(true_items)
+
 def init_dbsession(settings=None, name="default", prefix="sqlalchemy.",
                     engine=None, bind_now=True, manage_transaction=True, 
                     sessionmaker_args=None, **engine_args):
     """
-    By default the dbsession is managed by ``ZopeTransactionSession``. This
-    means that if your application is wrapped in the ``repoze.tm2`` middleware,
-    it will automatically commit at the end of every request unless an uncaught
-    exception has occurred, in which case it will rollback. You can explicitly
-    commit in your view via ``import transaction; transaction.commit()``.
-    (``transaction`` is a top-level module which is a dependency of
-    ``repoze.tm2``.) To rollback, call ``transaction.abort()``.  To prevent
-    *any* database writes during this request, including any performed by other
-    parts of the application, call ``transaction.doom()``.
-
-    If you don't want managed transactions at all, pass
-    ``manage_transaction=False`` to ``init_dbsession``, and do *not* wrap your
-    application in the ``repoze.tm2`` middleware. In this case you must use
-    ``dbsession.commit()`` 
-
     """
     global _dbsession
-    if engine:
-        pass
-    elif settings:
-        engine = sa.engine_from_config(settings, prefix)
-    else:
-        engine = sa.create_engine(**engine_args)
-    _dbengines[name] = engine
     if _dbsession is None:
         if sessionmaker_args is not None:
             sessionmaker_args = sessionmaker_args.copy()
@@ -44,15 +26,41 @@ def init_dbsession(settings=None, name="default", prefix="sqlalchemy.",
             # This part is tricky because there may or may not be an existing
             # 'extension' key, and its value may be a list or a single object.
             value = sessionmaker_args.get("extension", [])
-            if not isinstance(value, (list, tuple)):
+            if isinstance(value, list):
+                pass
+            elif isinstance(value, tuple):
+                value = list(value)
+            else:
                 value = [value]
             value.append(zte)
             sessionmaker_args["extension"] = value
         sm = orm.sessionmaker(**sessionmaker_args)
         _dbsession = orm.scoped_session(sm)
-    if bind_now:
-        _dbsession.configure(bind=engine)
+    if engine or settings or engine_args:
+        e = add_engine(settings=settings, name=name, prefix=prefix, 
+            engine=engine, **engine_argrs)
+        _dbsession.configure(bind=e)
     return _dbsession
+
+
+def add_engine(settings=None, name="default", prefix="sqlalchemy.",
+                    engine=None, **engine_args):
+    """
+    """
+    if _count_true(settings, engine, engine_args) != 1:
+        m = "only one of 'settings', 'engine', or '**engine_args' allowed")
+        raise TypeError(m)
+    if (settings and engine) or (settings and engine_args) or (engine and
+        engine_args):
+    if engine:
+        e = engine
+    elif settings:
+        e = sa.engine_from_config(settings, prefix)
+    else:
+        e = sa.create_engine(**engine_args)
+    _dbengines[name] = e
+    return e
+
 
 def get_dbsession():
     """Return a SQLAlchemy scoped session for use in models, views, etc.
