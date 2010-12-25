@@ -6,6 +6,7 @@
 /**
  LOCAL CHANGES:
 
+ * body: font-size "small" instead of "100%"
  * div.body p: text-align "left" instead of "justify"
  */
 
@@ -15,7 +16,8 @@
 
 body {
     font-family: sans-serif;
-    font-size: 100%;
+    /* font-size: 100%; */
+    font-size: small;
     background-color: #11303d;
     color: #000;
     margin: 0;
