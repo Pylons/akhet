@@ -7,7 +7,7 @@ debug_routematch = false
 debug_templates = true
 default_locale_name = en
 mako.directories = {{package}}:templates
-sqlalchemy.url = sqlite:///%(here)s/{{project}}.db
+sqlalchemy.url = sqlite:///%(here)s/db.sqlite
 session.type = file
 session.data_dir = %(here)s/data/sessions/data
 session.lock_dir = %(here)s/data/sessions/lock
@@ -22,8 +22,8 @@ pipeline =
 
 [server:main]
 use = egg:Paste#http
-host = 0.0.0.0
-port = 6543
+host = 127.0.0.1
+port = 5000
 
 # Begin logging configuration
 

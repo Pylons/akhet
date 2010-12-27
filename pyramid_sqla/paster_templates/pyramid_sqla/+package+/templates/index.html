@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:tal="http://xml.zope.org/namespaces/tal">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 	<title>The Pyramid Web Application Development Framework</title>
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
@@ -33,11 +33,11 @@
 				<div id="left" class="align-right">
 					<h3>Search Pyramid documentation</h3>
 					<form method="get" action="http://docs.pylonshq.com/pyramid/dev/search.html">
-		      			<input type="text" id="q" name="q" value="" />
-		      			<input type="submit" id="x" value="Search" />
+                        <div>
+                            <input type="text" id="q" name="q" value="" />
+                            <input type="submit" id="x" value="Search" />
+                        </div>
 		  			</form>
-					<br/>
-					<p>The root object's name is "${root.name}"</p>
 				</div>
 				<div id="right" class="align-left">
 					<h3>Pyramid links</h3>
@@ -73,9 +73,10 @@
 				</div>
 			</div>
 		</div>
+        <p>My database URL is <strong>${db_url}.</strong></p>
 	</div>
 	<div id="footer">
-		<div class="footer">© Copyright 2008-2010, Agendaless Consulting.</div>
+		<div class="footer">Pyramid is copyright © 2008-2010, Agendaless Consulting.</div>
 	</div>
 </body>
 </html>

@@ -1,12 +1,13 @@
 from pyramid.view import action
 
-from {{package}}.models import MyModel
+#from {{package}}.models import MyModel
 
-class MyHandler(object):
+class MainHandler(object):
     def __init__(self, request):
         self.request = request
 
-    @action(renderer='mytemplate.mako')
+    @action(renderer='index.html')
     def index(self):
-        root = MyModel.by_name('root')
-        return {'root':root, 'project':'{{package}}'}
+        settings = self.request.registry.settings
+        db_url = settings.get('sqlalchemy.url', 'UNKNOWN')
+        return {'project':'{{package}}', 'db_url': db_url}

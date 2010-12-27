@@ -18,8 +18,13 @@ requires = [
 ]
 
 if sys.version_info[:3] < (2,5,0):
-    requires.append('pysqlite')
+   requires.append('pysqlite')
     
+entry_points = """\
+    [paste.app_factory]
+    main = {{package}}:main
+"""
+
 setup(name='{{project}}',
       version='0.0',
       description='{{project}}',
@@ -40,10 +45,7 @@ setup(name='{{project}}',
       install_requires=requires,
       tests_require=requires,
       test_suite="{{package}}",
-      entry_points = """\
-      [paste.app_factory]
-      main = {{package}}:main
-      """,
+      entry_points=entry_points,
       paster_plugins=['pyramid'],
       )
 
