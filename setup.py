@@ -28,8 +28,13 @@ requires = [
     'repoze.tm2',
     'zope.sqlalchemy']
 
+entry_points = """
+    [paste.paster_create_template]
+    pyramid_sqla=pyramid_sqla.paster_templates:PyramidSQLAProjectTemplate
+"""
+
 setup(name='pyramid_sqla',
-      version='0.2.1',
+      version='0.1',
       description='SQLAlchemy helpers for Pyramid',
       long_description=README + '\n\n' +  CHANGES,
       classifiers=[
@@ -48,5 +53,6 @@ setup(name='pyramid_sqla',
       tests_require = requires,
       install_requires = requires,
       test_suite="pyramid_sqla",
+      entry_points=entry_points,
       )
 
