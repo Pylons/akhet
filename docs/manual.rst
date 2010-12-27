@@ -1,4 +1,4 @@
-pyramid_sqla Manual
+pyramid_sqla manual
 ===================
 
 **pyramid_sqla** is a SQLAlchemy_ helper for Pyramid_ applications. It provides
