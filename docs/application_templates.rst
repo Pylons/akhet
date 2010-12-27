@@ -1,2 +1,2 @@
-Application Template Details
+Application template details
 ============================

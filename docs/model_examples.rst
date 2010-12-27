@@ -1,4 +1,4 @@
-Model Examples
+Model examples
 ==============
 
 This chapter gives some examples for writing your application models. These are
@@ -12,9 +12,6 @@ Python, use the ``%`` operator instead of the the string ``.format`` method.
 A simple one-table model
 ------------------------
 
-This model has one ORM class ``User`` corresponding to a database table
-``users``. The table has three columns: ``id``, ``name``, and ``user``.  ::
-
     import pyramid_sqla as psa
     import sqlalchemy as sa
     import sqlalchemy.orm as orm
@@ -26,15 +23,16 @@ This model has one ORM class ``User`` corresponding to a database table
         name = sa.Column(sa.Unicode(100), nullable=False)
         email = sa.Column(sa.Unicode(100), nullable=False)
 
-This model defines one ORM class ``User`` corresponding to a database table
-``users``.  
+This model has one ORM class, ``User`` corresponding to a database table
+``users``. The table has three columns: ``id``, ``name``, and ``user``.  ::
+
 
 A three-table model
 -------------------
 
-We can expand this to a three-table model for a medium-sized
-application. (This example requires Python >= 2.6 due to the string ``.format``
-method. Older versions use the "%" operator instead.) ::
+We can expand the above into a three-table model suitable for a medium-sized
+application. (This example uses the string ``.format`` method introduced in
+Python 2.6. In older versions, use the ``%`` operator instead.) ::
 
     import pyramid_sqla as psa
     import sqlalchemy as sa
@@ -122,5 +120,24 @@ This model has a ``User`` class corresponding to a ``users`` table, an
 class with ``activities`` table.  ``users`` is in a 1:Many relationship with
 ``addresses``.  ``users`` is also in a Many:Many`` relationship with
 ``activities`` using the association table ``assoc_users_activities``.
+This is the SQLAlchemy "declarative" syntax, which defines the tables in terms of
+ORM classes subclassed from a declarative ``Base`` class. Association tables do
+not have an ORM class in SQLAlchemy, so we define it using the ``Table``
+constructor as if we weren't using declarative, but it's still tied to the
+Base's "metadata".
 
+We can add instance methods to the ORM classes and they will be valid for one
+database record, as with the ``Address.__str__`` method. We can also define
+class methods that operate on several records or return a query object, as with
+the ``User.by_name`` method. 
 
+Inside the class method we refer to the table by its proper name (``User``),
+althogh if would be more usual in class methods to use the ``class_`` argument.
+This is a personal preference: it's easier to read the module code if ORM
+classes are always called the same name. We could have used a static method
+since we're not using the ``class_`` argument anywhere, but again it's
+customary to use class methods. That doesn't mean class methods are necessarily
+better than static methods, however, it's just what we're used to.
+
+Initializing the database
+-------------------------
