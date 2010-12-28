@@ -47,6 +47,7 @@ def init_dbsession(settings=None, name="default", prefix="sqlalchemy.",
         e = add_engine(settings=settings, name=name, prefix=prefix, 
             engine=engine, **engine_args)
         _dbsession.configure(bind=e)
+        Base.metadata.bind = e
     return _dbsession
 
 
