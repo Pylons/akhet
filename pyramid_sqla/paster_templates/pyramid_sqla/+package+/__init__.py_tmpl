@@ -21,8 +21,8 @@ def main(global_config, **settings):
 
     # Set up routes and views
     config.add_static_view('static', '{{package}}:static/')
-    config.add_handler('main', '/{action}', '{{package}}.handlers:MainHandler')
     config.add_handler('home', '/', '{{package}}.handlers:MainHandler',
                        action='index')
+    config.add_handler('main', '/{action}', '{{package}}.handlers:MainHandler')
 
     return config.make_wsgi_app()
