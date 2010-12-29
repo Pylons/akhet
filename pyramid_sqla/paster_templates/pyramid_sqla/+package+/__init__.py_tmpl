@@ -1,4 +1,5 @@
 from pyramid.config import Configurator
+from pyramid.view import static
 import pyramid_beaker
 import pyramid_sqla
 
@@ -20,9 +21,10 @@ def main(global_config, **settings):
                           'pyramid.events.BeforeRender')
 
     # Set up routes and views
-    config.add_static_view('static', '{{package}}:static/')
     config.add_handler('home', '/', '{{package}}.handlers:MainHandler',
                        action='index')
-    config.add_handler('main', '/{action}', '{{package}}.handlers:MainHandler')
+    config.add_handler('main', '/{action}', '{{package}}.handlers:MainHandler',
+        path_info=r'/(?!favicon\.ico|robots\.txt|w3c)')
+    config.add_route('static', '/*subpath', static('{{package}}:static'))
 
     return config.make_wsgi_app()
