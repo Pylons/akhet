@@ -1,5 +1,4 @@
 import sqlalchemy as sa
-from sqlalchemy.ext.declarative import declarative_base
 import sqlalchemy.orm as orm
 from zope.sqlalchemy import ZopeTransactionExtension
 
@@ -12,10 +11,7 @@ def _count_true(*items):
 
 # PUBLIC API
 
-__all__ = ["init_dbsession", "add_engine", "get_dbsession", "get_engine",
-    "Base"]
-
-Base = declarative_base()
+__all__ = ["init_dbsession", "add_engine", "get_dbsession", "get_engine"]
 
 def init_dbsession(settings=None, name="default", prefix="sqlalchemy.",
                     engine=None, bind_now=True, manage_transaction=True, 
@@ -47,7 +43,6 @@ def init_dbsession(settings=None, name="default", prefix="sqlalchemy.",
         e = add_engine(settings=settings, name=name, prefix=prefix, 
             engine=engine, **engine_args)
         _dbsession.configure(bind=e)
-        Base.metadata.bind = e
     return _dbsession
 
 
