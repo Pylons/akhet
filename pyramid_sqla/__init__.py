@@ -102,7 +102,7 @@ def add_engine(settings=None, name="default", prefix="sqlalchemy.",
       arguments are passed, I call ``sqlalchemy.create_engine(**engine_args)``.
 
     You must pass exactly one of ``settings``, ``engine``, and
-    ``**engine_args``; i.e., they are mutually exclusive. Raise
+    ``**engine_args``; they are mutually exclusive. Raise
     ``RuntimeError`` if you pass none of them or too many.
 
     Examples::
