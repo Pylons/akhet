@@ -26,42 +26,37 @@ def init_dbsession(settings=None, prefix="sqlalchemy.",
     base_args=None, **engine_args):
     """Initialize the module for use.
 
-    Behavior
-    --------
+    I do four things:
 
     1.  Configure a SQLAlchemy scoped session using ``sessionmaker_args``, and
-    enable the ZopeTransactionExtension. The scoped session is available later
-    by calling ``get_dbsession``.
+        enable the ZopeTransactionExtension. The scoped session is available later
+        by calling ``get_dbsession``.
 
     2. Configure a SQLAlchemy declarative base using ``base_args``. The base is
-    available later by calling ``get_base``.
+       available later by calling ``get_base``.
     
     3. If ``settings``, ``engine``, or ``**engine_args`` is specified, (A) call
-    ``add_engine`` to configure a database engine and make it the default
-    engine, (B) bind the engine to the session, and (C) bind the Base's
-    metadata to the engine.  The engine is available later by calling
-    ``get_engine``.
+       ``add_engine`` to configure a database engine and make it the default
+       engine, (B) bind the engine to the session, and (C) bind the Base's
+       metadata to the engine.  The engine is available later by calling
+       ``get_engine``.
 
     4. Return the scoped session.
 
-    Arguments
-    ---------
+    Arguments:
 
     * ``settings``, ``prefix``, ``engine``, and ``**engine_args``: *(Optional)*
-    See ``add_engine()``. (The engine name will be set to "default".)
+      See ``add_engine()``. (The engine name will be set to "default".)
 
-    ``manage_transaction``: *(Optional)* Pass false if you don't want the
-    transaction extension.
+    * ``manage_transaction``: *(Optional)* Pass false if you don't want the
+      transaction extension.
 
-    ``sessionmaker_args``: *(Optional)* A dict of arguments for the
-    sessionmaker constructor.
+    * ``sessionmaker_args``: *(Optional)* A dict of arguments for the
+      sessionmaker constructor.
 
-    ``base_args``: *(Optional)* A dict of arguments for for the declarative base
-    constructor. The most interesting arg is 'cls', which you can use to
-    provide a common superclass to all ORM classes.
-
-    Exceptions
-    ----------
+    * ``base_args``: *(Optional)* A dict of arguments for for the declarative base
+      constructor. The most interesting arg is 'cls', which you can use to
+      provide a common superclass to all ORM classes.
 
     Raise ``RuntimeError`` if the function is called more than once.
     """
@@ -88,33 +83,29 @@ def add_engine(settings=None, name="default", prefix="sqlalchemy.",
     I configure an engine in different ways depending on the combination of
     arguments.
 
-    Arguments
-    ---------
+    Arguments:
 
     * ``settings``: A dict of application settings (e.g., as parsed from an INI
-    file), or a dict containing engine args. If this argument is passed, I call
-    ``sqlalchemy.engine_from_config(settings, prefix)``.
+      file), or a dict containing engine args. If this argument is passed, I call
+      ``sqlalchemy.engine_from_config(settings, prefix)``.
 
     * ``name``: The engine name. This is used to retrieve the engine later. The
-    default name is "default".
+      default name is "default".
 
     * ``prefix``: If the keys in ``settings`` that pertain to this engine have
-    a particular prefix, pass it here. This both chooses the keys that have
-    this prefix, and strips the prefix from them to create the engine args.
+      a particular prefix, pass it here. This both chooses the keys that have
+      this prefix, and strips the prefix from them to create the engine args.
 
     * ``engine``: An existing SQLAlchemy engine. 
 
     * ``**engine_args``: Engine args supplied as keyword arguments. If these
-    arguments are passed, I call ``sqlalchemy.create_engine(**engine_args)``.
+      arguments are passed, I call ``sqlalchemy.create_engine(**engine_args)``.
 
     You must pass exactly one of ``settings``, ``engine``, and
     ``**engine_args``; i.e., they are mutually exclusive. Raise
     ``RuntimeError`` if you pass none of them or too many.
 
-    Examples
-    --------
-
-    ::
+    Examples::
 
         # The settings dict contains ``{"sqlalchemy.url": "mysql://..."}``
         engine = add_engine(settings, prefix="sqlalchemy.")
