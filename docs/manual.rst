@@ -1,5 +1,5 @@
-pyramid_sqla manual
-===================
+Users Guide
+===========
 
 **pyramid_sqla** is a SQLAlchemy_ helper for Pyramid_ applications. It provides
 a central database session and an engine registry, and manages
@@ -36,7 +36,7 @@ For a simple Pyramid application with one database engine, follow these steps:
 
 1. Run:
    
-   .. code-block: sh
+   .. code-block:: sh
 
         $ paster create -t pyramid_sqla MyApp
 
@@ -51,7 +51,7 @@ For a simple Pyramid application with one database engine, follow these steps:
 
    You can add any SQLALchemy engine options you need, such as:
 
-    .. code-block:: ini
+   .. code-block:: ini
 
         sqlalchemy.pool_recycle = 3600
         sqlalchemy.convert_unicode = true
@@ -232,7 +232,10 @@ API
 
 .. autofunction:: init_dbsession
 
+.. autofunction:: add_engine
+
 .. autofunction:: get_dbsession
 
-.. autofunction:: get_dbengine
+.. autofunction:: get_engine
 
+.. autofunction:: get_base

@@ -1,4 +1,4 @@
-Application template details
+Application Template Details
 ============================
 
 For a simple Pyramid application with one database engine, follow these steps:

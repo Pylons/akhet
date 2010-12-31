@@ -1,4 +1,4 @@
-Model examples
+Model Examples
 ==============
 
 This chapter gives some examples for writing your application models. These are
@@ -16,9 +16,12 @@ A simple one-table model
 
     import pyramid_sqla as psa
     import sqlalchemy as sa
+    import sqlalchemy.ext.declarative as declarative
     import sqlalchemy.orm as orm
 
-    class User(psa.Base):
+    Base = declarative.declarative_base()
+
+    class User(Base):
         __tablename__ = "users"
 
         id = sa.Column(sa.Integer, primary_key=True)
@@ -38,9 +41,12 @@ Python 2.6. In older versions, use the ``%`` operator instead.) ::
 
     import pyramid_sqla as psa
     import sqlalchemy as sa
+    import sqlalchemy.ext.declarative as declarative
     import sqlalchemy.orm as orm
 
-    class User(psa.Base):
+    Base = declarative.declarative_base()
+
+    class User(Base):
         __tablename__ = "users"
 
         id = sa.Column(sa.Integer, primary_key=True)
@@ -59,7 +65,7 @@ Python 2.6. In older versions, use the ``%`` operator instead.) ::
             q = q.order_by(User.name)
             return q
         
-    class Address(psa.Base):
+    class Address(Base):
         __tablename__ = "addresses"
 
         id = sa.Column(sa.Integer, primary_key=True)
@@ -79,7 +85,7 @@ Python 2.6. In older versions, use the ``%`` operator instead.) ::
             return filterjoin(u"|n", *lines) + u"\n"
 
 
-    class Activity(psa.Base):
+    class Activity(Base):
         __tablename__ = "activities"
 
         id = sa.Column(sa.Integer, primary_key=True)
@@ -92,7 +98,7 @@ Python 2.6. In older versions, use the ``%`` operator instead.) ::
             
     # Utility functions
     def filterjoin(sep, *items):
-        """Join the items ianto a string, dropping any that are empty.
+        """Join the items into a string, dropping any that are empty.
         """
         items = filter(None, items)
         return sep.join(items)
