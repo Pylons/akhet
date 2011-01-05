@@ -92,22 +92,6 @@ class TestAddEngine(PyramidSQLATestCase):
         self.assertIs(psa.get_base().metadata.bind, None)
         self.assertRaises(RuntimeError, psa.get_engine)
 
-class TestConfigSession(PyramidSQLATestCase):
-    def test1(self):
-        engine1 = psa.add_engine(url=self.db1.url, name="db1")
-        engine2 = psa.add_engine(url=self.db2.url, name="db2")
-        psa.config_session(autocommit=False, autoflush=True, twophase=False)
-        Session = psa.get_session()
-        sess = Session()
-        self.assertEqual(sess.autocommit, False)
-        self.assertEqual(sess.autoflush, True)
-        self.assertEqual(sess.twophase, False)
-        # Now delete the session, change an option, and recreate it
-        Session.remove()
-        psa.config_session(twophase=True)
-        sess = Session()
-        self.assertEqual(sess.twophase, True)
-
 class TestDeclarativeBase(PyramidSQLATestCase):
     def test1(self):
         Base = psa.get_base()
@@ -122,7 +106,9 @@ class TestDeclarativeBase(PyramidSQLATestCase):
         wilma = Person(id=2, first_name=u"Wilma", last_name=u"Flintstone")
         barney = Person(id=3, first_name=u"Barney", last_name=u"Rubble")
         betty = Person(id=4, first_name=u"Betty", last_name=u"Rubble")
-        sess = psa.get_session()()
+        Session = psa.get_session()
+        Session.configure(extension=None)  # XXX Kludge for SQLAlchemy/ZopeTransactionExtension bug
+        sess = Session()
         sess.add_all([fred, wilma, barney, betty])
         sess.commit()
         sess.expunge_all()

@@ -118,27 +118,14 @@ settings key '%surl' is required when using prefix='%s'"""
         _base.metadata.bind = e
     return e
 
-def config_session(**sessionmaker_args):
-    """Reconfigure the scoped session.
-
-    ``**sessionmaker_args`` may be any ``sessionmaker`` arguments. Arguments
-    not specified will remain at their previous state.
-    
-    If the ``extension`` arg is given, it must be a list of extensions (not a
-    single extension) and must NOT include a ``ZopeTransactionExtension``. Note
-    that this is more restrictive than the corresponding ``sessionmaker`` arg.
-    """
-    sm_args = sessionmaker_args
-    if "extension" in sm_args:
-        ext = list(sm_args["extension"])
-        ext.append(_zte)
-    else:
-        ext = [_zte]
-    sm_args["extension"] = ext
-    _session.configure(**sm_args)
-
 def get_session():
     """Return the central SQLAlchemy scoped session.
+
+    If you call ``.configure`` to change the extension option, you'll lose the
+    ZopeTransactionExtension unless you re-add it. Here's how to do that::
+
+        pyramid_sqla.get_session().configure(
+            extension=[YOUR_EXTENSION, pyramid_sqla._zte])
     """
     return _session
 
