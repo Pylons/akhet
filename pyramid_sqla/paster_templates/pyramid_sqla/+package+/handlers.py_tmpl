@@ -8,6 +8,10 @@ class MainHandler(object):
 
     @action(renderer='index.html')
     def index(self):
-        settings = self.request.registry.settings
+        try:
+            settings = self.request.registry.settings
+        except AttributeError:
+            # Kludge for default unit test: DummyRequest has no 'registry' attr
+            settings = {}
         db_url = settings.get('sqlalchemy.url', 'UNKNOWN')
         return {'project':'{{package}}', 'db_url': db_url}
