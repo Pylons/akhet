@@ -4,7 +4,7 @@ import sqlalchemy.orm as orm
 from zope.sqlalchemy import ZopeTransactionExtension
 
 # Global variables initialized by ``reset()``.
-_base = _dbsession = _engines = _zte = None
+_base = _session = _engines = _zte = None
 
 def reset():
     """Restore initial module state.
@@ -12,11 +12,11 @@ def reset():
     This function is mainly for unit tests and debugging. It deletes all
     engines and recreates the dbsession and other global objects.
     """
-    global _base, _dbsession, _engines, _zte
+    global _base, _session, _engines, _zte
     _zte = ZopeTransactionExtension
     sm = orm.sessionmaker(extension=[_zte])
     _base = declarative.declarative_base()
-    _dbsession = orm.scoped_session(sm)
+    _session = orm.scoped_session(sm)
     _engines = {}
 
 reset()
@@ -25,9 +25,9 @@ reset()
 
 __all__ = [
     "add_engine", 
-    "config_dbsession",
+    "config_session",
     "get_base",
-    "get_dbsession", 
+    "get_session", 
     "get_engine",
     ]
     # "reset" is not included because it's not intended for normal use.
@@ -94,6 +94,17 @@ def add_engine(settings=None, name="default", prefix="sqlalchemy.",
     if engine:
         e = engine
     elif settings:
+        if not prefix:
+            raise ValueError("empty prefix ('') is not allowed")
+        url_key = prefix + "url"
+        if url_key not in settings:
+            msg = """\
+no database URL specified
+settings key '%surl' is required when using prefix='%s'"""
+            msg %= (url_key, prefix)
+            if prefix and not prefix.endswith("."):
+                msg += "\nHint: did you mean prefix='%s.'?" % prefix
+            raise ValueError(msg)
         e = sa.engine_from_config(settings, prefix)
     else:
         try:
@@ -103,11 +114,11 @@ def add_engine(settings=None, name="default", prefix="sqlalchemy.",
         e = sa.create_engine(url, **engine_args)
     _engines[name] = e
     if name == "default":
-        _dbsession.configure(bind=e)
+        _session.configure(bind=e)
         _base.metadata.bind = e
     return e
 
-def config_dbsession(**sessionmaker_args):
+def config_session(**sessionmaker_args):
     """Reconfigure the scoped session.
 
     ``**sessionmaker_args`` may be any ``sessionmaker`` arguments. Arguments
@@ -124,22 +135,20 @@ def config_dbsession(**sessionmaker_args):
     else:
         ext = [_zte]
     sm_args["extension"] = ext
-    _dbsession.configure(**sm_args)
+    _session.configure(**sm_args)
 
-def get_dbsession():
+def get_session():
     """Return the central SQLAlchemy scoped session.
     """
-    return _dbsession
+    return _session
 
 def get_engine(name="default"):
-    """Return a database engine that was previously configured with ``add_engine``.
+    """Return a database engine previously configured with ``add_engine``.
 
-    If no argument, return the default engine that was specified with
-    ``init_dbsession``. If an engine name is passed, return the engine that was
-    registered with ``add_engine`` under that name.
+    If no argument, return the default engine. If an engine name is passed,
+    return the engine that was registered under that name.
 
-    Raise ``RuntimeError`` if ``init_dbsession`` hasn't been called or no
-    engine by that name was initialized.
+    Raise ``RuntimeError`` if no engine by that name was configured.
     """
     try:
         return _engines[name]
