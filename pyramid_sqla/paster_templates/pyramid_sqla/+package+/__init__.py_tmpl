@@ -9,7 +9,7 @@ def main(global_config, **settings):
     config = Configurator(settings=settings)
 
     # Initialize database
-    pyramid_sqla.init_dbsession(settings, prefix='sqlalchemy.')
+    pyramid_sqla.add_engine(settings, prefix='sqlalchemy.')
 
     # Configure Beaker sessions
     session_factory = pyramid_beaker.session_factory_from_settings(settings)
