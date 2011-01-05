@@ -6,11 +6,20 @@ from zope.sqlalchemy import ZopeTransactionExtension
 # Global variables initialized by ``reset()``.
 _base = _dbsession = _engines = _zte = None
 
-def _count_true(*items):
-    """Return a count of true items in ``*items``.
+def reset():
+    """Restore initial module state.
+    
+    This function is mainly for unit tests and debugging. It deletes all
+    engines and recreates the dbsession and other global objects.
     """
-    true_items = filter(None, items)
-    return len(true_items)
+    global _base, _dbsession, _engines, _zte
+    _zte = ZopeTransactionExtension
+    sm = orm.sessionmaker(extension=[_zte])
+    _base = declarative.declarative_base()
+    _dbsession = orm.scoped_session(sm)
+    _engines = {}
+
+reset()
 
 # PUBLIC API
 
@@ -41,9 +50,8 @@ def add_engine(settings=None, name="default", prefix="sqlalchemy.",
       default name is "default".
 
     * ``prefix``: This is used with ``settings`` to calcuate the engine args.
-      If a string prefix is specified, take the keys in ``settings`` that have
-      this prefix and strip the prefix. Otherwise take all the keys in
-      ``settings`` as is. See examples below.
+      The default value is "sqlalchemy.", which tells SQLAlchemy to use the
+      keys starting with "sqlalchemy." for this engine.
 
     * ``engine``: An existing SQLAlchemy engine. 
 
@@ -54,19 +62,31 @@ def add_engine(settings=None, name="default", prefix="sqlalchemy.",
     ``**engine_args``. Raise ``RuntimeError`` if you pass none of them or too
     many.
 
+    SQLAlchemy will raise a ``KeyError`` if the database URL is not specified.
+    This may indicate the settings dict has no "PREFIX.url" key or that the
+    ``url`` keyword arg was not passed.
+
     Examples::
 
-        # The settings dict contains ``{"sqlalchemy.url": "mysql://..."}``
+        # Configure engine using a settings dict
+        settings = {"sqlalchemy.url": "mysql://..."}
         engine = add_engine(settings, prefix="sqlalchemy.")
-
-        # The settings dict contains ``{"url": "mysql://..."}``
-        engine = add_engine(settings)
 
         # Configure engine via keyword args
         engine = add_engine(url="mysql://...")
 
         # ``e`` is an existing SQLAlchemy engine
         engine = add_engine(e)
+
+        # Configure two engines, the first one as default
+        settings = {"db1.url": "mysql://...", "db2.url": "postgresql://..."})
+        engine1 = add_engine(settings, prefix="db1.")
+        engine2 = add_engine(settings, name="stats", prefix="db2.")
+
+        # Configure two engines with no default engine
+        settings = {"db1.url": "mysql://...", "db2.url": "postgresql://..."})
+        engine1 = add_engine(settings, name="engine1", prefix="db1.")
+        engine2 = add_engine(settings, name="engine2", prefix="db2.")
     """
     if _count_true(settings, engine, engine_args) != 1:
         m = "only one of 'settings', 'engine', or '**engine_args' allowed"
@@ -76,11 +96,16 @@ def add_engine(settings=None, name="default", prefix="sqlalchemy.",
     elif settings:
         e = sa.engine_from_config(settings, prefix)
     else:
-        e = sa.create_engine(**engine_args)
+        try:
+            url = engine_args.pop("url")
+        except KeyError:
+            raise TypeError("must pass settings dict or ``url`` keyword arg")
+        e = sa.create_engine(url, **engine_args)
     _engines[name] = e
-    if default:
+    if name == "default":
         _dbsession.configure(bind=e)
         _base.metadata.bind = e
+    return e
 
 def config_dbsession(**sessionmaker_args):
     """Reconfigure the scoped session.
@@ -103,11 +128,7 @@ def config_dbsession(**sessionmaker_args):
 
 def get_dbsession():
     """Return the central SQLAlchemy scoped session.
-
-    Raise ``RuntimeError`` if ``init_dbsession`` has not been called.
     """
-    if _dbsession is None:
-        raise RuntimeError("``init_dbsession`` has not been called")
     return _dbsession
 
 def get_engine(name="default"):
@@ -127,24 +148,14 @@ def get_engine(name="default"):
 
 def get_base():
     """Return the central declarative base.
-
-    Raise ``RuntimeError`` if ``init_dbsession`` has not been called.
     """
-    if _base is None:
-        raise RuntimeError("``init_base`` has not been called")
     return _base
 
-def reset():
-    """Restore initial module state.
-    
-    This function is mainly for unit tests and debugging. It deletes all
-    engines and recreates the dbsession and other global objects.
-    """
-    global _base, _dbsession, _engines, _zte
-    _zte = ZopeTransactionExtension
-    sm = orm.sessionmaker(extension=[zte])
-    _base = declarative.declarative_base()
-    _dbsession = orm.scoped_session(sm)
-    _engines = {}
+#### Private functions
 
-reset()
+def _count_true(*items):
+    """Return a count of true items in ``*items``.
+    """
+    true_items = filter(None, items)
+    return len(true_items)
+
