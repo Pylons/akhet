@@ -230,12 +230,14 @@ API
 
 .. automodule:: pyramid_sqla
 
-.. autofunction:: init_dbsession
-
 .. autofunction:: add_engine
+
+.. autofunction:: config_dbsession
 
 .. autofunction:: get_dbsession
 
 .. autofunction:: get_engine
 
 .. autofunction:: get_base
+
+.. autofunction:: reset
