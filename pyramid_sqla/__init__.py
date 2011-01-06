@@ -13,7 +13,7 @@ def reset():
     engines and recreates the dbsession and other global objects.
     """
     global _base, _session, _engines, _zte
-    _zte = ZopeTransactionExtension
+    _zte = ZopeTransactionExtension()
     sm = orm.sessionmaker(extension=[_zte])
     _base = declarative.declarative_base()
     _session = orm.scoped_session(sm)

@@ -3,8 +3,3 @@ Bugs and todo
 
 * Static view route inadvertently disables "traversal" mode, need a custom
   route predicate that returns false if the file doesn't exist
-* One test fails due to ZopeTransactionExtension/SQLAlchemy bug. Still
-  determining what's at fault here and how widespread it is. If you get
-  exceptions on session methods you may have to disable the extension
-  (see docs).
-
