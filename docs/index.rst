@@ -1,46 +1,58 @@
 pyramid_sqla
 ============
 
-**pyramid_sqla** is library and application template and library for
-SQLAlchemy_-powered Pyramid_ applications. The template preconfigures a
-Pyramid-SQLAlchemy application, and also includes a few non-database features
-borrowed from Pylons 1 for those who like that application struture. The library provides a scoped session
-and a central place to register database engines, and an optional declarative
-base for your ORM classes.
+**pyramid_sqla** is a library for Pyramid_ applications using SQLAlchemy_, and
+an application template that configures the model and other things similar to
+Pylons 1 (but not identical).  If follows the philosophy of "make the
+simple things simple and the complex things possible".
+
+The current version is 0.1. This is a proof-of-concept release; the API is
+subject to change depending on user feedback. The goal is a 1.0 release before
+Pyramid 1.0.
 
 .. _SQLAlchemy: http://sqlalchemy.org/
 .. _Pyramid: http://docs.pylonshq.com/pyramid/dev/
 
-It includes
-an application template that preconfigures a Pyramid-SQLAlchemy application
-a library and a Paster application template that preconfigures a
-Pyramid-SQLAlchemy appliction 
-includes a Paster application template. It provides
-a scoped session for the application, a central place to register engines, 
-a central database session and an engine registry, and manages
-commits/rollbacks centrally like TurboGears does, using the repoze.tm2_
-transaction middleware.  Unlike the Pylons 1 application template, there's no
-"meta" module or "init_model()" function in the application's model. Instead,
-the things that were in meta have been moved into the library itself. This
-makes it easier to keep your model in a package without interdependencies
-between the modules, because each module just imports the library.
+Current features in the library
+-------------------------------
+
+* A SQLAlchemy scoped session, a place to register database engines, and a
+  declarative base. These all replace the ``meta`` module in Pylons 1
+  applications, making it easier to structure module code freely without
+  circular imports
+* Initialization requires just one line in __init__.py per database, and no
+  boilerplate code in model
+* Session management à la TurboGears. This commits all changes at the end of a 
+  request, or rolls them back if an exception has occurred. You can still
+  commit and roll back on demand, and even prevent other parts of the
+  application from committing during the request.
+
+Current features in the application template
+--------------------------------------------
+
+* The model, application settings, middleware, and logging are preconfigured
+  for a Pylons 1-like SQLAlchemy application
+* The static directory is served under "/" instead of "/static", allowing you
+  to serve "/robots.txt" as in Pylons 1 but more efficiently
+* A sample production.ini is included
+* Routing using URL dispatch and view handlers, similar to Routes and
+  controllers in Pylons 1
+* Listen on localhost:5000 by default (localhost for security, 5000 per Pylons
+  1 precedent)
+* Templates ending in .html are passed to Mako (or to your desired templater)
+* Template globals  ``url`` and ``h`` are configured (for generating URLs and
+  a user-defined helper library, respectively). You can change these in the
+  subscribers module.
+* It has a pony and a unicorn (Paste Pony)
+
+pyramid_sqla has five dependencies: Pyramid_, SQLAlchemy_, repoze.tm2_, and
+zope.sqlalchemy_ (for ZopeTransactionExtension, required by repoze.tm2), and
+transaction_. It was written on Python 2.6 but should work on 2.5.
 
 .. _zope.sqlalchemy: http://pypi.python.org/pypi/zope.sqlalchemy
 .. _scoped session: http://www.sqlalchemy.org/docs/orm/session.html#contextual-thread-local-sessions
 .. _repoze.tm2: http://docs.repoze.org/tm2/
 .. _transaction: http://pypi.python.org/pypi/transaction
-
-The library follows the philosophy of making simple things simple and complex
-things possible.  Applications with a single database requires only a few lines
-of configuration as shown in "Usage" below. Applications with multiple engines
-requires some more configuration and decision-making as described under
-"Multiple Engines". Reflected databases may be a more difficult issue; we think
-they can be done with an "init_model()" function as discussed under "Reflected
-Databases".
-
-pyramid_sqla has five dependencies: Pyramid_, SQLAlchemy_, repoze.tm2_, and
-zope.sqlalchemy_ (for ZopeTransactionExtension, required by repoze.tm2), and
-transaction_.
 
 
 Documentation
@@ -52,6 +64,8 @@ Documentation
    manual
    model_examples
    application_templates
+   bugs
+   changes
 
 Indices and tables
 ------------------
