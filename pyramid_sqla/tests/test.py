@@ -94,6 +94,38 @@ class TestAddEngine(PyramidSQLATestCase):
 
 class TestDeclarativeBase(PyramidSQLATestCase):
     def test1(self):
+        import transaction
+        Base = psa.get_base()
+        class Person(Base):
+            __tablename__ = "people"
+            id = sa.Column(sa.Integer, primary_key=True)
+            first_name = sa.Column(sa.Unicode(100), nullable=False)
+            last_name = sa.Column(sa.Unicode(100), nullable=False)
+        psa.add_engine(url=self.db1.url)
+        Base.metadata.create_all()
+        fred = Person(id=1, first_name=u"Fred", last_name=u"Flintstone")
+        wilma = Person(id=2, first_name=u"Wilma", last_name=u"Flintstone")
+        barney = Person(id=3, first_name=u"Barney", last_name=u"Rubble")
+        betty = Person(id=4, first_name=u"Betty", last_name=u"Rubble")
+        Session = psa.get_session()
+        sess = Session()
+        sess.add_all([fred, wilma, barney, betty])
+        transaction.commit()
+        sess.expunge_all()
+        del fred, wilma, barney, betty
+        # Can we get back a record?
+        barney2 = sess.query(Person).get(3)
+        self.assertEqual(barney2.id, 3)
+        self.assertEqual(barney2.first_name, u"Barney")
+        self.assertEqual(barney2.last_name, u"Rubble")
+        sql = sa.select([Person.first_name])
+        # Can we iterate the first names in reverse alphabetical order?
+        q = sess.query(Person.first_name).order_by(Person.first_name.desc())
+        result = [x.first_name for x in q]
+        control = [u"Wilma", u"Fred", u"Betty", u"Barney"]
+        self.assertEqual(result, control)
+
+    def test1_without_transaction_manager(self):
         Base = psa.get_base()
         class Person(Base):
             __tablename__ = "people"
@@ -124,37 +156,5 @@ class TestDeclarativeBase(PyramidSQLATestCase):
         result = [x.first_name for x in q]
         control = [u"Wilma", u"Fred", u"Betty", u"Barney"]
         self.assertEqual(result, control)
-
-    def test1_with_ZopeTransactionExtension_bug(self):
-        Base = psa.get_base()
-        class Person(Base):
-            __tablename__ = "people"
-            id = sa.Column(sa.Integer, primary_key=True)
-            first_name = sa.Column(sa.Unicode(100), nullable=False)
-            last_name = sa.Column(sa.Unicode(100), nullable=False)
-        psa.add_engine(url=self.db1.url)
-        Base.metadata.create_all()
-        fred = Person(id=1, first_name=u"Fred", last_name=u"Flintstone")
-        wilma = Person(id=2, first_name=u"Wilma", last_name=u"Flintstone")
-        barney = Person(id=3, first_name=u"Barney", last_name=u"Rubble")
-        betty = Person(id=4, first_name=u"Betty", last_name=u"Rubble")
-        Session = psa.get_session()
-        sess = Session()
-        sess.add_all([fred, wilma, barney, betty])
-        sess.commit()
-        sess.expunge_all()
-        del fred, wilma, barney, betty
-        # Can we get back a record?
-        barney2 = sess.query(Person).get(3)
-        self.assertEqual(barney2.id, 3)
-        self.assertEqual(barney2.first_name, u"Barney")
-        self.assertEqual(barney2.last_name, u"Rubble")
-        sql = sa.select([Person.first_name])
-        # Can we iterate the first names in reverse alphabetical order?
-        q = sess.query(Person.first_name).order_by(Person.first_name.desc())
-        result = [x.first_name for x in q]
-        control = [u"Wilma", u"Fred", u"Betty", u"Barney"]
-        self.assertEqual(result, control)
-
 
 
