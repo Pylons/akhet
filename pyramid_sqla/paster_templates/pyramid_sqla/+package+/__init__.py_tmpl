@@ -1,7 +1,7 @@
 from pyramid.config import Configurator
-from pyramid.view import static
 import pyramid_beaker
 import pyramid_sqla
+from pyramid_sqla.static import add_static_route
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
@@ -25,6 +25,6 @@ def main(global_config, **settings):
                        action='index')
     config.add_handler('main', '/{action}', '{{package}}.handlers:MainHandler',
         path_info=r'/(?!favicon\.ico|robots\.txt|w3c)')
-    config.add_route('static', '/*subpath', static('{{package}}:static'))
+    add_static_route(config, '{{package}}', 'static', cache_max_age=3600)
 
     return config.make_wsgi_app()
