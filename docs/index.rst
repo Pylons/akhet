@@ -34,7 +34,6 @@ Current features in the application template
   for a Pylons 1-like SQLAlchemy application
 * The static directory is served under "/" instead of "/static", allowing you
   to serve "/robots.txt" as in Pylons 1 but more efficiently
-* A sample production.ini is included
 * Routing using URL dispatch and view handlers, similar to Routes and
   controllers in Pylons 1
 * Listen on localhost:5000 by default (localhost for security, 5000 per Pylons

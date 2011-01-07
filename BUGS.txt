@@ -1,4 +1,4 @@
 Bugs and todo
 -------------
 
-* None at present!
+* Add a production.ini and test.ini
