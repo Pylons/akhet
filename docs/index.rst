@@ -43,6 +43,7 @@ Current features in the application template
 * Template globals  ``url`` and ``h`` are configured (for generating URLs and
   a user-defined helper library, respectively). You can change these in the
   subscribers module.
+* Configures logging in .ini and handlers
 * It has a pony and a unicorn (Paste Pony)
 
 pyramid_sqla has five dependencies: Pyramid_, SQLAlchemy_, repoze.tm2_, and
