@@ -1,5 +1,4 @@
 Bugs and todo
 -------------
 
-* Static view route inadvertently disables "traversal" mode, need a custom
-  route predicate that returns false if the file doesn't exist
+* None at present!
