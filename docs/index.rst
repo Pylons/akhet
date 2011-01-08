@@ -32,22 +32,22 @@ Current features in the application template
 
 * The model, application settings, middleware, and logging are preconfigured
   for a Pylons 1-like SQLAlchemy application
-* The static directory is served under "/" instead of "/static", allowing you
-  to serve "/robots.txt" as in Pylons 1 but more efficiently
-* A sample production.ini is included
+* The static directory is served under "/" instead of "/static", overlaying 
+  your dynamic URLs
 * Routing using URL dispatch and view handlers, similar to Routes and
   controllers in Pylons 1
 * Listen on localhost:5000 by default (localhost for security, 5000 per Pylons
   1 precedent)
 * Templates ending in .html are passed to Mako (or to your desired templater)
-* Template globals  ``url`` and ``h`` are configured (for generating URLs and
-  a user-defined helper library, respectively). You can change these in the
-  subscribers module.
-* It has a pony and a unicorn (Paste Pony)
+* A helpers module and the ``h`` template global. (You can change template
+  globals in the subscribers module.)
+* A separate logger is configured for the application package, and is added to
+  the handlers module
+* It has a pony and a unicorn (using Paste Pony)
 
-pyramid_sqla has five dependencies: Pyramid_, SQLAlchemy_, repoze.tm2_, and
-zope.sqlalchemy_ (for ZopeTransactionExtension, required by repoze.tm2), and
-transaction_. It was written on Python 2.6 but should work on 2.5.
+pyramid_sqla has five dependencies: Pyramid_, SQLAlchemy_, repoze.tm2_, 
+zope.sqlalchemy_, and transaction_. It's tested on Python 2.6/Linux but should
+work on 2.5 and other platforms. A set of unit tests is included.
 
 .. _zope.sqlalchemy: http://pypi.python.org/pypi/zope.sqlalchemy
 .. _scoped session: http://www.sqlalchemy.org/docs/orm/session.html#contextual-thread-local-sessions
