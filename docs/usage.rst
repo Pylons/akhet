@@ -1,33 +1,5 @@
-Users Guide
-===========
-
-**pyramid_sqla** is a SQLAlchemy_ helper for Pyramid_ applications. It provides
-a central database session and an engine registry, and manages
-commits/rollbacks centrally like TurboGears does, using the repoze.tm2_
-transaction middleware.  Unlike the Pylons 1 application template, there's no
-"meta" module or "init_model()" function in the application's model. Instead,
-the things that were in meta have been moved into the library itself. This
-makes it easier to keep your model in a package without interdependencies
-between the modules, because each module just imports the library.
-
-.. _SQLAlchemy: http://sqlalchemy.org/
-.. _Pyramid: http://docs.pylonshq.com/pyramid/dev/
-.. _zope.sqlalchemy: http://pypi.python.org/pypi/zope.sqlalchemy
-.. _scoped session: http://www.sqlalchemy.org/docs/orm/session.html#contextual-thread-local-sessions
-.. _repoze.tm2: http://docs.repoze.org/tm2/
-.. _transaction: http://pypi.python.org/pypi/transaction
-
-The library follows the philosophy of making simple things simple and complex
-things possible.  Applications with a single database requires only a few lines
-of configuration as shown in "Usage" below. Applications with multiple engines
-requires some more configuration and decision-making as described under
-"Multiple Engines". Reflected databases may be a more difficult issue; we think
-they can be done with an "init_model()" function as discussed under "Reflected
-Databases".
-
-pyramid_sqla has five dependencies: Pyramid_, SQLAlchemy_, repoze.tm2_, and
-zope.sqlalchemy_ (for ZopeTransactionExtension, required by repoze.tm2), and
-transaction_.
+Usage and API
+=============
 
 Usage
 -----
@@ -43,35 +15,58 @@ For a simple Pyramid application with one database engine, follow these steps:
    substituting your own application name. This will create a directory *MyApp*
    containing the application.
 
-2. In *MyApp/development.ini* change the default database URL if necessary:
+2. In *MyApp/development.ini* change the default database URL to your database:
 
    .. code-block:: ini
 
         sqlalchemy.url = sqlite:///%(here)s/db.sqlite
 
-   You can add any SQLALchemy engine options you need, such as:
+   The default creates a SQLite database in the application directory. If
+   you're using SQLite, you'll have to install it. (If you're still using
+   Python 2.4, you'll also have to install the ``pysqlite`` package.)
+
+   You can add other SQLALchemy engine options such as:
 
    .. code-block:: ini
 
         sqlalchemy.pool_recycle = 3600
         sqlalchemy.convert_unicode = true
 
-   The logging is configured to log SQL queries but not results. For less or
-   more logging, adjust the "level" line in the "[logger_sqlalchemy]" section.
-   Level "INFO" logs queries, "DEBUG" logs queries and results (verbose!), and 
-   "WARN" logs neither one.
+   Engine options are listed under `Engine Configuration`_ in the SQLAlchemy
+   manual, and in the Dialects_ section for particular databases.
+
+3. The logging is configured to log SQL queries. To change
+   this, adjust the "level" line in the "[logger_sqlalchemy]" section. ::
+
+        [logger_sqlalchemy]
+        level = INFO
+        handlers =
+        qualname = sqlalchemy.engine
+        # "level = INFO" logs SQL queries.
+        # "level = DEBUG" logs SQL queries and results.
+        # "level = WARN" logs neither.  (Recommended for production systems.)
+
+   SQLAlchemy has many other loggers; e.g., to show connection pool activity or
+   ORM operations. For details see `Configuring Logging`_ in the SQLAlchemy
+   manual.
+
+   *Caution:* Do not set the 'echo' engine option! (I.e., don't do
+   "sqlalchemy.echo = true".) This may cause double logging.
 
 3. In models or views or wherever you need them, access the database session
-   and engine this way::
+   and engine this way:
 
         import pyramid_sqla
 
-        Session = pyramid_sqla.get_dbsession()
+        Session = pyramid_sqla.get_session()
         engine = pyramid_sqla.get_dbengine()
 
-Note that ``get_dbsession()`` returns a SQLAlchemy `scoped session`_
-not a plain SQLAlchemy session. Also, if ``init_dbsession`` configures a
-default engine, it also binds ``Base.metadata`` to it.
+Note that ``get_session()`` returns a SQLAlchemy `scoped session`_
+not a plain SQLAlchemy session. Traditionally programmers use a
+``Session`` or ``DBSession`` variable for a scoped session, and ``sess`` or
+``dbsession`` for a plain session. ``session`` is another possibility, but
+don't confuse it with an HTTP session which is a completely different thing.
+(SQLAlchemy sessions are just part of how SQLAlchemy works.)
 
 See `model examples <model_examples.html>`_ for examples of model code, and 
 `application templates <application_templates.html>`_ for a detailed
@@ -81,26 +76,30 @@ Pyramid template.
 Managed transactions
 --------------------
 
-The scoped session is managed by the repoze.tm2 middleware using
-ZopeTransactionSession.  On egress the middleware will commit the session
-unless an uncaught exception occurs, in which case it will rollback the
-session. You can explictly commit and rollback in your view like this::
+``pyramid_sqla`` has managed transactions. After the view is called, it will
+automatically commit all database changes unless an uncaught exception occurs,
+in which case it will roll back the changes. It will also clear the Session for
+the next request.
+
+You can still commit and roll back explicitly in your view, but you'll have to
+use the ``transaction`` module instead of calling the Session methods
+directly::
 
     import transaction
     transaction.commit()
     # Or:
     transaction.abort()
 
-This may be useful if you want to commit a lot of data a little bit at a time.
+You may want to do this if you want to commit a lot of data a little bit at a
+time.
 
-To prevent *any* database writes during this request, including any performed
-by other parts of the application or middleware, call::
+You can also poison the transaction to prevent *any* database writes during this
+request, including those performed by other parts of the application or
+middleware. To do this, call::
 
     transaction.doom()
 
-The transaction manager also takes care of closing the dbsession at the end of
-every request, to prevent potentially obsolete or unauthorized data from
-leaking into the next request the thread handles.
+XXX Explain implementation
 
 If you don't want managed transactions at all, pass
 ``manage_transaction=False`` to ``init_dbsession``, and do *not* wrap your
