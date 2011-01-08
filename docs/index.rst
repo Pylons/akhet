@@ -61,7 +61,7 @@ Documentation
 .. toctree::
    :maxdepth: 1
 
-   manual
+   usage
    model_examples
    application_templates
    bugs
