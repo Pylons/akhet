@@ -4,16 +4,19 @@ Usage and API
 Usage
 -----
 
-For a simple Pyramid application with one database engine, follow these steps:
-
-1. Run:
+1. Create the application:
    
    .. code-block:: sh
 
         $ paster create -t pyramid_sqla MyApp
 
-   substituting your own application name. This will create a directory *MyApp*
-   containing the application.
+   It should work out of the box. To see the default application, run:
+
+   .. code-block:: sh
+
+        $ cd MyApp
+        $ python setup.py egg_info
+        $ paster serve development.ini
 
 2. In *MyApp/development.ini* change the default database URL to your database:
 
@@ -35,38 +38,21 @@ For a simple Pyramid application with one database engine, follow these steps:
    Engine options are listed under `Engine Configuration`_ in the SQLAlchemy
    manual, and in the Dialects_ section for particular databases.
 
-3. The logging is configured to log SQL queries. To change
-   this, adjust the "level" line in the "[logger_sqlalchemy]" section. ::
-
-        [logger_sqlalchemy]
-        level = INFO
-        handlers =
-        qualname = sqlalchemy.engine
-        # "level = INFO" logs SQL queries.
-        # "level = DEBUG" logs SQL queries and results.
-        # "level = WARN" logs neither.  (Recommended for production systems.)
-
-   SQLAlchemy has many other loggers; e.g., to show connection pool activity or
-   ORM operations. For details see `Configuring Logging`_ in the SQLAlchemy
-   manual.
-
-   *Caution:* Do not set the 'echo' engine option! (I.e., don't do
-   "sqlalchemy.echo = true".) This may cause double logging.
-
 3. In models or views or wherever you need them, access the database session
-   and engine this way:
+   and engine this way::
 
         import pyramid_sqla
 
         Session = pyramid_sqla.get_session()
         engine = pyramid_sqla.get_dbengine()
 
-Note that ``get_session()`` returns a SQLAlchemy `scoped session`_
-not a plain SQLAlchemy session. Traditionally programmers use a
-``Session`` or ``DBSession`` variable for a scoped session, and ``sess`` or
-``dbsession`` for a plain session. ``session`` is another possibility, but
-don't confuse it with an HTTP session which is a completely different thing.
-(SQLAlchemy sessions are just part of how SQLAlchemy works.)
+   Note that ``get_session()`` returns a SQLAlchemy `scoped session`_
+   This is traditionally assigned to ``Session`` with a capital S to remind us
+   it's not a plain session. (Don't confuse SQLAlchmey sessions with HTTP
+   sessions, which are completely different things.)
+
+4. If the application needs to create the database and add initial data. XXX
+
 
 See `model examples <model_examples.html>`_ for examples of model code, and 
 `application templates <application_templates.html>`_ for a detailed
@@ -99,23 +85,31 @@ middleware. To do this, call::
 
     transaction.doom()
 
-XXX Explain implementation
+Of course, this doesn't affect changes that have already been committed.
 
-If you don't want managed transactions at all, pass
-``manage_transaction=False`` to ``init_dbsession``, and do *not* wrap your
-application in the ``repoze.tm2`` middleware. In this case you must call
-``dbsession.commit()`` yourself or your changes will be lost. And you may even
-get a SQLAlchemy exception if you don't call either ``dbsession.commit()`` or
-``dbsession.abort()`` in a timely manner. (This occurs especially when the
-database itself raises an error such as duplicate primary key. This may be
-reported to use as ``sqlalchemy.OperationalError``. When this occurs it leaves
-the dbsession in an invalid state and you must call ``dbsession.abort()`` or
-you'll get another exception when you run another query.) To enable autocommit,
-pass a sessionmaker arg like this::
+The implementation is a combination of three packages that work together.
+``transaction`` is a generic transaction manager. ``zope.sqlalchemy`` applies
+this to SQLAlchemy by exposing a ``ZopeTransactionExtension``, which is a
+SQLAlchemy session extension (a class that enhances the session's behavior).
+The ``repoze.tm2`` middleware takes care of the commit or rollback at the end
+of the request processing.
 
-    pyramid_sqla.init_dbsession(..., manage_transaction=False,
-        sessionmaker_args={"autocommit": False})
+Disabling the transaction manager
++++++++++++++++++++++++++++++++++
 
+If you don't want managed transactions, reconfigure the Session to not have the
+extension::
+
+    pyramid_sqla.get_session().config(extension=None)
+
+and also delete the "egg:repoze.tm2#tm" line in the "[pipeline:main]" section
+in *development.ini*.  If you disable the manager, you'll have to call
+``Session.commit()`` or ``Session.rollback()`` yourself in your views. You'll
+also have to configure the application to remove the session at the end of the
+request. This would be in an event subscriber but I'm not sure which one.
+
+Declarative base
+----------------
 
 Initialiazing the database
 --------------------------
@@ -238,3 +232,39 @@ API
 .. autofunction:: get_base
 
 .. autofunction:: reset
+
+Logging
+-------
+
+3. The logging is configured to log SQL queries. To change
+   this, adjust the "level" line in the "[logger_sqlalchemy]" section. ::
+
+        [logger_sqlalchemy]
+        level = INFO
+        handlers =
+        qualname = sqlalchemy.engine
+        # "level = INFO" logs SQL queries.
+        # "level = DEBUG" logs SQL queries and results.
+        # "level = WARN" logs neither.  (Recommended for production systems.)
+
+   SQLAlchemy has many other loggers; e.g., to show connection pool activity or
+   ORM operations. For details see `Configuring Logging`_ in the SQLAlchemy
+   manual.
+
+   *Caution:* Don't set the 'echo' engine option (i.e., don't do
+   "sqlalchemy.echo = true"). This sets up a duplicate logger which may cause
+   double logging.
+
+Pony
+----
+
+The Paste Pony middleware is active in the default application; see the links
+in the home page. It adds a miniscule amount of overhead. To disable it, edit
+*development.ini*, section "[pipeline:main]", and remove the "egg:Paste#pony"
+line.
+
+
+.. _Engine Configuration: http://www.sqlalchemy.org/docs/core/engines.html
+.. _Dialects: http://www.sqlalchemy.org/docs/dialects/index.html
+.. _Configuring Logging: http://www.sqlalchemy.org/docs/core/engines.html#configuring-logging
+.. _scoped session: http://www.sqlalchemy.org/docs/orm/session.html#contextual-thread-local-sessions
