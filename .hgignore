@@ -1,6 +1,7 @@
 syntax: glob
 .coverage
-*.egg-info
+pyramid_sqla.egg-info
+unfinished/*.egg-info
 *.egg
 *.pyc
 dist/
