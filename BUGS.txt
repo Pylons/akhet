@@ -1,4 +1,5 @@
 Bugs and todo
 -------------
 
-* Add a production.ini and test.ini
+* Add a production.ini and test.ini.
+* Add a database demo such as a wiki.

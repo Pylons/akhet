@@ -1,8 +1,11 @@
 syntax: glob
 .coverage
 pyramid_sqla.egg-info
-unfinished/*.egg-info
 *.egg
 *.pyc
 dist/
 docs/_build
+
+syntax: regexp
+^pyramid_sqla/pyramid_sqla.egg-info
+^unfinished/.*egg-info

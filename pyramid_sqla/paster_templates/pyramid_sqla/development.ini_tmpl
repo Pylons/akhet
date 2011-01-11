@@ -17,7 +17,6 @@ session.secret = {{random_string}}
 [pipeline:main]
 pipeline =
     egg:WebError#evalerror
-    egg:Paste#pony
     egg:repoze.tm2#tm
     {{project}}
 

@@ -255,14 +255,6 @@ Logging
    "sqlalchemy.echo = true"). This sets up a duplicate logger which may cause
    double logging.
 
-Pony
-----
-
-The Paste Pony middleware is active in the default application; see the links
-in the home page. It adds a miniscule amount of overhead. To disable it, edit
-*development.ini*, section "[pipeline:main]", and remove the "egg:Paste#pony"
-line.
-
 
 .. _Engine Configuration: http://www.sqlalchemy.org/docs/core/engines.html
 .. _Dialects: http://www.sqlalchemy.org/docs/dialects/index.html
