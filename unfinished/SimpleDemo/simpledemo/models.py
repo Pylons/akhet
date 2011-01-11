@@ -4,8 +4,9 @@ import sqlalchemy.orm as orm
 import transaction
 
 Base = psa.get_base()
+Session = psa.get_session()
 
-class MyModel(Base):
+class Page(Base):
     __tablename__ = 'models'
-    id = sa.Column(sa.Integer, primary_key=True)
-    name = sa.Column(sa.Unicode(255), nullable=False)
+    title = sa.Column(sa.String, primary_key=True)
+    content = sa.Column(sa.Text, nullable=False)
