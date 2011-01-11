@@ -9,6 +9,7 @@ def main(global_config, **settings):
     config = Configurator(settings=settings)
 
     # Initialize database
+    settings["sqlalchemy.convert_unicode"] = True
     pyramid_sqla.add_engine(settings, prefix='sqlalchemy.')
 
     # Configure Beaker sessions
