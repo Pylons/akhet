@@ -26,7 +26,6 @@ class MyHandlerTests(unittest.TestCase):
         handler = self._makeOne(request)
         info = handler.index()
         self.assertEqual(info['project'], '{{package}}')
-        self.assertEqual(info['db_url'], 'UNKNOWN')
 
 class DummyRequest(object):
     pass
