@@ -44,7 +44,6 @@ Current features in the application template
 * A separate logger is configured for the application package, and is added to
   the handlers module
 * Configures logging in .ini and handlers
-* It has a pony and a unicorn (using Paste Pony)
 
 pyramid_sqla has five dependencies: Pyramid_, SQLAlchemy_, repoze.tm2_, 
 zope.sqlalchemy_, and transaction_. It's tested on Python 2.6/Linux but should
