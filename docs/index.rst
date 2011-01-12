@@ -2,8 +2,8 @@ pyramid_sqla
 ============
 
 **pyramid_sqla** is a library for Pyramid_ applications using SQLAlchemy_, and
-an application template that configures the model and other things similar to
-Pylons 1 (but not identical).  If follows the philosophy of "make the
+an application template that configures the model and other things similar (but
+not identical) to Pylons 1.  If follows the philosophy of "make the
 simple things simple and the complex things possible".
 
 The current version is 0.1. This is a proof-of-concept release; the API is
@@ -44,6 +44,7 @@ Current features in the application template
 * A separate logger is configured for the application package, and is added to
   the handlers module
 * Configures logging in .ini and handlers
+* A websetup module to initialize your database
 
 pyramid_sqla has five dependencies: Pyramid_, SQLAlchemy_, repoze.tm2_, 
 zope.sqlalchemy_, and transaction_. It's tested on Python 2.6/Linux but should
