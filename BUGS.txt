@@ -1,5 +1,17 @@
-Bugs and todo
--------------
+Bugs
+
+
+* None. :)
+
+Todo
+
 
 * Add a production.ini and test.ini.
 * Add a database demo such as a wiki.
+* Allow keyword args to supplement settings in ``add_engine()``.
+* Add an appendix explaining the different ways to initialize the database
+  and why we chose an "-m" script over a bin script, Paster plugin, or
+  websetup.
+* Add an article explaining the exact differences in the application 
+  template compared to the standard Pyramid templates, and why it was
+  made that way.

@@ -16,10 +16,10 @@ A simple one-table model
 
     import pyramid_sqla as psa
     import sqlalchemy as sa
-    import sqlalchemy.ext.declarative as declarative
     import sqlalchemy.orm as orm
 
-    Base = declarative.declarative_base()
+    Base = psa.get_base()
+    Session = psa.get_session()
 
     class User(Base):
         __tablename__ = "users"
@@ -41,10 +41,10 @@ Python 2.6. In older versions, use the ``%`` operator instead.) ::
 
     import pyramid_sqla as psa
     import sqlalchemy as sa
-    import sqlalchemy.ext.declarative as declarative
     import sqlalchemy.orm as orm
 
-    Base = declarative.declarative_base()
+    Base = psa.get_base()
+    Session = psa.get_session()
 
     class User(Base):
         __tablename__ = "users"
@@ -61,10 +61,11 @@ Python 2.6. In older versions, use the ``%`` operator instead.) ::
         def by_name(class_):
             """Return a query of users sorted by name."""
             User = class_
-            q = psa.get_dbsession().query(User)
+            q = Session.query(User)
             q = q.order_by(User.name)
             return q
         
+
     class Address(Base):
         __tablename__ = "addresses"
 
@@ -92,7 +93,7 @@ Python 2.6. In older versions, use the ``%`` operator instead.) ::
         activity = sa.Column(sa.Unicode(100), nullable=False)
 
 
-    assoc_users_activities = sa.Table("assoc_users_activities", psa.Base.metadata,
+    assoc_users_activities = sa.Table("assoc_users_activities", Base.metadata,
         foreign_key_column("user_id", sa.Integer, "users.id"),
         foreign_key_column("activities_id", sa.Unicode(100), "activities.id"))
             
@@ -176,6 +177,3 @@ Then you can do things like this in your views::
     q = models.User.query()
 
 Whether this is a good thing or not depends on your perspective.
-
-Initializing the database
--------------------------

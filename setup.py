@@ -35,7 +35,7 @@ entry_points = """
 
 setup(name='pyramid_sqla',
       version='0.1',
-      description='SQLAlchemy helpers for Pyramid',
+      description='A SQLAlchemy library and Pylons-like application template for Pyramid',
       long_description=README + '\n\n' +  CHANGES,
       classifiers=[
         "Intended Audience :: Developers",
