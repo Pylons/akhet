@@ -7,10 +7,10 @@ from zope.sqlalchemy import ZopeTransactionExtension
 _base = _session = _engines = _zte = None
 
 def reset():
-    """Restore initial module state.
+    """Delete all engines and restore the initial module state.
     
-    This function is mainly for unit tests and debugging. It deletes all
-    engines and recreates the dbsession and other global objects.
+    This function is mainly for unit tests and debugging. It undoes all
+    customizations and reverts to the initial module state.
     """
     global _base, _session, _engines, _zte
     _zte = ZopeTransactionExtension()
@@ -37,7 +37,7 @@ def add_engine(settings=None, name="default", prefix="sqlalchemy.",
     """Configure a SQLAlchemy database engine and return it.
 
     I configure an engine in different ways depending on the combination of
-    arguments. If ``name`` is not specified or the value is "default", I also
+    arguments. If ``name`` is not specified or its value is "default", I also
     bind the scoped session and the declarative base's metadata to it.
 
     Arguments:
@@ -53,14 +53,13 @@ def add_engine(settings=None, name="default", prefix="sqlalchemy.",
       The default value is "sqlalchemy.", which tells SQLAlchemy to use the
       keys starting with "sqlalchemy." for this engine.
 
-    * ``engine``: An existing SQLAlchemy engine. 
+    * ``engine``: An existing SQLAlchemy engine. If you pass this you can't
+      pass ``settings``, ``prefix``, or ``**engine_args``.
 
-    * ``**engine_args``: Engine args supplied as keyword arguments. If these
-      arguments are passed, I call ``sqlalchemy.create_engine(**engine_args)``.
-
-    You must pass exactly one of ``settings``, ``engine``, and
-    ``**engine_args``. Raise ``RuntimeError`` if you pass none of them or too
-    many.
+    * ``**engine_args``: Engine args supplied as keyword arguments. If
+      ``settings`` is also passed, the keyword args override their
+      corresponding settings. If ``settings`` is not passed, I call
+      ``sqlalchemy.create_engine(**engine_args)`` directly.
 
     SQLAlchemy will raise a ``KeyError`` if the database URL is not specified.
     This may indicate the settings dict has no "PREFIX.url" key or that the
@@ -88,16 +87,16 @@ def add_engine(settings=None, name="default", prefix="sqlalchemy.",
         engine1 = add_engine(settings, name="engine1", prefix="db1.")
         engine2 = add_engine(settings, name="engine2", prefix="db2.")
     """
-    if _count_true(settings, engine, engine_args) != 1:
-        m = "only one of 'settings', 'engine', or '**engine_args' allowed"
+    if engine and (settings or engine_args):
+        m = "can't specify settings or engine args when ``engine`` is present"
         raise TypeError(m)
-    if engine:
+    elif engine:
         e = engine
     elif settings:
         if not prefix:
             raise ValueError("empty prefix ('') is not allowed")
         url_key = prefix + "url"
-        if url_key not in settings:
+        if url_key not in settings and "url" not in engine_args:
             msg = """\
 no database URL specified
 settings key '%surl' is required when using prefix='%s'"""
@@ -105,7 +104,7 @@ settings key '%surl' is required when using prefix='%s'"""
             if prefix and not prefix.endswith("."):
                 msg += "\nHint: did you mean prefix='%s.'?" % prefix
             raise ValueError(msg)
-        e = sa.engine_from_config(settings, prefix)
+        e = sa.engine_from_config(settings, prefix, **engine_args)
     else:
         try:
             url = engine_args.pop("url")
@@ -119,14 +118,7 @@ settings key '%surl' is required when using prefix='%s'"""
     return e
 
 def get_session():
-    """Return the central SQLAlchemy scoped session.
-
-    If you call ``.configure`` to change the extension option, you'll lose the
-    ZopeTransactionExtension unless you re-add it. Here's how to do that::
-
-        pyramid_sqla.get_session().configure(
-            extension=[YOUR_EXTENSION, pyramid_sqla._zte])
-    """
+    """Return the central SQLAlchemy scoped session."""
     return _session
 
 def get_engine(name="default"):
@@ -146,12 +138,3 @@ def get_base():
     """Return the central declarative base.
     """
     return _base
-
-#### Private functions
-
-def _count_true(*items):
-    """Return a count of true items in ``*items``.
-    """
-    true_items = filter(None, items)
-    return len(true_items)
-

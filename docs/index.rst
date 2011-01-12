@@ -1,14 +1,20 @@
 pyramid_sqla
 ============
+:Version: 0.1 released XXXX-XX-XXX
+:Docs:
+:Download: 
+:PyPI:
+:Source: http://bitbucket.org/sluggo/pyramid_sqla (Mercurial)
+
 
 **pyramid_sqla** is a library for Pyramid_ applications using SQLAlchemy_, and
-an application template that configures the model and other things similar (but
-not identical) to Pylons 1.  If follows the philosophy of "make the
+an application template that configures the model and other things similar but
+not identical to Pylons 1.  If follows the philosophy of "make the
 simple things simple and the complex things possible".
 
-The current version is 0.1. This is a proof-of-concept release; the API is
-subject to change depending on user feedback. The goal is a 1.0 release before
-Pyramid 1.0.
+Version 0.1 is an initial proof-of-concept release; the API is subject to
+change depending on user feedback. The goal is a 1.0 release before Pyramid
+1.0.
 
 .. _SQLAlchemy: http://sqlalchemy.org/
 .. _Pyramid: http://docs.pylonshq.com/pyramid/dev/
@@ -62,10 +68,9 @@ Documentation
 .. toctree::
    :maxdepth: 1
 
-   install
    usage
+   non_database_features
    model_examples
-   application_templates
    bugs
    changes
 
