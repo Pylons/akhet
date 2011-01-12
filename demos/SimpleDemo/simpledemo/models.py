@@ -7,6 +7,7 @@ Base = psa.get_base()
 Session = psa.get_session()
 
 class Page(Base):
-    __tablename__ = 'models'
-    title = sa.Column(sa.String, primary_key=True)
+    __tablename__ = 'pages'
+
+    title = sa.Column(sa.String(100), primary_key=True)
     content = sa.Column(sa.Text, nullable=False)

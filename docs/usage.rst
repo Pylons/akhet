@@ -1,22 +1,55 @@
 Usage and API
 =============
 
+Installation and demos
+----------------------
+
+Install pyramid_sqla like any Python package, using either "pip install
+pyramid_sqla" or "easy_install pyramid_sqla". To check out the development
+repository: "hg clone http://bitbucket.org/sluggo/pyramid_sqla". 
+
+There's one demo application in the source distribution but it doesn't do much
+yet. It displays your database URL. The create_db script puts a sample record
+in a table. It has a pony and a unicorn (using Paste Pony). To run it, first
+install pyramid_sqla, then do:
+
+.. code-block:: sh
+   :linenos:
+
+    $ cd demos/SimpleDemo
+    $ python setup.py egg_info
+    $ python -m simpledemo.scripts.create_db development.ini
+    $ paster serve development.ini
+
+Line 2 generates the package's metadata. (You only have to do this once, and
+whenever you modify setup.py.) Line 3 creates the database (db.sqlite) and
+inserts initial data. Line 4 serves the website.
+
+Note: If you get an"AssertionError: Unexpected files/directories
+in PATH/pyramid_sqla" when trying to install or upgrade pyramid_sqlalchemy,
+it's becuase pip gets confused if egg_info files are present in a directory
+it's not expecting them. Delete all *\*.egg.info* directories in all
+demos, and then try the installation again.
+
 Usage
 -----
 
-1. Create the application:
+1. Create an application:
    
    .. code-block:: sh
 
         $ paster create -t pyramid_sqla MyApp
 
-   It should work out of the box. To see the default application, run:
+   It should work out of the box:
 
    .. code-block:: sh
 
         $ cd MyApp
         $ python setup.py egg_info
         $ paster serve development.ini
+
+   The default application doesn't define any tables or models so it doesn't
+   actually do anything except display some help links.
 
 2. In *MyApp/development.ini* change the default database URL to your database:
 
@@ -38,20 +71,32 @@ Usage
    Engine options are listed under `Engine Configuration`_ in the SQLAlchemy
    manual, and in the Dialects_ section for particular databases.
 
-3. In models or views or wherever you need them, access the database session
-   and engine this way::
+3. If you want your engine to always convert String and Text columns to unicode
+   regardless of what the INI file says, edit *myapp/__init__.py* and uncomment
+   the line::
+
+        settings["sqlalchemy.convert_unicode"] = True
+
+3. In models or views or wherever you need them, access the database session,
+   engine, and declarative base this way::
 
         import pyramid_sqla
 
         Session = pyramid_sqla.get_session()
         engine = pyramid_sqla.get_dbengine()
+        Base = pyramid_sqla.get_base()
 
-   Note that ``get_session()`` returns a SQLAlchemy `scoped session`_
+   Note that ``get_session()`` returns a SQLAlchemy `scoped session`_.
    This is traditionally assigned to ``Session`` with a capital S to remind us
    it's not a plain session. (Don't confuse SQLAlchmey sessions with HTTP
    sessions, which are completely different things.)
 
-4. If the application needs to create the database and add initial data. XXX
+4. If the application needs to create the database and add initial data,
+   customize *myapp/scripts/create_db.py* and run it:
+
+   .. code-block:: sh
+        
+        $ python -m myapp.scripts.create_db development.ini
 
 
 See `model examples <model_examples.html>`_ for examples of model code, and 
@@ -107,39 +152,6 @@ in *development.ini*.  If you disable the manager, you'll have to call
 ``Session.commit()`` or ``Session.rollback()`` yourself in your views. You'll
 also have to configure the application to remove the session at the end of the
 request. This would be in an event subscriber but I'm not sure which one.
-
-Declarative base
-----------------
-
-Initialiazing the database
---------------------------
-
-Reflected tables
-----------------
-
-Reflected tables pose a bit of a dilemma because it depends on a live database
-engine but that may not available when the module is imported. There are two
-ways around this. One way is to assume that when the module is imported,
-``pyrmaid_sqla.init_dbsession()`` has already been initialized, and thus that
-``get_dbengine()``, ``get_dbsession()``, and ``Base`` have all been bound to
-the appropriate engine. The other way is to put an ``init_model()`` function in
-your model, and call it after the engine has been configured. The function
-would then do everything that depends on a live engine. You can either pass the
-engine to the function or have the function call ``get_dbengine()`` to fetch
-it.
-
-When using ``init_model()`` with declarative, we think you'd have to put the
-entire declarative class inside the function and use a ``global`` statement to
-assign it to the module scope. When not using declarative, we think you can put
-the ORM class at the module level, but the table definition and mapper would
-have to be inside the function, again using ``global`` to put the table at the
-module level.
-
-If you choose not to use ``init_model()``, remember to initialize
-``pyramid_sqla`` before importing the models. The application template
-initializes the database in *myapp/__init__.py*, and does not import the models
-except in views and in *websetup.py*. (Actually, it doesn't import the models
-at all, but this is where you most likely would.)
 
 Multiple databases
 ------------------
@@ -236,6 +248,7 @@ API
 Logging
 -------
 
+The default application template is configured to log SQL queries.
 3. The logging is configured to log SQL queries. To change
    this, adjust the "level" line in the "[logger_sqlalchemy]" section. ::
 
@@ -254,6 +267,38 @@ Logging
    *Caution:* Don't set the 'echo' engine option (i.e., don't do
    "sqlalchemy.echo = true"). This sets up a duplicate logger which may cause
    double logging.
+
+
+Declarative base
+----------------
+
+Reflected tables
+----------------
+
+Reflected tables pose a bit of a dilemma because it depends on a live database
+engine but that may not available when the module is imported. There are two
+ways around this. One way is to assume that when the module is imported,
+``pyrmaid_sqla.init_dbsession()`` has already been initialized, and thus that
+``get_dbengine()``, ``get_dbsession()``, and ``Base`` have all been bound to
+the appropriate engine. The other way is to put an ``init_model()`` function in
+your model, and call it after the engine has been configured. The function
+would then do everything that depends on a live engine. You can either pass the
+engine to the function or have the function call ``get_dbengine()`` to fetch
+it.
+
+When using ``init_model()`` with declarative, we think you'd have to put the
+entire declarative class inside the function and use a ``global`` statement to
+assign it to the module scope. When not using declarative, we think you can put
+the ORM class at the module level, but the table definition and mapper would
+have to be inside the function, again using ``global`` to put the table at the
+module level.
+
+If you choose not to use ``init_model()``, remember to initialize
+``pyramid_sqla`` before importing the models. The application template
+initializes the database in *myapp/__init__.py*, and does not import the models
+except in views and in *websetup.py*. (Actually, it doesn't import the models
+at all, but this is where you most likely would.)
+
 
 
 .. _Engine Configuration: http://www.sqlalchemy.org/docs/core/engines.html
