@@ -1,6 +1,6 @@
 pyramid_sqla
 ============
-:Version: 0.1 released XXXX-XX-XXX
+:Version: 0.1, released 2011-01-12
 :Docs:
 :Download: 
 :PyPI:
@@ -8,13 +8,11 @@ pyramid_sqla
 
 
 **pyramid_sqla** is a library for Pyramid_ applications using SQLAlchemy_, and
-an application template that configures the model and other things similar but
-not identical to Pylons 1.  If follows the philosophy of "make the
-simple things simple and the complex things possible".
+an application template that brings some of Pylons 1's features to Pyramid.
 
-Version 0.1 is an initial proof-of-concept release; the API is subject to
-change depending on user feedback. The goal is a 1.0 release before Pyramid
-1.0.
+Version 0.1 is the intial alpha release for community testing and feedback. The
+goal is a 1.0 release in time for Pyramid 1.0. API compatibility between
+versions is not guaranteed at this early stage.
 
 .. _SQLAlchemy: http://sqlalchemy.org/
 .. _Pyramid: http://docs.pylonshq.com/pyramid/dev/
