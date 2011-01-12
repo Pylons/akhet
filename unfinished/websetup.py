@@ -1,3 +1,9 @@
+"""
+Entry point::
+
+    [paste.app_install]
+    main = paste.script.appinstall:Installer
+"""
 import logging
 
 import pyramid_sqla as psa

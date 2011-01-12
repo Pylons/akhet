@@ -23,9 +23,6 @@ if sys.version_info[:3] < (2,5,0):
 entry_points = """\
     [paste.app_factory]
     main = simpledemo:main
-
-    [paste.app_install]
-    main = paste.script.appinstall:Installer
 """
 
 setup(name='SimpleDemo',
