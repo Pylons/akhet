@@ -44,7 +44,7 @@ Current features in the application template
 * A separate logger is configured for the application package, and is added to
   the handlers module
 * Configures logging in .ini and handlers
-* A websetup module to initialize your database
+* A script to initialize your database
 
 pyramid_sqla has five dependencies: Pyramid_, SQLAlchemy_, repoze.tm2_, 
 zope.sqlalchemy_, and transaction_. It's tested on Python 2.6/Linux but should
@@ -62,6 +62,7 @@ Documentation
 .. toctree::
    :maxdepth: 1
 
+   install
    usage
    model_examples
    application_templates
