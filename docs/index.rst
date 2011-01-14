@@ -1,9 +1,9 @@
 pyramid_sqla
 ============
 :Version: 0.1, released 2011-01-12
-:Docs:
-:Download: 
-:PyPI:
+:Docs: https://bitbucket.org/sluggo/pyramid_sqla/wiki/html/index.html
+:Download: http://pypi.python.org/packages/source/p/pyramid_sqla/pyramid_sqla-0.1.tar.gz
+:PyPI: http://pypi.python.org/pypi/pyramid_sqla
 :Source: http://bitbucket.org/sluggo/pyramid_sqla (Mercurial)
 
 
