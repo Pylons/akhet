@@ -34,7 +34,7 @@ entry_points = """
 """
 
 setup(name='pyramid_sqla',
-      version='0.1',
+      version='0.2',
       description='A SQLAlchemy library and Pylons-like application template for Pyramid',
       long_description=README + '\n\n' +  CHANGES,
       classifiers=[
