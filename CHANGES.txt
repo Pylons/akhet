@@ -1,4 +1,13 @@
+0.2  (2011-01-19)
+-----------------
+
+- Pyramid 1.0a10 spins off view handler support to 'pyramid_handlers' package.
+- 'pyramid_sqla' application template depends on Pyramid>=1.0a10.
+
+
 0.1  (2011-01-12)
 -----------------
 
 - Initial release.
+- 'pyramid_sqla' application template is compatible with Pyramid==1.0a9 only
+  (undeclared).

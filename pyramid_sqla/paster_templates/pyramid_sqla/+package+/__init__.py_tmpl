@@ -1,5 +1,6 @@
 from pyramid.config import Configurator
 import pyramid_beaker
+import pyramid_handlers
 import pyramid_sqla
 from pyramid_sqla.static import add_static_route
 
@@ -7,6 +8,7 @@ def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
     config = Configurator(settings=settings)
+    config.include(pyramid_handlers.includeme)
 
     # Initialize database
     pyramid_sqla.add_engine(settings, prefix='sqlalchemy.')

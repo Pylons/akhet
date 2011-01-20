@@ -1,5 +1,5 @@
 /**
- * Sphinx stylesheet -- default theme
+ * Sphinx stylesheet
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
@@ -8,6 +8,7 @@
 
  * body: font-size "small" instead of "100%"
  * div.body p: text-align "left" instead of "justify"
+ * important: new class
  */
 
 @import url("basic.css");
@@ -128,7 +129,7 @@ a:hover {
 
 div.body p, div.body dd, div.body li {
     text-align: left;
-    /* text-align: justify; 8?
+    /* text-align: justify; 8? */
     line-height: 130%;
 }
 
@@ -237,3 +238,9 @@ tt {
 .note tt {
     background: #d6d6d6;
 }
+
+div.admonition {
+    background-color: #EEA2AD;
+    border: double 1px;
+    padding: 5px;
+    }
