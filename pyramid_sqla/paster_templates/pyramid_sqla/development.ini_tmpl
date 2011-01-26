@@ -17,8 +17,12 @@ session.secret = {{random_string}}
 [pipeline:main]
 pipeline =
     egg:WebError#evalerror
-    egg:repoze.tm2#tm
+    tm
     {{project}}
+
+[filter:tm]
+use = egg:repoze.tm2#tm
+commit_veto = repoze.tm:default_commit_veto
 
 [server:main]
 use = egg:Paste#http
