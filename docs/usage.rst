@@ -142,6 +142,15 @@ SQLAlchemy session extension (a class that enhances the session's behavior).
 The ``repoze.tm2`` middleware takes care of the commit or rollback at the end
 of the request processing.
 
+Starting with ``pyramid_sqla`` 1.0rc1 and ``repoze.tm2`` 1.0b1, the transaction
+will also be rolled back if the application returns a 4xx or 5xx status, or if
+the response header 'X-TM-Abort' is present. This is done by a "commit veto"
+callback in ``repoze.tm2``. You can customize the veto criteria by overriding
+the callback function in development.ini; see `Using a Commit Veto`_ for an
+example.
+
+
+
 Disabling the transaction manager
 ---------------------------------
 
@@ -165,6 +174,17 @@ semi-private ``_zte`` variable in the library. Here's how to add your own
 extension while keeping the transaction extension::
 
     Session.configure(extension=[MyWonderfulExtension(), pyramid_sqla._zte])
+
+Bypassing the transaction manager without disabling it
+------------------------------------------------------
+
+In special circumstances you may want to do a particular database write while
+allowing the transaction manager to roll back all other writes. For instance,
+if you have a separate access log database and you want to log all responses,
+even failures. In that case you can create a second SQLAlchemy session using
+``sqlalchemy.orm.sessionmaker`` -- one that does *not* use the transaction
+extension -- and use that session with that engine to insert and commit the log
+record. 
  
 
 Multiple databases
@@ -305,3 +325,4 @@ If you can, please tell us.
 .. _Dialects: http://www.sqlalchemy.org/docs/dialects/index.html
 .. _Configuring Logging: http://www.sqlalchemy.org/docs/core/engines.html#configuring-logging
 .. _scoped session: http://www.sqlalchemy.org/docs/orm/session.html#contextual-thread-local-sessions
+.. _Using a Commit Veto: http://docs.repoze.org/tm2/#using-a-commit-veto

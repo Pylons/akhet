@@ -11,5 +11,4 @@ versions is not guaranteed at this early stage.
 Documentation is in the 'docs' directory.
 
 (c) 2011 Mike Orr
-Copying and derivations permitted under a BSD-like license, see LICENSE.txt for
-details.
+Copying and derivations permitted under the MIT license, see LICENSE.txt.

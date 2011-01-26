@@ -1,3 +1,9 @@
+0.3  (XXXX-XX-XX)
+-----------------
+- 'pyramid_sqla' application template supports commit veto feature in
+  repoze.tm2 1.0b1.
+- Delete stray files in application template that were accidentally included.
+
 0.2  (2011-01-19)
 -----------------
 
@@ -9,5 +15,7 @@
 -----------------
 
 - Initial release.
-- 'pyramid_sqla' application template is compatible with Pyramid==1.0a9 only
-  (undeclared).
+- Warning: a change in Pyramid 1.0a10 broke applications created using the
+  this version's application template. To run existing applications under Pyramid
+  1.0a10 and later, add a 'pyramid_handlers' dependency to the ``requires``
+  list in setup.py and reinstall the application.

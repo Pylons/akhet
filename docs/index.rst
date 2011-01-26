@@ -1,6 +1,6 @@
 pyramid_sqla
 ============
-:Version: 0.2, released 2011-01-19
+:Version: 0.3, released 2011-01-25
 :Docs: https://bitbucket.org/sluggo/pyramid_sqla/wiki/html/index.html
 :Download: http://pypi.python.org/packages/source/p/pyramid_sqla/pyramid_sqla-0.1.tar.gz
 :PyPI: http://pypi.python.org/pypi/pyramid_sqla
@@ -9,17 +9,14 @@ pyramid_sqla
 
 **pyramid_sqla** is a library for Pyramid_ applications using SQLAlchemy_, and
 an application template that brings some of Pylons 1's features to Pyramid.
-This is an alpha release for community testing and feedback.  The goal is a 1.0
-release in time for Pyramid 1.0. API compatibility between versions is not
-guaranteed at this early stage.
+The API is now stable; version 1.0rc1 is a release candidate for 1.0.
 
-.. admonition:: Important version note
+.. admonition:: Important note for version 0.1 users
 
-   - Use version 0.2 with Pyramid>=1.0a10.
-   - Version 0.1's application template is compatible only with 
-     Pyramid==1.0a9. This is not declared in the app's setup.py!
-   - The reason is that 1.0a10 spun off the view  handling code to a separate
-     package ('pyramid_handlers').
+   Pyramid 1.0a10 made an incompatible change for applications created with
+   pyramid_sqla 0.1. To use these applications with Pyramid 1.0a10 or later,
+   edit the applications' setup.py and add 'pyramid_handlers' to the 'requires'
+   list, and reinstall the applications.
 
 .. _SQLAlchemy: http://sqlalchemy.org/
 .. _Pyramid: http://docs.pylonshq.com/pyramid/dev/
