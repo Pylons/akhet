@@ -1,5 +1,6 @@
 1.0rc1  (2010-01-26)
------------------
+--------------------
+
 - 'pyramid_sqla' application template supports commit veto feature in
   repoze.tm2 1.0b1.
 - Add production.ini to application template.
