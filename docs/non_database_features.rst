@@ -80,5 +80,53 @@ by Mako. This is done by the following lines in *myapp/__init__.py*::
 You can change this to associate .html with another templating engine like
 Jinja2, or disable it by commenting out the line.
 
+Exception handling
+==================
+
+Pyramid's exception handling is the same as Pylons', although the syntax in
+*development.ini* and *production.ini* is different. There is no top-level
+'debug' variable. Instead, *development.ini* activates WebError's EvalException
+middleware to show the sophisticated interactive traceback in the browser.
+
+*production.ini* activates the ErrorMiddleware instead, which by default logs the
+traceback to the console and displays a minimal error message to the user.
+You can have the tracebacks emailed to you by adjusting the settings in
+*production.ini*. Here are the default settings, which are pretty
+self-explanatory:
+
+.. code-block:: ini
+
+    [filter:weberror]
+    use = egg:WebError#error_catcher
+    debug = false
+    ;error_log = 
+    ;show_exceptions_in_wsgi_errors = true
+    ;smtp_server = localhost
+    ;error_email = janitor@example.com
+    ;smtp_username = janitor
+    ;smtp_password = "janitor's password"
+    ;from_address = paste@localhost
+    ;error_subject_prefix = "Pyramid Error"
+    ;smtp_use_tls =
+    ;error_message =
+
+The default error message shown to the user says::
+
+    An error occurred. See the error logs for more information. (Turn debug on
+    to display exception reports here) 
+
+That is really more a reminder to you than a suitable message to the user. 
+You can override the message by setting the 'error_message' variable.
+
+If you set 'debug' to true in *production.ini*, a static traceback will be
+shown to the user. This is not as harmful as the interactive traceback, but it does
+reveal your application's structure.
+
+**Do not use the EvalException middleware or 'debug = true' when running the
+application exposed to the Internet.** Anybody who gets the interactive
+traceback can enter any Python command, which may allow them to view or modify
+arbitrary files or database data. The static traceback is not as harmful but it
+does reveal your application's code structure.
+
 
 .. _WebHelpers:  http://webhelpers.groovie.org/
