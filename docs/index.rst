@@ -1,6 +1,6 @@
 pyramid_sqla
 ============
-:Version: 0.3, released 2011-01-25
+:Version: 1.0rc1, released 2011-01-26
 :Docs: https://bitbucket.org/sluggo/pyramid_sqla/wiki/html/index.html
 :Download: http://pypi.python.org/packages/source/p/pyramid_sqla/pyramid_sqla-0.1.tar.gz
 :PyPI: http://pypi.python.org/pypi/pyramid_sqla
@@ -53,6 +53,7 @@ Current features in the application template
   the handlers module
 * Configures logging in .ini and handlers
 * A script to initialize your database
+* A production.ini (new in 1.0rc1)
 
 pyramid_sqla has five dependencies: Pyramid_, SQLAlchemy_, repoze.tm2_, 
 zope.sqlalchemy_, and transaction_. It's tested on Python 2.6/Linux but should
