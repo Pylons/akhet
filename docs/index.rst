@@ -40,7 +40,7 @@ Current features in the application template
 * The model, application settings, middleware, and logging are preconfigured
   for a Pylons 1-like SQLAlchemy application
 * The static directory is served under "/" instead of "/static", overlaying 
-  your dynamic URLs
+  your dynamic URLs.
 * Routing using URL dispatch and view handlers, similar to Routes and
   controllers in Pylons 1
 * Listen on localhost:5000 by default (localhost for security, 5000 per Pylons
@@ -53,6 +53,8 @@ Current features in the application template
 * Configures logging in .ini and handlers
 * A script to initialize your database
 * A production.ini (new in 1.0rc1)
+* The function to add a static directory is now a Configurator method (new in
+  1.0rc2)
 
 pyramid_sqla has five dependencies: Pyramid_, SQLAlchemy_, repoze.tm2_, 
 zope.sqlalchemy_, and transaction_. It's tested on Python 2.6/Linux but should
