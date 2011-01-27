@@ -152,3 +152,63 @@ class TestDeclarativeBase(PyramidSQLATestCase):
         self.assertEqual(result, control)
 
 
+class TestAddStaticRoute(unittest.TestCase):
+    def _callFUT(self, config, package, subdir, cache_max_age=3600,
+                 **add_route_args):
+        from pyramid_sqla.static import add_static_route
+        return add_static_route(config, package, subdir,
+                                cache_max_age=cache_max_age, **add_route_args)
+
+    def test_pattern_is_bad_arg(self):
+        self.assertRaises(TypeError, self._callFUT,
+                          None, None, None, pattern='foo')
+
+    def test_view_is_bad_arg(self):
+        self.assertRaises(TypeError, self._callFUT,
+                          None, None, None, view='foo')
+
+    def test_has_name(self):
+        from pyramid_sqla.static import StaticViewPredicate
+        from pyramid.view import static
+        config = DummyConfig()
+        self._callFUT(config, 'package', 'subdir', name='myname')
+        self.assertEqual(len(config.routes), 1)
+        route = config.routes[0]
+        self.assertEqual(route['pattern'], '/*subpath')
+        self.assertEqual(route['name'], 'myname')
+        self.assertEqual(route['kw']['custom_predicates'][0].__class__,
+                         StaticViewPredicate)
+        self.assertEqual(route['kw']['view'].__class__,
+                         static)
+
+    def test_has_no_name(self):
+        config = DummyConfig()
+        self._callFUT(config, 'package', 'subdir')
+        self.assertEqual(len(config.routes), 1)
+        route = config.routes[0]
+        self.assertEqual(route['pattern'], '/*subpath')
+        self.assertEqual(route['name'], 'static')
+
+class TestStaticViewPredicate(unittest.TestCase):
+    def _makeOne(self, package, subdir):
+        from pyramid_sqla.static import StaticViewPredicate
+        return StaticViewPredicate(package, subdir)
+
+    def test___call___has_no_subpath(self):
+        inst = self._makeOne('package', 'subdir')
+        self.assertEqual(inst({'match':{'subpath':()}}, None), False)
+
+    def test___call___resource_exists(self):
+        inst = self._makeOne('pyramid_sqla', 'tests')
+        self.assertEqual(inst({'match':{'subpath':('test.py',)}}, None), True)
+
+    def test___call___resource_doesnt_exist(self):
+        inst = self._makeOne('pyramid_sqla', 'tests')
+        self.assertEqual(inst({'match':{'subpath':('wont.py',)}}, None), False)
+
+class DummyConfig(object):
+    def __init__(self):
+        self.routes = []
+
+    def add_route(self, name, pattern, **kw):
+        self.routes.append({'name':name, 'pattern':pattern, 'kw':kw})
