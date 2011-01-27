@@ -217,6 +217,86 @@ class Test_includeme(unittest.TestCase):
         self._callFUT(config)
         self.assertEqual(config.directives['add_static_route'],
                          add_static_route)
+
+class Test_add_engine(unittest.TestCase):
+    def setUp(self):
+        self.engines = {}
+        self.session = DummySession()
+        self.base = DummyBase()
+        import pyramid_sqla
+        self.old_engines = pyramid_sqla._engines
+        self.old_base = pyramid_sqla._base
+        self.old_session = pyramid_sqla._session
+        pyramid_sqla._engines = self.engines
+        pyramid_sqla._base = self.base
+        pyramid_sqla._session = self.session
+
+    def tearDown(self):
+        import pyramid_sqla
+        pyramid_sqla._engines = self.old_engines
+        pyramid_sqla._base = self.old_base
+        pyramid_sqla._session = self.old_session
+
+    def _callFUT(self, settings=None, name='default', prefix='sqlalchemy.',
+                 engine=None, **engine_args):
+        from pyramid_sqla import add_engine
+        return add_engine(
+            settings=settings, name=name, prefix=prefix, engine=engine,
+            **engine_args)
+
+    def test_both_engine_and_settings(self):
+        self.assertRaises(TypeError, self._callFUT, engine=True, settings=True)
+
+    def test_both_engine_and_engine_args(self):
+        self.assertRaises(TypeError, self._callFUT, engine=True, foo='bar')
+
+    def test_explicit_engine(self):
+        engine = DummyEngine()
+        e = self._callFUT(engine=engine)
+        self.failUnless(e is engine)
+        self.failUnless(self.engines['default'], None)
+        self.assertEqual(self.session.bind, e)
+        self.assertEqual(self.base.metadata.bind, e)
+
+    def test_engine_from_settings_no_prefix(self):
+        self.assertRaises(
+            ValueError,
+            self._callFUT, prefix='',
+            settings={'sqlalchemy.url':'sqlite:///:memory:'})
+
+    def test_engine_from_settings_no_url(self):
+        self.assertRaises(ValueError, self._callFUT, settings={'a':'1'})
+
+    def test_engine_from_settings_no_url_bad_prefix(self):
+        self.assertRaises(ValueError,
+                          self._callFUT, prefix='fudge', settings={'a':'1'})
+
+    def test_url_from_engine_args(self):
+        from sqlalchemy.engine.base import Engine
+        e = self._callFUT(url='sqlite:///:memory:')
+        self.assertEqual(e.__class__, Engine)
+
+    def test_url_from_engine_args_no_url(self):
+        self.assertRaises(TypeError, self._callFUT, settings=None)
+
+    def test_engine_from_settings(self):
+        from sqlalchemy.engine.base import Engine
+        e = self._callFUT(settings={'sqlalchemy.url':'sqlite:///:memory:'})
+        self.assertEqual(e.__class__, Engine)
+
+class DummySession(object):
+    def configure(self, **kw):
+        self.__dict__.update(kw)
+
+class DummyMetadata(object):
+    pass
+
+class DummyBase(object):
+    def __init__(self):
+        self.metadata = DummyMetadata()
+
+class DummyEngine(object):
+    pass
         
 class DummyConfig(object):
     def __init__(self):
