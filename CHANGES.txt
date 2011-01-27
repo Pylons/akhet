@@ -1,3 +1,7 @@
+development
+-----------
+- Delete unneeded development code in static.py.
+
 1.0rc1  (2010-01-26)
 --------------------
 
