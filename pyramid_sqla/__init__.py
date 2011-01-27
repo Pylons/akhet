@@ -25,7 +25,6 @@ reset()
 
 __all__ = [
     "add_engine", 
-    "config_session",
     "get_base",
     "get_session", 
     "get_engine",
@@ -101,7 +100,7 @@ def add_engine(settings=None, name="default", prefix="sqlalchemy.",
         if url_key not in settings and "url" not in engine_args:
             msg = """\
 no database URL specified
-settings key '%surl' is required when using prefix='%s'"""
+settings key '%s' is required when using prefix='%s'"""
             msg %= (url_key, prefix)
             if prefix and not prefix.endswith("."):
                 msg += "\nHint: did you mean prefix='%s.'?" % prefix
@@ -140,3 +139,8 @@ def get_base():
     """Return the central declarative base.
     """
     return _base
+
+def includeme(config):
+    from pyramid_sqla.static import add_static_route
+    config.add_directive('add_static_route', add_static_route)
+    

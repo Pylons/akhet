@@ -1,5 +1,3 @@
-import os
-
 import pkg_resources
 from pyramid.view import static
 
@@ -56,8 +54,8 @@ def add_static_route(config, package, subdir, cache_max_age=3600,
     custom_predicates = add_route_args.pop("custom_predicates", [])
     custom_predicates = list(custom_predicates)
     custom_predicates.insert(0, pred)
-    config.add_route(name, pattern, view, 
-        custom_predicates=custom_predicates, **add_route_args)
+    config.add_route(name, pattern, view=view, 
+                     custom_predicates=custom_predicates, **add_route_args)
 
 #### Private stuff
 

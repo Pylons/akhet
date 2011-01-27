@@ -24,13 +24,7 @@ class PyramidSQLATestCase(unittest.TestCase):
         psa.reset()
         shutil.rmtree(self.dir, True)
 
-    def assertDatabaseExists(self, db_file):
-        self.assertEqual(os.path.exists(db_file), True)
-
-    def assertDatabaseDoesNotExist(self, db_file):
-        self.assertEqual(os.path.exists(db_file), False)
-
-    if not hasattr(unittest.TestCase, "assertIsInstance"):
+    if not hasattr(unittest.TestCase, "assertIsInstance"): # pragma: no cover
         def assertIsInstance(self, obj, classes):
             if not isinstance(obj, classes):
                 typ = type(obj)
@@ -118,7 +112,7 @@ class TestDeclarativeBase(PyramidSQLATestCase):
         self.assertEqual(barney2.id, 3)
         self.assertEqual(barney2.first_name, u"Barney")
         self.assertEqual(barney2.last_name, u"Rubble")
-        sql = sa.select([Person.first_name])
+        sa.select([Person.first_name])
         # Can we iterate the first names in reverse alphabetical order?
         q = sess.query(Person.first_name).order_by(Person.first_name.desc())
         result = [x.first_name for x in q]
@@ -150,7 +144,7 @@ class TestDeclarativeBase(PyramidSQLATestCase):
         self.assertEqual(barney2.id, 3)
         self.assertEqual(barney2.first_name, u"Barney")
         self.assertEqual(barney2.last_name, u"Rubble")
-        sql = sa.select([Person.first_name])
+        sa.select([Person.first_name])
         # Can we iterate the first names in reverse alphabetical order?
         q = sess.query(Person.first_name).order_by(Person.first_name.desc())
         result = [x.first_name for x in q]
@@ -158,3 +152,159 @@ class TestDeclarativeBase(PyramidSQLATestCase):
         self.assertEqual(result, control)
 
 
+class TestAddStaticRoute(unittest.TestCase):
+    def _callFUT(self, config, package, subdir, cache_max_age=3600,
+                 **add_route_args):
+        from pyramid_sqla.static import add_static_route
+        return add_static_route(config, package, subdir,
+                                cache_max_age=cache_max_age, **add_route_args)
+
+    def test_pattern_is_bad_arg(self):
+        self.assertRaises(TypeError, self._callFUT,
+                          None, None, None, pattern='foo')
+
+    def test_view_is_bad_arg(self):
+        self.assertRaises(TypeError, self._callFUT,
+                          None, None, None, view='foo')
+
+    def test_has_name(self):
+        from pyramid_sqla.static import StaticViewPredicate
+        from pyramid.view import static
+        config = DummyConfig()
+        self._callFUT(config, 'package', 'subdir', name='myname')
+        self.assertEqual(len(config.routes), 1)
+        route = config.routes[0]
+        self.assertEqual(route['pattern'], '/*subpath')
+        self.assertEqual(route['name'], 'myname')
+        self.assertEqual(route['kw']['custom_predicates'][0].__class__,
+                         StaticViewPredicate)
+        self.assertEqual(route['kw']['view'].__class__,
+                         static)
+
+    def test_has_no_name(self):
+        config = DummyConfig()
+        self._callFUT(config, 'package', 'subdir')
+        self.assertEqual(len(config.routes), 1)
+        route = config.routes[0]
+        self.assertEqual(route['pattern'], '/*subpath')
+        self.assertEqual(route['name'], 'static')
+
+class TestStaticViewPredicate(unittest.TestCase):
+    def _makeOne(self, package, subdir):
+        from pyramid_sqla.static import StaticViewPredicate
+        return StaticViewPredicate(package, subdir)
+
+    def test___call___has_no_subpath(self):
+        inst = self._makeOne('package', 'subdir')
+        self.assertEqual(inst({'match':{'subpath':()}}, None), False)
+
+    def test___call___resource_exists(self):
+        inst = self._makeOne('pyramid_sqla', 'tests')
+        self.assertEqual(inst({'match':{'subpath':('test.py',)}}, None), True)
+
+    def test___call___resource_doesnt_exist(self):
+        inst = self._makeOne('pyramid_sqla', 'tests')
+        self.assertEqual(inst({'match':{'subpath':('wont.py',)}}, None), False)
+
+class Test_includeme(unittest.TestCase):
+    def _callFUT(self, config):
+        from pyramid_sqla import includeme
+        return includeme(config)
+
+    def test_it(self):
+        from pyramid_sqla.static import add_static_route
+        config = DummyConfig()
+        self._callFUT(config)
+        self.assertEqual(config.directives['add_static_route'],
+                         add_static_route)
+
+class Test_add_engine(unittest.TestCase):
+    def setUp(self):
+        self.engines = {}
+        self.session = DummySession()
+        self.base = DummyBase()
+        import pyramid_sqla
+        self.old_engines = pyramid_sqla._engines
+        self.old_base = pyramid_sqla._base
+        self.old_session = pyramid_sqla._session
+        pyramid_sqla._engines = self.engines
+        pyramid_sqla._base = self.base
+        pyramid_sqla._session = self.session
+
+    def tearDown(self):
+        import pyramid_sqla
+        pyramid_sqla._engines = self.old_engines
+        pyramid_sqla._base = self.old_base
+        pyramid_sqla._session = self.old_session
+
+    def _callFUT(self, settings=None, name='default', prefix='sqlalchemy.',
+                 engine=None, **engine_args):
+        from pyramid_sqla import add_engine
+        return add_engine(
+            settings=settings, name=name, prefix=prefix, engine=engine,
+            **engine_args)
+
+    def test_both_engine_and_settings(self):
+        self.assertRaises(TypeError, self._callFUT, engine=True, settings=True)
+
+    def test_both_engine_and_engine_args(self):
+        self.assertRaises(TypeError, self._callFUT, engine=True, foo='bar')
+
+    def test_explicit_engine(self):
+        engine = DummyEngine()
+        e = self._callFUT(engine=engine)
+        self.failUnless(e is engine)
+        self.failUnless(self.engines['default'], None)
+        self.assertEqual(self.session.bind, e)
+        self.assertEqual(self.base.metadata.bind, e)
+
+    def test_engine_from_settings_no_prefix(self):
+        self.assertRaises(
+            ValueError,
+            self._callFUT, prefix='',
+            settings={'sqlalchemy.url':'sqlite:///:memory:'})
+
+    def test_engine_from_settings_no_url(self):
+        self.assertRaises(ValueError, self._callFUT, settings={'a':'1'})
+
+    def test_engine_from_settings_no_url_bad_prefix(self):
+        self.assertRaises(ValueError,
+                          self._callFUT, prefix='fudge', settings={'a':'1'})
+
+    def test_url_from_engine_args(self):
+        from sqlalchemy.engine.base import Engine
+        e = self._callFUT(url='sqlite:///:memory:')
+        self.assertEqual(e.__class__, Engine)
+
+    def test_url_from_engine_args_no_url(self):
+        self.assertRaises(TypeError, self._callFUT, settings=None)
+
+    def test_engine_from_settings(self):
+        from sqlalchemy.engine.base import Engine
+        e = self._callFUT(settings={'sqlalchemy.url':'sqlite:///:memory:'})
+        self.assertEqual(e.__class__, Engine)
+
+class DummySession(object):
+    def configure(self, **kw):
+        self.__dict__.update(kw)
+
+class DummyMetadata(object):
+    pass
+
+class DummyBase(object):
+    def __init__(self):
+        self.metadata = DummyMetadata()
+
+class DummyEngine(object):
+    pass
+        
+class DummyConfig(object):
+    def __init__(self):
+        self.routes = []
+        self.directives = {}
+
+    def add_route(self, name, pattern, **kw):
+        self.routes.append({'name':name, 'pattern':pattern, 'kw':kw})
+
+    def add_directive(self, name, value):
+        self.directives[name] = value
