@@ -98,7 +98,7 @@ def add_engine(settings=None, name="default", prefix="sqlalchemy.",
         if url_key not in settings and "url" not in engine_args:
             msg = """\
 no database URL specified
-settings key '%surl' is required when using prefix='%s'"""
+settings key '%s' is required when using prefix='%s'"""
             msg %= (url_key, prefix)
             if prefix and not prefix.endswith("."):
                 msg += "\nHint: did you mean prefix='%s.'?" % prefix
