@@ -6,7 +6,7 @@ class PyramidSQLAProjectTemplate(PyramidTemplate):
     summary = "Pyramid SQLAlchemy project with view handlers"
     template_renderer = staticmethod(paste_script_template_renderer)
 
-    def pre(self, command, output_dir, vars):
+    def pre(self, command, output_dir, vars): # pragma: no cover
         """Called before template is applied."""
         PyramidTemplate.pre(self, command, output_dir, vars)
         package_logger = vars['package']
