@@ -24,13 +24,7 @@ class PyramidSQLATestCase(unittest.TestCase):
         psa.reset()
         shutil.rmtree(self.dir, True)
 
-    def assertDatabaseExists(self, db_file):
-        self.assertEqual(os.path.exists(db_file), True)
-
-    def assertDatabaseDoesNotExist(self, db_file):
-        self.assertEqual(os.path.exists(db_file), False)
-
-    if not hasattr(unittest.TestCase, "assertIsInstance"):
+    if not hasattr(unittest.TestCase, "assertIsInstance"): # pragma: no cover
         def assertIsInstance(self, obj, classes):
             if not isinstance(obj, classes):
                 typ = type(obj)
@@ -118,7 +112,7 @@ class TestDeclarativeBase(PyramidSQLATestCase):
         self.assertEqual(barney2.id, 3)
         self.assertEqual(barney2.first_name, u"Barney")
         self.assertEqual(barney2.last_name, u"Rubble")
-        sql = sa.select([Person.first_name])
+        sa.select([Person.first_name])
         # Can we iterate the first names in reverse alphabetical order?
         q = sess.query(Person.first_name).order_by(Person.first_name.desc())
         result = [x.first_name for x in q]
@@ -150,7 +144,7 @@ class TestDeclarativeBase(PyramidSQLATestCase):
         self.assertEqual(barney2.id, 3)
         self.assertEqual(barney2.first_name, u"Barney")
         self.assertEqual(barney2.last_name, u"Rubble")
-        sql = sa.select([Person.first_name])
+        sa.select([Person.first_name])
         # Can we iterate the first names in reverse alphabetical order?
         q = sess.query(Person.first_name).order_by(Person.first_name.desc())
         result = [x.first_name for x in q]
