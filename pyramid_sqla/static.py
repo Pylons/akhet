@@ -1,5 +1,3 @@
-import os
-
 import pkg_resources
 from pyramid.view import static
 
