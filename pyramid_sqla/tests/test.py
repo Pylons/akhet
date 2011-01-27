@@ -206,9 +206,25 @@ class TestStaticViewPredicate(unittest.TestCase):
         inst = self._makeOne('pyramid_sqla', 'tests')
         self.assertEqual(inst({'match':{'subpath':('wont.py',)}}, None), False)
 
+class Test_includeme(unittest.TestCase):
+    def _callFUT(self, config):
+        from pyramid_sqla import includeme
+        return includeme(config)
+
+    def test_it(self):
+        from pyramid_sqla.static import add_static_route
+        config = DummyConfig()
+        self._callFUT(config)
+        self.assertEqual(config.directives['add_static_route'],
+                         add_static_route)
+        
 class DummyConfig(object):
     def __init__(self):
         self.routes = []
+        self.directives = {}
 
     def add_route(self, name, pattern, **kw):
         self.routes.append({'name':name, 'pattern':pattern, 'kw':kw})
+
+    def add_directive(self, name, value):
+        self.directives[name] = value

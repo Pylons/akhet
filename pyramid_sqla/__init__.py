@@ -137,3 +137,8 @@ def get_base():
     """Return the central declarative base.
     """
     return _base
+
+def includeme(config):
+    from pyramid_sqla.static import add_static_route
+    config.add_directive('add_static_route', add_static_route)
+    
