@@ -1,3 +1,5 @@
+import os
+
 import pkg_resources
 from pyramid.view import static
 
@@ -14,9 +16,14 @@ def add_static_route(config, package, subdir, cache_max_age=3600,
     the next route or traversal. The route name is 'static', which must not
     conflict with your application's other routes.
 
-    Usage in __init__.py::
+    Usage in the application's __init__.py::
 
         add_static_route(config, "myapp", "static")
+
+    Or, more conveniently::
+
+        config.include("pyramid_sqla")
+        config.add_static_route("myapp", "static")
 
     This serves URLs from the "static" directory in package "myapp".
 
@@ -45,7 +52,7 @@ def add_static_route(config, package, subdir, cache_max_age=3600,
     """
     for bad_arg in ["pattern", "view"]:
         if bad_arg in add_route_args:
-            raise TypeError("keyword arg '%s' not allowed")
+            raise TypeError("keyword arg '%s' is not allowed")
     name = add_route_args.pop("name", "static")
     pattern = "/*subpath"
     asset = "%s:%s" % (package, subdir)
@@ -54,8 +61,8 @@ def add_static_route(config, package, subdir, cache_max_age=3600,
     custom_predicates = add_route_args.pop("custom_predicates", [])
     custom_predicates = list(custom_predicates)
     custom_predicates.insert(0, pred)
-    config.add_route(name, pattern, view=view, 
-                     custom_predicates=custom_predicates, **add_route_args)
+    config.add_route(name, pattern, view, 
+        custom_predicates=custom_predicates, **add_route_args)
 
 #### Private stuff
 

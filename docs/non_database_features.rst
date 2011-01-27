@@ -17,14 +17,17 @@ pyramid_sqla does some routing maneuvers to mount the static directory onto
 "/", overlaying your dynamic URLs. This lets you serve all your static files
 the same way. It's enabled by the following lines in *myapp/__init__.py*::
 
-    from pyramid_sqla.static import add_static_route
+    config.include('pyramid_sqla')
 
     # Set up routes and views
     config.add_handler('home', '/', 'pyramidapp.handlers:MainHandler',
                        action='index')
     config.add_handler('main', '/{action}', 'pyramidapp.handlers:MainHandler',
         path_info=r'/(?!favicon\.ico|robots\.txt|w3c)')
-    add_static_route(config, 'pyramidapp', 'static', cache_max_age=3600)
+    config.add_static_route('pyramidapp', 'static', cache_max_age=3600)
+
+The 'include' line creates the ``config.add_static_route`` method which we call
+in the last line.
 
 The first ``config.add_handler()`` call is an ordinary home page route, nothing
 special about it. 
@@ -35,12 +38,22 @@ top-level static assets. You'll have to do this with any routes that could
 accidentally match your static URLs, which are generally routes with a variable
 first component.
 
-The ``add_static_route()`` call is a convenience function that mounts the
-static directory onto "/". Then it just serves the files. If you look at the
-wrapper's source code, it uses a custom route predicate so that if the implied
-file doesn't exist, the route won't match the URL. This gives later routes or
-traversal a chance to work, otherwise they would be blocked. 
+The ``config.add_static_route()`` call mounts the static directory onto "/" as
+an overlay.
+This method is defined as a function,
+``pyramid_sqla.static.add_static_route()``. If you look at the source code, it
+adds a route with a custom route predicate so that if the file doesn't exist, 
+the route won't match the URL. This gives later routes or
+traversal a chance to work, otherwise they would be blocked. If the file does
+exist, the static view registered by this method will serve it.
 
+(You can call the function directly if you wish, passing ``config`` as the
+first argument. But it's more convenient to call it as a method.)
+
+API
+---
+
+.. autofunction:: pyramid_sqla.static.add_static_route
 
 .. _w3c: http://www.w3.org/P3P/ 
 

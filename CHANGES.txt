@@ -1,5 +1,8 @@
 development
 -----------
+- ``add_static_route`` is now a Pyramid config method if you call the new
+  ``includeme`` function. This is used in the application template.
+- 100% test coverage contributed by Chris McDonough.
 - Delete unneeded development code in static.py.
 
 1.0rc1  (2010-01-26)

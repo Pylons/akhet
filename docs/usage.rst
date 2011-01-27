@@ -109,6 +109,9 @@ API
 
 .. autofunction:: reset
 
+.. autofunction:: includeme
+
+(``.add_static_route`` is explained on the Non-Database Features page.)
 
 Managed transactions
 ====================
