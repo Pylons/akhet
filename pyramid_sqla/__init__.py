@@ -25,7 +25,6 @@ reset()
 
 __all__ = [
     "add_engine", 
-    "config_session",
     "get_base",
     "get_session", 
     "get_engine",
