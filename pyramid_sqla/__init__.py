@@ -43,15 +43,17 @@ def add_engine(settings=None, name="default", prefix="sqlalchemy.",
     Arguments:
 
     * ``settings``: A dict of application settings (e.g., as parsed from an INI
-      file), or a dict containing engine args. If this argument is passed, I
-      call ``sqlalchemy.engine_from_config(settings, prefix)``.
-
+      file). If this argument is passed, I call
+      ``sqlalchemy.engine_from_config(settings, prefix)``.
     * ``name``: The engine name. This is used to retrieve the engine later. The
       default name is "default".
 
     * ``prefix``: This is used with ``settings`` to calcuate the engine args.
       The default value is "sqlalchemy.", which tells SQLAlchemy to use the
       keys starting with "sqlalchemy." for this engine.
+
+     Note: SQLAlchemy does not allow ``prefix`` to be ``""``. If you have the
+     exact engine args in a dict without a prefix, pass them as keyword args. 
 
     * ``engine``: An existing SQLAlchemy engine. If you pass this you can't
       pass ``settings``, ``prefix``, or ``**engine_args``.

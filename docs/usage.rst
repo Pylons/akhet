@@ -1,14 +1,17 @@
 Usage and API
 %%%%%%%%%%%%%
 
+The ``pyramid_sqla`` package contains three things: a SQLAlchemy scoped
+session, a place for registering SQLAlchemy engines by name, and a declarative
+base object. You can use all of these together in your application, or just use
+some of them and ignore the others, as you prefer.
+
 Installation
 ============
 
 Install pyramid_sqla like any Python package, using either "pip install
 pyramid_sqla" or "easy_install pyramid_sqla". To check out the development
 repository: "hg clone http://bitbucket.org/sluggo/pyramid_sqla". 
-
-A wiki demo is in preparation but is not available yet.
 
 Usage
 =====
