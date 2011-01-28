@@ -2,6 +2,9 @@ development
 -----------
 - ``add_static_route`` is now a Pyramid config method if you call the new
   ``includeme`` function. This is used in the application template.
+- Add ``pyramid_sqla`` as a dependency in the application template.
+- Delete websetup.py. Console scripts are more flexible than "paster
+  setup-app".
 - 100% test coverage contributed by Chris McDonough.
 - Delete unneeded development code in static.py.
 
