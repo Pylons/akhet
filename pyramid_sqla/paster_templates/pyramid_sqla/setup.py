@@ -11,6 +11,7 @@ requires = [
     'pyramid>=1.0a10',
     'pyramid_beaker',
     'pyramid_handlers',
+    'pyramid_sqla',
     'SQLAlchemy',
     'transaction',
     'repoze.tm2>=1.0b1',  # default_commit_veto
