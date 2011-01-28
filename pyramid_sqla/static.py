@@ -37,10 +37,6 @@ def add_static_route(config, package, subdir, cache_max_age=3600,
       This should be a relative directory with '/' separators regardless of
       platform. 
 
-    * ``directory``: a Pyramid asset specification ("mypackage:static") or an
-      absolute directory. An asset specification is preferred because it will
-      automatically adjust if the application is moved to another directory.
-
     * ``cache_max_age``: influences the ``Expires`` and ``Max-Age``
       response headers returned by the view (default is 3600 seconds or five
       minutes).
