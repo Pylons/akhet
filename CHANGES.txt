@@ -5,6 +5,7 @@ development
 - Add ``pyramid_sqla`` as a dependency in the application template.
 - Delete websetup.py. Console scripts are more flexible than "paster
   setup-app".
+- Fix but that may have prevented create_db.py from finding the INI stanza.
 - 100% test coverage contributed by Chris McDonough.
 - Delete unneeded development code in static.py.
 

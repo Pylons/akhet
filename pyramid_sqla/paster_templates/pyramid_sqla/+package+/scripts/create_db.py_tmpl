@@ -18,7 +18,7 @@ def main():
     ini_file = sys.argv[1]
     logging.config.fileConfig(ini_file)
     log = logging.getLogger(__name__)
-    app = get_app(ini_file, "SimpleDemo")
+    app = get_app(ini_file, "{{project}}")
     #settings = app.registry.settings
 
     # Abort if any tables exist to prevent accidental overwriting
