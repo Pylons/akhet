@@ -8,6 +8,7 @@ development
 - Fix but that may have prevented create_db.py from finding the INI stanza.
 - 100% test coverage contributed by Chris McDonough.
 - Delete unneeded development code in static.py.
+- Set Mako's 'strict_undefined' option in the application template.
 
 1.0rc1  (2010-01-26)
 --------------------
