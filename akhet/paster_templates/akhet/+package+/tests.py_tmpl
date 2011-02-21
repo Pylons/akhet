@@ -1,21 +1,21 @@
 import unittest
 
+import sqlahelper
+
 class MyHandlerTests(unittest.TestCase):
     def setUp(self):
         from pyramid.config import Configurator
-        import pyramid_sqla
-        self.engine = pyramid_sqla.add_engine(url="sqlite://")
-        self.session = pyramid_sqla.get_session()()
+        self.engine = sqlahelper.add_engine(url="sqlite://")
+        self.session = sqlahelper.get_session()()
         self.config = Configurator(autocommit=True)
         self.config.begin()
         # Must call ``self.config.begin()`` in tests before using config.
 
     def tearDown(self):
-        import pyramid_sqla
         self.config.end()
         # After calling ``self.config.end()``, don't use config.
         self.session = None
-        pyramid_sqla.reset()
+        sqlahelper.reset()
 
     def _makeOne(self, request):
         from {{package}}.handlers import MainHandler

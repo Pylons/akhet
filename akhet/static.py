@@ -18,11 +18,12 @@ def add_static_route(config, package, subdir, cache_max_age=3600,
 
     Usage in the application's __init__.py::
 
+        from akhet.static import add_static_route
         add_static_route(config, "myapp", "static")
 
     Or, more conveniently::
 
-        config.include("pyramid_sqla")
+        config.include("akhet")
         config.add_static_route("myapp", "static")
 
     This serves URLs from the "static" directory in package "myapp".
@@ -57,7 +58,7 @@ def add_static_route(config, package, subdir, cache_max_age=3600,
     custom_predicates = add_route_args.pop("custom_predicates", [])
     custom_predicates = list(custom_predicates)
     custom_predicates.insert(0, pred)
-    config.add_route(name, pattern, view, 
+    config.add_route(name, pattern, view=view, 
         custom_predicates=custom_predicates, **add_route_args)
 
 #### Private stuff
