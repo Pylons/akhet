@@ -10,7 +10,7 @@ class MainHandler(object):
     def __init__(self, request):
         self.request = request
 
-    @action(renderer='index.html')
+    @action(renderer="index.html")
     def index(self):
         log.debug("testing logging; entered MainHandler.index()")
-        return {'project':'{{package}}'}
+        return {"project":"{{package}}"}
