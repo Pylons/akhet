@@ -3,6 +3,7 @@
 - Rename distribution to Akhet and app template to akhet.
 - App template:
   + Change ``models`` to a package.
+  + Create a ``lib`` package and move helpers.py to it as Pylons does.
 
 Repository Akhet created
 ------------------------
