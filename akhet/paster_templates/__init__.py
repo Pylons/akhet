@@ -1,9 +1,9 @@
 from paste.util.template import paste_script_template_renderer
 from pyramid.paster import PyramidTemplate
 
-class PyramidSQLAProjectTemplate(PyramidTemplate):
-    _template_dir = "pyramid_sqla"
-    summary = "Pyramid SQLAlchemy project with view handlers"
+class AkhetProjectTemplate(PyramidTemplate):
+    _template_dir = "akhet"
+    summary = "A Pylons-like Pyramid project"
     template_renderer = staticmethod(paste_script_template_renderer)
 
     def pre(self, command, output_dir, vars): # pragma: no cover
