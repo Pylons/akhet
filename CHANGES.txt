@@ -1,6 +1,8 @@
 1.0b1 (unreleased)
 ------------------
 - Rename distribution to Akhet and app template to akhet.
+- App template:
+  + Change ``models`` to a package.
 
 Repository Akhet created
 ------------------------
