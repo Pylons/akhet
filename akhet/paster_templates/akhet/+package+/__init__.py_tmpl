@@ -22,11 +22,30 @@ def main(global_config, **settings):
     config.add_subscriber("{{package}}.subscribers.add_renderer_globals",
                           "pyramid.events.BeforeRender")
 
-    # Set up routes and views
-    config.add_handler("home", "/", "{{package}}.handlers:MainHandler",
-                       action="index")
-    config.add_handler("main", "/{action}", "{{package}}.handlers:MainHandler",
-        path_info=r"/(?!favicon\.ico|robots\.txt|w3c)")
+    # Set up view handlers
+    config.include("{{package}}.handlers")
+
+    # Set up other routes and views
+    # ** If you have non-handler views, create create a ``{{package}}.views``
+    # ** module for them and uncomment the next line.
+    #
+    #config.scan("{{package}}.views")
+
+    # Mount a static view overlay onto "/". This will serve, e.g.:
+    # ** "/robots.txt" from "{{package}}/static/robots.txt" and
+    # ** "/images/logo.png" from "{{package}}/static/images/logo.png".
+    #
     config.add_static_route("{{package}}", "static", cache_max_age=3600)
+
+    # Mount a static subdirectory onto a URL path segment.
+    # ** This not necessary when using add_static_route below, but it's the
+    # ** standard Pyramid way to serve static files under a URL prefix (not
+    # ** top-level URLs such as "/robots.txt"). It can also be used to serve
+    # ** files from third-party packages such as deform and ToscaWidgets,
+    # ** and can point to static files on another HTTP server in prodction.
+    # ** The commented example serves
+    # ** "/static/subdir/file.js" from "SOMEPACKAGE/static/subdir/file.js".
+    #
+    #config.add_static_view("static", "SOMEPACKAGE:static")
 
     return config.make_wsgi_app()
