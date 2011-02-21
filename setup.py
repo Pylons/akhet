@@ -15,12 +15,13 @@ requires = [
 
 entry_points = """
     [paste.paster_create_template]
-    pyramid_sqla=pyramid_sqla.paster_templates:PyramidSQLAProjectTemplate
+    akhet=akhet.paster_templates:AkhetProjectTemplate
 """
 
-setup(name="pyramid_sqla",
-      version="1.0rc1",
-      description="A SQLAlchemy library and Pylons-like application template for Pyramid",
+setup(name="Akhet",
+      version="1.0rb1",
+      description="Pyramid application templates inspired by the Pylons 1
+      style.",
       long_description=README + "\n\n" +  CHANGES,
       classifiers=[
         "Intended Audience :: Developers",
@@ -31,14 +32,14 @@ setup(name="pyramid_sqla",
       keywords="web wsgi pylons pyramid",
       author="Mike Orr",
       author_email="sluggoster@gmail.com",
-      url="http://docs.pylonshq.com",
+      url="https://bitbucket.org/sluggo/akhet",
       license="MIT",
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
       tests_require = requires,
       install_requires = requires,
-      test_suite="pyramid_sqla",
+      test_suite="akhet",
       entry_points=entry_points,
       )
 
