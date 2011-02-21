@@ -4,7 +4,7 @@ class MyHandlerTests(unittest.TestCase):
     def setUp(self):
         from pyramid.config import Configurator
         import pyramid_sqla
-        self.engine = pyramid_sqla.add_engine(url='sqlite://')
+        self.engine = pyramid_sqla.add_engine(url="sqlite://")
         self.session = pyramid_sqla.get_session()()
         self.config = Configurator(autocommit=True)
         self.config.begin()
@@ -25,7 +25,7 @@ class MyHandlerTests(unittest.TestCase):
         request = DummyRequest()
         handler = self._makeOne(request)
         info = handler.index()
-        self.assertEqual(info['project'], '{{package}}')
+        self.assertEqual(info["project"], "{{package}}")
 
 class DummyRequest(object):
     pass
