@@ -7,8 +7,8 @@ import transaction
 
 log = logging.getLogger(__name__)
 
-Base = psqlaheper.get_base()
-Session = psqlahelper.get_session()
+Base = sqlahelper.get_base()
+Session = sqlahelper.get_session()
 
 
 #class MyModel(Base):
