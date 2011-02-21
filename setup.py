@@ -11,10 +11,7 @@ CHANGES = open(os.path.join(here, "CHANGES.txt")).read()
 
 requires = [
     "pyramid", 
-    "SQLAlchemy",
-    "transaction",
-    "repoze.tm2",
-    "zope.sqlalchemy"]
+    ]
 
 entry_points = """
     [paste.paster_create_template]
