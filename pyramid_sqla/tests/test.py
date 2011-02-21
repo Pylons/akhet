@@ -161,33 +161,33 @@ class TestAddStaticRoute(unittest.TestCase):
 
     def test_pattern_is_bad_arg(self):
         self.assertRaises(TypeError, self._callFUT,
-                          None, None, None, pattern='foo')
+                          None, None, None, pattern="foo")
 
     def test_view_is_bad_arg(self):
         self.assertRaises(TypeError, self._callFUT,
-                          None, None, None, view='foo')
+                          None, None, None, view="foo")
 
     def test_has_name(self):
         from pyramid_sqla.static import StaticViewPredicate
         from pyramid.view import static
         config = DummyConfig()
-        self._callFUT(config, 'package', 'subdir', name='myname')
+        self._callFUT(config, "package", "subdir", name="myname")
         self.assertEqual(len(config.routes), 1)
         route = config.routes[0]
-        self.assertEqual(route['pattern'], '/*subpath')
-        self.assertEqual(route['name'], 'myname')
-        self.assertEqual(route['kw']['custom_predicates'][0].__class__,
+        self.assertEqual(route["pattern"], "/*subpath")
+        self.assertEqual(route["name"], "myname")
+        self.assertEqual(route["kw"]["custom_predicates"][0].__class__,
                          StaticViewPredicate)
-        self.assertEqual(route['kw']['view'].__class__,
+        self.assertEqual(route["kw"]["view"].__class__,
                          static)
 
     def test_has_no_name(self):
         config = DummyConfig()
-        self._callFUT(config, 'package', 'subdir')
+        self._callFUT(config, "package", "subdir")
         self.assertEqual(len(config.routes), 1)
         route = config.routes[0]
-        self.assertEqual(route['pattern'], '/*subpath')
-        self.assertEqual(route['name'], 'static')
+        self.assertEqual(route["pattern"], "/*subpath")
+        self.assertEqual(route["name"], "static")
 
 class TestStaticViewPredicate(unittest.TestCase):
     def _makeOne(self, package, subdir):
@@ -195,16 +195,16 @@ class TestStaticViewPredicate(unittest.TestCase):
         return StaticViewPredicate(package, subdir)
 
     def test___call___has_no_subpath(self):
-        inst = self._makeOne('package', 'subdir')
-        self.assertEqual(inst({'match':{'subpath':()}}, None), False)
+        inst = self._makeOne("package", "subdir")
+        self.assertEqual(inst({"match":{"subpath":()}}, None), False)
 
     def test___call___resource_exists(self):
-        inst = self._makeOne('pyramid_sqla', 'tests')
-        self.assertEqual(inst({'match':{'subpath':('test.py',)}}, None), True)
+        inst = self._makeOne("pyramid_sqla", "tests")
+        self.assertEqual(inst({"match":{"subpath":("test.py",)}}, None), True)
 
     def test___call___resource_doesnt_exist(self):
-        inst = self._makeOne('pyramid_sqla', 'tests')
-        self.assertEqual(inst({'match':{'subpath':('wont.py',)}}, None), False)
+        inst = self._makeOne("pyramid_sqla", "tests")
+        self.assertEqual(inst({"match":{"subpath":("wont.py",)}}, None), False)
 
 class Test_includeme(unittest.TestCase):
     def _callFUT(self, config):
@@ -215,7 +215,7 @@ class Test_includeme(unittest.TestCase):
         from pyramid_sqla.static import add_static_route
         config = DummyConfig()
         self._callFUT(config)
-        self.assertEqual(config.directives['add_static_route'],
+        self.assertEqual(config.directives["add_static_route"],
                          add_static_route)
 
 class Test_add_engine(unittest.TestCase):
@@ -237,7 +237,7 @@ class Test_add_engine(unittest.TestCase):
         pyramid_sqla._base = self.old_base
         pyramid_sqla._session = self.old_session
 
-    def _callFUT(self, settings=None, name='default', prefix='sqlalchemy.',
+    def _callFUT(self, settings=None, name="default", prefix="sqlalchemy.",
                  engine=None, **engine_args):
         from pyramid_sqla import add_engine
         return add_engine(
@@ -248,32 +248,32 @@ class Test_add_engine(unittest.TestCase):
         self.assertRaises(TypeError, self._callFUT, engine=True, settings=True)
 
     def test_both_engine_and_engine_args(self):
-        self.assertRaises(TypeError, self._callFUT, engine=True, foo='bar')
+        self.assertRaises(TypeError, self._callFUT, engine=True, foo="bar")
 
     def test_explicit_engine(self):
         engine = DummyEngine()
         e = self._callFUT(engine=engine)
         self.failUnless(e is engine)
-        self.failUnless(self.engines['default'], None)
+        self.failUnless(self.engines["default"], None)
         self.assertEqual(self.session.bind, e)
         self.assertEqual(self.base.metadata.bind, e)
 
     def test_engine_from_settings_no_prefix(self):
         self.assertRaises(
             ValueError,
-            self._callFUT, prefix='',
-            settings={'sqlalchemy.url':'sqlite:///:memory:'})
+            self._callFUT, prefix="",
+            settings={"sqlalchemy.url":"sqlite:///:memory:"})
 
     def test_engine_from_settings_no_url(self):
-        self.assertRaises(ValueError, self._callFUT, settings={'a':'1'})
+        self.assertRaises(ValueError, self._callFUT, settings={"a":"1"})
 
     def test_engine_from_settings_no_url_bad_prefix(self):
         self.assertRaises(ValueError,
-                          self._callFUT, prefix='fudge', settings={'a':'1'})
+                          self._callFUT, prefix="fudge", settings={"a":"1"})
 
     def test_url_from_engine_args(self):
         from sqlalchemy.engine.base import Engine
-        e = self._callFUT(url='sqlite:///:memory:')
+        e = self._callFUT(url="sqlite:///:memory:")
         self.assertEqual(e.__class__, Engine)
 
     def test_url_from_engine_args_no_url(self):
@@ -281,7 +281,7 @@ class Test_add_engine(unittest.TestCase):
 
     def test_engine_from_settings(self):
         from sqlalchemy.engine.base import Engine
-        e = self._callFUT(settings={'sqlalchemy.url':'sqlite:///:memory:'})
+        e = self._callFUT(settings={"sqlalchemy.url":"sqlite:///:memory:"})
         self.assertEqual(e.__class__, Engine)
 
 class DummySession(object):
@@ -304,7 +304,7 @@ class DummyConfig(object):
         self.directives = {}
 
     def add_route(self, name, pattern, **kw):
-        self.routes.append({'name':name, 'pattern':pattern, 'kw':kw})
+        self.routes.append({"name":name, "pattern":pattern, "kw":kw})
 
     def add_directive(self, name, value):
         self.directives[name] = value
