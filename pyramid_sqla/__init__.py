@@ -147,5 +147,5 @@ def includeme(config):
     ``pyramid_sqla.static.add_static_route()``.)
     """
     from pyramid_sqla.static import add_static_route
-    config.add_directive('add_static_route', add_static_route)
+    config.add_directive("add_static_route", add_static_route)
     
