@@ -1,8 +1,10 @@
-pyramid_sqla
-============
+Akhet
+=====
 
-**pyramid_sqla** is a library for Pyramid_ applications using SQLAlchemy_, and
-an application template that brings some of Pylons 1's features to Pyramid.
+**Akhet** is set of application templates for Pyramid_ inspired by
+the Pylons 1 application style. It also includes some convenience functions
+that can be used without the templates.
+Currently there's only one application template called "akhet".
 
 Documentation is in the 'docs' directory.
 

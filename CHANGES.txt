@@ -1,3 +1,7 @@
+1.0b1 (unreleased)
+------------------
+- Rename distribution to Akhet and app template to akhet.
+
 Repository Akhet created
 ------------------------
 Repository "Akhet" was cloned from "pyramid_sqla" at this point.
@@ -5,8 +9,8 @@ All tags "vVERSION" were renamed to "pyramid_sqla-VERSION". A new tag
 "pyramid_sqla-dev" points to the last code change before the split.
 
 
-pyramid_sqla-dev (unreleased; changeset c0c74051c201)
------------------------------------------------------
+pyramid_sqla-dev (never released; changeset c0c74051c201)
+---------------------------------------------------------
 - ``add_static_route`` is now a Pyramid config method if you call the new
   ``includeme`` function. This is used in the application template.
 - Add ``pyramid_sqla`` as a dependency in the application template.

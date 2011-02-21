@@ -1,6 +1,6 @@
 syntax: glob
 .coverage
-pyramid_sqla.egg-info
+Akhet.egg-info
 *.egg
 *.pyc
 dist/
@@ -8,5 +8,4 @@ docs/_build
 env26/
 
 syntax: regexp
-^pyramid_sqla/pyramid_sqla.egg-info
 ^unfinished/.*egg-info
