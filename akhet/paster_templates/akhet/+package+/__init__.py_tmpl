@@ -39,13 +39,15 @@ def main(global_config, **settings):
 
     # Mount a static subdirectory onto a URL path segment.
     # ** This not necessary when using add_static_route below, but it's the
-    # ** standard Pyramid way to serve static files under a URL prefix (not
-    # ** top-level URLs such as "/robots.txt"). It can also be used to serve
-    # ** files from third-party packages such as deform and ToscaWidgets,
-    # ** and can point to static files on another HTTP server in prodction.
-    # ** The commented example serves
-    # ** "/static/subdir/file.js" from "SOMEPACKAGE/static/subdir/file.js".
+    # ** standard Pyramid way to serve static files under a URL prefix (but
+    # ** not top-level URLs such as "/robots.txt"). It can also serve files from
+    # ** third-party packages, or point to an external HTTP server (a static
+    # ** media server).
+    # ** The first commented example serves URLs under "/static" from the
+    # ** "{{package}}/static" directory. The second serves URLs under 
+    # ** "/deform" from the ``deform`` distribution.
     #
-    #config.add_static_view("static", "SOMEPACKAGE:static")
+    #config.add_static_view("static", "{{package}}:static")
+    #config.add_static_view("deform", "deform:static")
 
     return config.make_wsgi_app()
