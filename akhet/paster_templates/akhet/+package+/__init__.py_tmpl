@@ -17,8 +17,10 @@ def main(global_config, **settings):
     session_factory = pyramid_beaker.session_factory_from_settings(settings)
     config.set_session_factory(session_factory)
 
-    # Configure renderers
+    # Configure renderers and event subscribers
     config.add_renderer(".html", "pyramid.mako_templating.renderer_factory")
+    config.add_subscriber("{{package}}.subscribers.create_url_generator",
+        "pyramid.events.ContextFound")
     config.add_subscriber("{{package}}.subscribers.add_renderer_globals",
                           "pyramid.events.BeforeRender")
 
@@ -38,14 +40,14 @@ def main(global_config, **settings):
     config.add_static_route("{{package}}", "static", cache_max_age=3600)
 
     # Mount a static subdirectory onto a URL path segment.
-    # ** This not necessary when using add_static_route below, but it's the
+    # ** This not necessary when using add_static_route above, but it's the
     # ** standard Pyramid way to serve static files under a URL prefix (but
     # ** not top-level URLs such as "/robots.txt"). It can also serve files from
     # ** third-party packages, or point to an external HTTP server (a static
     # ** media server).
     # ** The first commented example serves URLs under "/static" from the
     # ** "{{package}}/static" directory. The second serves URLs under 
-    # ** "/deform" from the ``deform`` distribution.
+    # ** "/deform" from the third-party ``deform`` distribution.
     #
     #config.add_static_view("static", "{{package}}:static")
     #config.add_static_view("deform", "deform:static")

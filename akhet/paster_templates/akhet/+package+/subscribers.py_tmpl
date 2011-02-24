@@ -1,28 +1,37 @@
-from pyramid.threadlocal import get_current_request
+from akhet.urlgenerator import URLGenerator
+import pyramid.threadlocal as threadlocal
 from pyramid.exceptions import ConfigurationError
-from pyramid.url import route_url
 
 import {{package}}.lib.helpers as helpers
 
+def create_url_generator(event):
+    """A subscriber for ``pyramid.events.ContextFound`` events.  I create a
+    URL generator and attach it to the request (``request.url_generator``).
+    Templates and views can then use it to generate application URLs.
+    """
+    request = event.request
+    context = request.context
+    url_generator = URLGenerator(context, request)
+    request.url_generator = url_generator
+    
+
 def add_renderer_globals(event):
-    """ A subscriber to the ``pyramid.events.BeforeRender`` events.  Updates
+    """A subscriber for ``pyramid.events.BeforeRender`` events.  I update
     the :term:`renderer globals` with values that are familiar to Pylons
-    users."""
-    request = event.get("request")
-    if request is None:
-        request = get_current_request()
-    globs = {
-        "url": route_url,
-        "h": helpers,
-        }
-    if request is not None:
-        tmpl_context = request.tmpl_context
-        globs["c"] = tmpl_context
-        globs["tmpl_context"] = tmpl_context
-        try:
-            globs["session"] = request.session
-        except ConfigurationError:
-            pass
-    event.update(globs)
+    users.
+    """
+    renderer_globals = event
+    renderer_globals["h"] = helpers
+    request = event.get("request") or threadlocal.get_current_request()
+    if not request:
+        return
+    tmpl_context = request.tmpl_context
+    renderer_globals["c"] = tmpl_context
+    renderer_globals["tmpl_context"] = tmpl_context
+    try:
+        renderer_globals["session"] = request.session
+    except ConfigurationError:
+        pass
+    renderer_globals["url"] = request.url_generator
 
 
