@@ -1,11 +1,17 @@
 1.0b1 (unreleased)
 ------------------
 - Rename distribution to Akhet and app template to akhet.
+- ``URLGenerator`` makes generating route URLs and other application URLs
+  more convenient.
 - App template:
   + Change ``handlers`` to a package and refactor for larger applications.
   + Change ``models`` to a package.
   + Create a ``lib`` package and move helpers.py to it as Pylons does.
   + Add commented examples of advanced usages in init and base handler.
+  + The ``url`` template global is now a URLGenerator instance. You can still
+    call it as before to generate a route URL but don't pass the ``request``
+    arg any more. The URL generator is also available in views as
+    ``self.request.url_generator``.
 
 Repository Akhet created
 ------------------------
