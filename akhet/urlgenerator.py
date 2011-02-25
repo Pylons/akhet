@@ -1,3 +1,7 @@
+"""
+Contributed by Michael Mericikel.
+"""
+
 from pyramid.decorator import reify
 import pyramid.url as url
 
