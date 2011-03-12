@@ -12,7 +12,7 @@ requires = [
     "pyramid>=1.0a10",
     "pyramid_beaker",
     "pyramid_handlers",
-    "sqlahelper",
+    "SQLAHelper",
     "SQLAlchemy",
     "repoze.tm2>=1.0b1",  # default_commit_veto
     "transaction",

@@ -1,14 +1,15 @@
-pyramid_sqla
-============
-:Version: 1.0rc1, released 2011-01-26
-:PyPI: http://pypi.python.org/pypi/pyramid_sqla
-:Docs: https://bitbucket.org/sluggo/pyramid_sqla/wiki/html/index.html
-:Source: http://bitbucket.org/sluggo/pyramid_sqla (Mercurial)
+Akhet
+=====
+:Version: 1.0b1, released XXXX-XX-XX
+:PyPI: http://pypi.python.org/pypi/Akhet
+:Docs: https://bitbucket.org/sluggo/akhet/wiki/html/index.html
+:Source: https://bitbucket.org/sluggo/akhet (Mercurial)
 
 
-**pyramid_sqla** is a library for Pyramid_ applications using SQLAlchemy_, and
-an application template that brings some of Pylons 1's features to Pyramid.
-The API is now stable; version 1.0rc1 is a release candidate for 1.0.
+**Akhet** is a set of Pylons-like application templates for Pyramid_, along
+with a small support library.  an application template that brings some of
+Pylons 1's features to Pyramid.  The API is now stable; version 1.0rc1 is a
+release candidate for 1.0.
 
 .. admonition:: Important note for version 0.1 users
 
