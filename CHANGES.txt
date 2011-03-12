@@ -1,6 +1,8 @@
 1.0b1 (unreleased)
 ------------------
 - Rename distribution to Akhet and app template to akhet.
+- Delete all code pertaining to the SQLAlchemy library, which is now in the
+  "SQLAHelper" package.
 - ``URLGenerator`` makes generating route URLs and other application URLs
   more convenient.
 - App template:
@@ -12,6 +14,7 @@
     call it as before to generate a route URL but don't pass the ``request``
     arg any more. The URL generator is also available in views as
     ``self.request.url_generator``.
+  + Create the SQLAlchemy engine ourself; SQLAHelper no longer does this.
 
 Repository Akhet created
 ------------------------
