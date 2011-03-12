@@ -1,5 +1,5 @@
 recursive-include docs *
-recursive-include pyramid_sqla/paster_templates *
+recursive-include akhet/paster_templates *
 include *.txt
 prune docs/_build
 global-exclude *.pyc
