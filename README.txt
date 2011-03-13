@@ -1,6 +1,3 @@
-Akhet
-=====
-
 **Akhet** is set of application templates for Pyramid_ inspired by
 the Pylons 1 application style. It also includes some convenience functions
 that can be used without the templates.
