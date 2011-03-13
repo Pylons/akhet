@@ -15,6 +15,8 @@
     arg any more. The URL generator is also available in views as
     ``self.request.url_generator``.
   + Create the SQLAlchemy engine ourself; SQLAHelper no longer does this.
+  + Change "[app:{{project}}]" to "[app:myapp]" in INI files so that the name
+    is well known and easier to type on the command line (e.g., for 'pshell').
 
 Repository Akhet created
 ------------------------

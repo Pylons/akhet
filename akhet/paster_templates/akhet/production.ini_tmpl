@@ -1,4 +1,4 @@
-[app:{{project}}]
+[app:myapp]
 use = egg:{{project}}
 reload_templates = false
 debug_authorization = false
@@ -38,7 +38,7 @@ commit_veto = repoze.tm:default_commit_veto
 pipeline =
     weberror
     tm
-    {{project}}
+    myapp
 
 [server:main]
 use = egg:Paste#http
