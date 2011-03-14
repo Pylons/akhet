@@ -8,40 +8,41 @@ Router
 
 View (View Callable)
 
-    A *view* (also called a *view callable*) is a function or method equivalent
-    to a Pylons controller action. It takes a Request object representing a web
-    request, and returns a Response object. (The actual arguments and return
-    values are different if you're using handlers or renderers.)
+    A function or method equivalent to a Pylons controller action. It takes a
+    Request object representing a web request, and returns a Response object.
+    (In Akhet the view's arguments and return value are different because of
+    handlers and renderers.)
 
 Handler (View Handler)
 
-    A *handler* (also called a *view handler*) is a class containing view
-    methods, so equivalent to a Pylons controller.
+    A class containing view methods, so equivalent to a Pylons controller.
+    Handlers are defined in the ``pyramid_handlers`` package and are
+    documentated there.
 
 MVC
 
     The Model-View-Controller pattern used in programming. Pyramid is more of a
-    MV (Model-View) framework than MVC. Many contemporary web developers have
-    given up on the formal definitions of MVC as not being well suited to the
-    web, while continuing to adhere to the basic MVC principle of keeping your
-    business logic separate from your user interface code. MVC envisions a
+    MV (Model-View) framework than MVC. Many contemporary web developers --
+    while still supporting the basic principle of keeping your business
+    logic separate from your user interface code -- have given up on the formal
+    categories of MVC as not being well suited to the web.  MVC envisions a
     three-way split between business logic, user interface, and framework
     interface, but in practice the latter two are hard to separate. MVC was
-    invented in the 1980s to keep application code separate from low-level
+    invented in the 1980s to separate application code from low-level
     keyboard drivers and video drivers, a situation not directly applicable to
     modern web development.
 
 URL Dispatch
 
-    A routing mechanism similar to Routes.
+    A routing mechanism similar to Routes. It chooses a view for each incoming
+    URL based on a set of rules.
 
 Traversal
 
-    Pyramid's other routing mechanism, which splits the URL into
-    slash-separated segments and looks them up in a nested dict structure called
-    a resource tree. Many Akhet applications do not use traversal, and the Akhet
-    docs don't cover how to use it. Nevertheless, we'll briefly explain what it
-    is. 
+    Pyramid's other routing mechanism, which looks up a view and a context by
+    matching the URL to a node in a resource tree.  Many Akhet applications do
+    not use traversal, and the Akhet docs don't cover how to use it.
+    Nevertheless, we'll briefly explain what it is.
 
     Traversal is especially suited to situations where URLs can be arbitrarily
     deep in ways that are unknown at application startup, such as a CMS system
@@ -56,9 +57,9 @@ Traversal
 
 Resource Tree, Root, Resource
 
-    In traversal, a *resource tree* is a nested dict structure such as a ZODB
-    database or a group of nested dicts. The outermost container object is the
-    *root*. Each value in the nested dict structure is a *resource*.
+    In traversal, a *resource tree* is a nested dict-like structure such as a
+    ZODB database or a group of nested dicts. The outermost container object is
+    the *root*. Each value in the nested dicts is a *resource*.
 
     In URL dispatch, the *root* can be any object. Normally you don't specify
     it, and the system provides a default root.
@@ -67,12 +68,12 @@ Context
 
     In traversal, the last resource traversed is the *context*. The context is
     available to the view as ``request.context``. The context acts as a second
-    kind of model (separate from your "models" package), and also provides
-    information for authorization.
+    kind of model (separate from your "models" package), and it may also
+    provide information for authorization.
 
-    In URL dispatch, the context is normally the same as the root, so it's an
-    unimportant object provided by default. However, you can override the
-    context on a per-route basis to provide authorization information.
+    In URL dispatch, the context is normally the same as the root, an
+    unimportant default object. However, you can override the context on a
+    per-route basis to provide authorization information.
 
 Request
 
