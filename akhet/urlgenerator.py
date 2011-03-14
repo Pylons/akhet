@@ -27,10 +27,19 @@ class URLGenerator(object):
     def current(self, *elements, **kw):
         return url.current_route_url(self.request, *elements, **kw)
 
-    @reify
-    def static(self):
-        return url.static_url('baseline:static/', self.request)
+    ## Commented because I'm unsure of the long-term API.
+    ## If you want to use this, or a more particular one for your
+    ## static package(s), define it in a subclass.
+    ##
+    #  A future version might make 'path' optional, defaulting to
+    #  a value passed to the constructor ("myapp:static/").
+    #
+    #def static(self, path, **kw):
+    #    return url.static_url(path, self.request, **kw)
+    
 
-    @reify
-    def deform(self):
-        return url.static_url('deform:static/', self.request)
+    ## If you're using the Deform package you may find this useful.
+    #
+    #@reify
+    #def deform(self):
+    #    return url.static_url("deform:static/", self.request)
