@@ -1,3 +1,6 @@
+Unfinished Usage Doc Fragments
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 Configuration settings
 ======================
 
@@ -59,27 +62,6 @@ See `model examples <model_examples.html>`_ for examples of model code, and
 description of the differences between this application template and a basic
 Pyramid template.
 
-
-API
-===
-
-.. currentmodule:: pyramid_sqla
-
-.. automodule:: pyramid_sqla
-
-.. autofunction:: add_engine
-
-.. autofunction:: get_session
-
-.. autofunction:: get_engine
-
-.. autofunction:: get_base
-
-.. autofunction:: reset
-
-.. autofunction:: includeme
-
-(``.add_static_route`` is explained on the Non-Database Features page.)
 
 Managed transactions
 ====================

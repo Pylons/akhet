@@ -53,7 +53,7 @@ first argument. But it's more convenient to call it as a method.)
 API
 ---
 
-.. autofunction:: pyramid_sqla.static.add_static_route
+.. autofunction:: akhet.static.add_static_route
 
 .. _w3c: http://www.w3.org/P3P/ 
 

@@ -48,6 +48,7 @@ Documentation
 
    usage
    vocabulary
+   architecture
    migration
    unfinished-usage
    non_database_features
