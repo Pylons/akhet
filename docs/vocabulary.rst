@@ -1,0 +1,118 @@
+Pyramid Vocabulary
+%%%%%%%%%%%%%%%%%%
+
+Router
+
+    A Pyramid WSGI application, an instance of ``pyramid.router.Router``.
+    Equivalent to ``PylonsApp``.
+
+View (View Callable)
+
+    A *view* (also called a *view callable*) is a function or method equivalent
+    to a Pylons controller action. It takes a Request object representing a web
+    request, and returns a Response object. (The actual arguments and return
+    values are different if you're using handlers or renderers.)
+
+Handler (View Handler)
+
+    A *handler* (also called a *view handler*) is a class containing view
+    methods, so equivalent to a Pylons controller.
+
+MVC
+
+    The Model-View-Controller pattern used in programming. Pyramid is more of a
+    MV (Model-View) framework than MVC. Many contemporary web developers have
+    given up on the formal definitions of MVC as not being well suited to the
+    web, while continuing to adhere to the basic MVC principle of keeping your
+    business logic separate from your user interface code. MVC envisions a
+    three-way split between business logic, user interface, and framework
+    interface, but in practice the latter two are hard to separate. MVC was
+    invented in the 1980s to keep application code separate from low-level
+    keyboard drivers and video drivers, a situation not directly applicable to
+    modern web development.
+
+URL Dispatch
+
+    A routing mechanism similar to Routes.
+
+Traversal
+
+    Pyramid's other routing mechanism, which splits the URL into
+    slash-separated segments and looks them up in a nested dict structure called
+    a resource tree. Many Akhet applications do not use traversal, and the Akhet
+    docs don't cover how to use it. Nevertheless, we'll briefly explain what it
+    is. 
+
+    Traversal is especially suited to situations where URLs can be arbitrarily
+    deep in ways that are unknown at application startup, such as a CMS system
+    with an article at "/section/subsection/custom-sub-subsection/my-article".
+    URL dispatch works only with URLs at a fixed depth, where specific
+    variables correspond to known segments; e.g., "/articles/{id}".
+
+    Traversal runs *after* all URL dispatch routes have been tried. It's
+    possible in advanced usage to create a "hybrid" application where the left
+    part of the URL corresponds to a route, and traversal is applied to the
+    remainder of the URL.
+
+Resource Tree, Root, Resource
+
+    In traversal, a *resource tree* is a nested dict structure such as a ZODB
+    database or a group of nested dicts. The outermost container object is the
+    *root*. Each value in the nested dict structure is a *resource*.
+
+    In URL dispatch, the *root* can be any object. Normally you don't specify
+    it, and the system provides a default root.
+
+Context
+
+    In traversal, the last resource traversed is the *context*. The context is
+    available to the view as ``request.context``. The context acts as a second
+    kind of model (separate from your "models" package), and also provides
+    information for authorization.
+
+    In URL dispatch, the context is normally the same as the root, so it's an
+    unimportant object provided by default. However, you can override the
+    context on a per-route basis to provide authorization information.
+
+Request
+
+    A subclass of WebOb.Request which contains all state data pertinent to the
+    current request and the application runtime. Its attributes subsume the
+    functionality of several Pylons globals (request, response, session,
+    tmpl_context or c, url), the match dict, query parameters, etc. 
+
+Response
+
+    A subclass of WebOb.Response, or any object with the same ``status``,
+    ``headerlist`` and ``app_iter`` attributes that a Response has.  
+    A view must return a Response unless it's using a renderer.
+
+Renderer
+
+    A function that takes a view's return value as input, and returns a
+    Response.  Normally the view returns a dict of data values, and the
+    renderer invokes a template to produce the Response body. Some renderers
+    instead serialize the dict into another format such as JSON.
+
+Event, Subscriber
+
+    A mechanism for running arbitrary code at specific points during request
+    processing or during the application's lifetime. You register *subscriber*
+    callbacks for specific events, and Pyramid will call those callbacks when
+    those events happen. The callback's arguments allow access to pertinent
+    state data.
+
+Asset Spec
+
+    A fully qualified Python module name or object name, such as the strings
+    "myapp.handlers" or "myapp.handlers:MyHandler". Many Pyramid methods
+    accept these as arguments in lieu of the actual object. The colon separates
+    the last item to import (a package or module) from the first item to fetch
+    via attribute access (a variable in the module).
+    
+    Certain methods require an asset spec pointing to a non-Python file or
+    directory inside a Python package. In this case, the right side of the
+    colon is the relative path inside the package, using "/" delimeters
+    regardless of platform. For instance, "myapp:static/" or
+    "myapp.lib:images/logo.png".
+
