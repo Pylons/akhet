@@ -1,8 +1,10 @@
 from pyramid.config import Configurator
 import akhet
 import pyramid_beaker
+{{if sqlalchemy}}
 import sqlahelper
 import sqlalchemy
+{{endif}}
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
@@ -11,9 +13,13 @@ def main(global_config, **settings):
     config.include("pyramid_handlers")
     config.include("akhet")
 
+
+{{if sqlalchemy}}
     # Initialize database
     engine = sqlalchemy.engine_from_config(settings, prefix="sqlalchemy.")
     sqlahelper.add_engine(engine)
+    config.include("pyramid_tm")
+{{endif}}
 
     # Configure Beaker sessions
     session_factory = pyramid_beaker.session_factory_from_settings(settings)

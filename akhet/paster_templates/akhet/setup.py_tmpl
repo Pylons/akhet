@@ -8,21 +8,29 @@ README = open(os.path.join(here, "README.txt")).read()
 CHANGES = open(os.path.join(here, "CHANGES.txt")).read()
 
 requires = [
-    "akhet",
+    "Akhet",
     "pyramid>=1.0a10",
     "pyramid_beaker",
     "pyramid_handlers",
+{{if sqlalchemy}}
+    "pyramid_tm",
     "SQLAHelper",
     "SQLAlchemy",
-    "repoze.tm2>=1.0b1",  # default_commit_veto
     "transaction",
+{{endif}}
     "WebError",
+{{if sqlalchemy}}
     "zope.sqlalchemy",
+{{endif}}
 ]
 
+
+{{if sqlalchemy}}
 if sys.version_info[:3] < (2,5,0):
    requires.append("pysqlite")
+{{endif}}
     
+
 entry_points = """\
     [paste.app_factory]
     main = {{package}}:main
