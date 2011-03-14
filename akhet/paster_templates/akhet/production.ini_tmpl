@@ -8,7 +8,9 @@ debug_templates = false
 default_locale_name = en
 mako.directories = {{package}}:templates
 mako.strict_undefined = true
+{{if sqlalchemy}}
 sqlalchemy.url = sqlite:///%(here)s/db.sqlite
+{{endif}}
 session.type = file
 session.data_dir = %(here)s/data/sessions/data
 session.lock_dir = %(here)s/data/sessions/lock
@@ -30,14 +32,9 @@ debug = false
 ;smtp_use_tls =
 ;error_message =
 
-[filter:tm]
-use = egg:repoze.tm2#tm
-commit_veto = repoze.tm:default_commit_veto
-
 [pipeline:main]
 pipeline =
     weberror
-    tm
     myapp
 
 [server:main]
@@ -45,10 +42,11 @@ use = egg:Paste#http
 host = 127.0.0.1
 port = 5000
 
+
 # Begin logging configuration
 
 [loggers]
-keys = root, {{package_logger}}, sqlalchemy
+keys = root, {{package_logger}}{{if sqlalchemy}}, sqlalchemy{{endif}}
 
 [handlers]
 keys = console
@@ -65,6 +63,8 @@ level = WARN
 handlers =
 qualname = {{package}}
 
+
+{{if sqlalchemy}}
 [logger_sqlalchemy]
 level = WARN
 handlers =
@@ -72,6 +72,7 @@ qualname = sqlalchemy.engine
 # "level = INFO" logs SQL queries.
 # "level = DEBUG" logs SQL queries and results.
 # "level = WARN" logs neither.  (Recommended for production systems.)
+{{endif}}
 
 [handler_console]
 class = StreamHandler

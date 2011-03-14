@@ -17,6 +17,9 @@
   + Create the SQLAlchemy engine ourself; SQLAHelper no longer does this.
   + Change "[app:{{project}}]" to "[app:myapp]" in INI files so that the name
     is well known and easier to type on the command line (e.g., for 'pshell').
+  + Ask whether to configure SQLAlchemy.
+  + Switch to ``pyramid_tm`` transaction manager from ``repoze.tm2``.
+
 - 'akhet/tests/make_test_app.sh' is a quick-and-dirty script to create and run
   a test application.
 

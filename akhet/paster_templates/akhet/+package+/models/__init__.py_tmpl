@@ -1,5 +1,5 @@
+{{if sqlalchemy}}
 import logging
-
 import sqlahelper
 import sqlalchemy as sa
 import sqlalchemy.orm as orm
@@ -16,3 +16,4 @@ Session = sqlahelper.get_session()
 #
 #    id = sa.Column(sa.Integer, primary_key=True)
 #    name = sa.Column(sa.Unicode(255), nullable=False)
+{{endif}}
