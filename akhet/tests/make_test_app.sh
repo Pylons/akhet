@@ -10,6 +10,6 @@ if [ -e $APPNAME ] ;then
     exit 1
 fi
 
-paster create -t akhet $APPNAME
+paster create -t akhet $APPNAME $*
 cd $APPNAME
 paster serve development.ini

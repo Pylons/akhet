@@ -6,6 +6,7 @@
 - ``URLGenerator`` makes generating route URLs and other application URLs
   more convenient.
 - App template:
+
   + Change ``handlers`` to a package and refactor for larger applications.
   + Change ``models`` to a package.
   + Create a ``lib`` package and move helpers.py to it as Pylons does.
@@ -19,6 +20,7 @@
     is well known and easier to type on the command line (e.g., for 'pshell').
   + Ask whether to configure SQLAlchemy.
   + Switch to ``pyramid_tm`` transaction manager from ``repoze.tm2``.
+
 - 'akhet/tests/make_test_app.sh' is a quick-and-dirty script to create and run
   a test application.
 
