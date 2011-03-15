@@ -633,6 +633,25 @@ or different renderers (like "json"). In that case, you can put multiple
 ``@action`` decorators on the same method, each with a different name and
 renderer argument.
 
+Two functions in ``pyramid.renderers`` are occasionally useful in views:
+
+.. function:: pyramid.renderers.render(renderer_name, value, request=None, package=None)
+
+    Render a template and return a string. 'renderer_name' is a template
+    filename or renderer name. 'value' is a dict of template variables.
+    'request' is the request, which is needed only if the template cares
+    about it.
+
+    If the function can't find the template, try passing "zzz:templates/"
+    as the ``package`` arg.
+
+.. function:: pyramid.renderers.render_to_response(renderer_name, value, request=None, package=None)
+
+    Render a template, instantiate a Response, set the Response's body to
+    the result of the rendering, and return the Response. The arguments are the
+    same as for ``render()``, except that 'request' is more important.
+    
+
 The handler class inherits from a base class defined in *zzz.handlers.base*::
 
     """Base classes for view handlers.
@@ -678,13 +697,14 @@ The second route connects all other one-segment URLs (such as "/hello" or
 variable which will be set the corresponding substring in the URL. Pyramid will
 look for a method in the handler with the same action name, which can either be
 the method's own name or another name specified in the 'name' argument to
-``@action``. Of course, these other methods "hello" and "help" don't exist in
+``@action``. Of course, these other methods ("hello" and "help") don't exist in
 the example, so Pyramid will return 400 Not Found status. 
 
-Let's go back to the route that points to this view. ::
-
-    config.add_handler('home', '/', 'zzz.handlers:MainHandler',
-                       action='index')
+The 'path_info' argument is a regex which excludes certain URLs from matching
+("/favicon.ico", "/robots.txt", "/w3c"). These are static files or directories
+that would syntactically match "/{action}", but we want these to go to a later
+route instead (the static route). So we set a 'path_info' regex that doesn't
+match them.
 
 Redirecting and HTTP errors
 ---------------------------
@@ -727,9 +747,9 @@ put objects in the ``settings`` dict, which is available in views as
 cache
 -----
 
-Pyramid does not have an equivalent to Pylons' ``app_globals.cache``.
-Beaker cache decorators are going to be added to the Akhet application
+Beaker cache decorators will be added soon to the Akhet application
 template, but they aren't there yet. 
+Pyramid does not have an equivalent to Pylons' ``app_globals.cache``.
 
 More on routing and traversal
 =============================
@@ -1175,7 +1195,10 @@ The subscriber in your application adds the following additional variables:
 
 .. attribute:: url
 
-   A URLGenerator object described below.
+   In Akhet, a URLGenerator object. In Pyramid's built-in application templates
+   that use URL dispatch, an alias to the ``route_url`` *function*, which
+   requires you to pass the route name as the first arg and the request as the
+   second arg.
 
 If you need to fill a template within view code or elsewhere, do this::
 
@@ -1222,13 +1245,13 @@ Then the page templates can inherit it like so:
 Static files
 ============
 
-Pyramid has five ways to serve static files. Each algorithm has different
+Pyramid has five ways to serve static files. Each way has different
 advantages and limitations, and requires a different way to generate static
 URLs.
 
 ``config.add_static_route``
 
-    This is the default algorithm in the ``pyramid_sqla`` application template,
+    This is the Akhet default,
     and is closest to Pylons. It serves the static directory as an overlay on
     "/", so that URL "/robots.txt" serves "zzz/static/robots.txt", and URL
     "/images/logo.png" serves "zzz/static/images/logo.png". If the file does
@@ -1239,7 +1262,7 @@ URLs.
 
     Usage::
 
-        config.include('pyramid_sqla')
+        config.include('akhet')
         config.add_static_route('zzz', 'static', cache_max_age=3600)
         # Arg 1 is the Python package containing the static files.
         # Arg 2 is the subdirectory in the package containing the files.
@@ -1292,7 +1315,8 @@ Other ways
     There are three other ways to serve static files. One is to write a custom
     view callable to serve the file; an example is in the Static Assets section
     of the Pyramid manual. Another is to use ``paste.fileapp.FileApp`` or
-    ``paste.fileapp.DirectoryApp`` in a view. These three ways can be used with
+    ``paste.fileapp.DirectoryApp`` in a view. (More recent versions are in the
+    "PasteOb" distribution.) These three ways can be used with
     ``request.route_url()`` because the route is an ordinary route. The
     advantage of these three ways is that they can serve a static file or
     directory from a normal view callable, and the view can be protected
@@ -1303,15 +1327,20 @@ Session, flash messages, and secure forms
 
 Pyramid's session object is ``request.session``. It has its own interface but
 uses Beaker on the back end, and is configured in the INI file the same way as
-Pylons' session. Like Pylons' session, it's a dict-like object and can store
-any pickleable values. Unlike Pylons session, you don't have to call
-``session.save()`` after adding or replacing a key because Pyramid does it for
-you, but you do have to call
-``session.changed()`` when you modify a mutable value in place.  You can call
-``session.invalidate()`` to discard the session data at the end of the request.
-``session.created`` is an integer timestamp in Unix ticks telling when the
-session was created, and ``session.new`` is true if it was created during this
-request (as opposed to being loaded from persistent storage).
+Pylons' session. It's a dict-like object and can store any pickleable value.
+It's pulled from persistent storage only if it's accessed during the request
+processing, and it's (re)saved only if the data changes. 
+
+Unlike Pylons' sesions, you don't have to call ``session.save()`` after adding
+or replacing keys because Pyramid does that for you. But you do have to call
+``session.changed()`` if you modify a mutable value in place (e.g., a session
+value that's a list or dict) because Pyramid can't tell that child objects have
+been modified.
+
+You can call ``session.invalidate()`` to discard the session data at the end of
+the request.  ``session.created`` is an integer timestamp in Unix ticks telling
+when the session was created, and ``session.new`` is true if it was created
+during this request (as opposed to being loaded from persistent storage).
 
 Pyramid sessions have two extra features: flash messages and a secure form
 token. These replace ``webhelpers.pylonslib.flash`` and
@@ -1363,11 +1392,19 @@ your application if you want to use it.  The only part that doesn't work with
 Pyramid is the ``webhelpers.pylonslib`` subpackage, which depends on Pylons'
 special globals.
 
+We are working on a form demo that compares various form libraries: Deform,
+Formish, FormEncode/htmlfill. 
+
+To organize the form display-validate-action route, we recommend the
+``pyramid_simpleform`` package. It replaces ``@validate`` in Pylons. It's not a
+decorator because too many people found the decorator too inflexible: they
+ended up copying part of the code into their action method.
+
 ``webhelpers.paginate`` is mostly compatible, except that if you want to use the
 ``Page.pager()`` method, you have to create your own URL generator callback and
 pass it to the constructor. Pyramid does not have ``pylons.url`` or
-``route.url_for`` globals, so Paginate can't calculate the other page's URLs
-otherwise.  Here's one way to create a URL generator::
+``route.url_for`` globals, so Paginate can't use them to calculate the URLs to
+other pages.  Here's one way to create a URL generator::
 
     from webhelpers.paginate import Page
     from webhelpers.util import update_params
@@ -1377,32 +1414,18 @@ otherwise.  Here's one way to create a URL generator::
         return update_params(self.request.path_qs, page=page) 
     records = Page(collection, page=1, items_per_page=20, url=url_generator)
 
-The WebHelpers' developers have discussed adding another constructor arg for
-the current URL, but WebHelpers has already had so many URL generation schemes
-added to it that there's some reluctance to add more. Also, if WebHelpers
-changed the 'page' parameter, it wouldn't work with URLs that use a different
-parameter name or put the page number in the URL path.
+There is a patch pending to make Paginate take a ``request`` arg, and to make
+the URL-calculation routine a public method for subclassing. These will make it
+easier to use Paginate with Pyramid.
 
 
 Authentication and Authorization
 ================================
 
-XXX
-
-Shell
-=====
-
-.. code-block:: sh
-
-    $ paster pshell development.ini Zzz
-    Python 2.6.6 (r266:84292, Sep 15 2010, 15:52:39) 
-    [GCC 4.4.5] on linux2
-    Type "help" for more information. "root" is the Pyramid app root object, "registry" is the Pyramid registry object.
-    >>> registry.settings["sqlalchemy.url"]
-    'sqlite:////home/sluggo/exp/pyramid-docs/main/workspace/Zzz/db.sqlite'
-    >>> import pyramid.threadlocal
-    >>> req = pyramid.threadlocal.get_current_request()
-    >>> 
+XXX Eric Rasmussen will write this chapter. Pyramid has a built-in auth API
+that should be your first choice. Repoze.who is more complex due to being
+middleware, but it has some authentication methods that the built-in auth
+doesn't have. XXX Can you use them together? 
 
 Shell
 =====
@@ -1411,21 +1434,31 @@ Shell
 interactive shell in the application's namespace with a dummy request. Unlike
 Pylons, you have to specify the application section on the command line because
 it's not "main". Akhet, for convenience, names the section "myapp" regardless
-of the actual application name. To get the request, but you also need to
-specify the name of the app section because it's not "main".  Akhet, for
-convenience,  names the section "myapp" regardless of the actual application
-name.
+of the actual application name. 
 
 .. code-block:: sh
 
     $ paster pshell development.ini myapp
+    Python 2.6.6 (r266:84292, Sep 15 2010, 15:52:39) 
+    [GCC 4.4.5] on linux2
+    Type "help" for more information. "root" is the Pyramid app root object, "registry" is the Pyramid registry object.
+    >>> registry.settings["sqlalchemy.url"]
+    'sqlite:////home/sluggo/exp/pyramid-docs/main/workspace/Zzz/db.sqlite'
+    >>> import pyramid.threadlocal
+    >>> request = pyramid.threadlocal.get_current_request()
+    >>> 
 
-
+As the example above shows, the interactice namespace contains two objects
+initially: ``root`` which is the root object, and ``registry`` from which you
+can access the settings. To get the request, you have to use Pyramid's
+threadlocal library to fetch it. This is one of the few places where it's
+recommended to use the threadlocal library.
 
 Testing
 =======
 
-XXX
+XXX To be written. Pyramid makes it easier to write unit tests than Pylons
+does.
 
 Deployment
 ==========
@@ -1442,12 +1475,3 @@ Other Pyramid features
 ======================
 
 XXX Events, hooks, extending (ZCA), ZCML.
-
-XXX URL Generator
-
-XXX Transaction manager
-
-XLines 27-28 are one such route: "/{action}" would match
-"/favicon.ico", "/robots.txt", and "/w3c" (the `machine-readable privacy policy
-<http://www.w3.org/P3P/>`_ standard), so it has a ``path_info`` argument to
-exclude these.
