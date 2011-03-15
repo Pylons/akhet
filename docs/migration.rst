@@ -13,7 +13,7 @@ XXX Pasted from a mailing list message; reformat.
 > "WebHelpers>=1.0",
 > "FormBuild>=3.0,<=3.99",
 > "AuthKit>=0.4.3,<=0.4.99",
->
+
 > Having read your migration guide I find it hard to understand what the
 > most effective way of porting my application to Pyramid would be.
 > Should I start changing things in my exisitng project? What changes do

@@ -4,54 +4,52 @@ Akhet Architecture
 Introduction
 ============
 
-XXX Move this section elsewhere.
+Here we'll go through the code in an Akhet application, explaining what each
+part is and how it differs from Pylons. Some features come from Pyramid and are
+common to Pyramid's built-in application templates, while others features are
+added by Akhet. We'll try to specify which features come from where.
 
-This is a transition guide for Pylons 1 users going to Pyramid, and generally to
-show the differences between the two frameworks. It can serve as an
-introduction to the Pyramid manual, showing which parts are most fruitful to
-focus on.
-
-Pyramid is Pylons 2. The second version of Pylons was sharing so much code with
-another framework called Repoze.BFG that the developers decided to merge the two
-frameworks under a new name, which is Pyramid. The combined developer base is
-called the Pylons Project, and now the TurboGears developers have joined us. 
-
-Throughout this article I'll be referring to the ``pyramid_sqla`` application
-template, which is the closest to the traditional Pylons API. The template is
-in a PyPI package of the same name, which also contains a Pyramid-SQLAlchemy
-library and some other Pylons-like goodies. Differences between the
-pyramid_sqla application template and the templates shipped with Pyramid is
-noted below and in the package documentation.
-
-Pyramid runs on CPython, Jython, and Google App Engine. It requires Python 2.4
-- 2.7; it has not been ported to Python 3 yet. pyramid_sqla is tested on
-Python 2.6; it may work on 2.5.
-
-
-Pyramid:
-
-* `Pyramid download <http://python.org/pypi/pyramid>`_
-* `Pyramid manual <http://python.org/pypi/pyramid>`_
-* `Python Project / other Pyramid dics <http://docs.pylonsproject.org/>`_
-* `Pyramid source <https://github.com/Pylons/pyramid>`_
-
-pyramid_sqla:
-
-* `pyramid_sqla download <http://python.org/pypi/pyramid_sqla>`_
-* `pyramid_sqla documentation <https://bytebucket.org/sluggo/pyramid_sqla/wiki/html/index.html>`_
-* `pyramid_sqla source <https://bitbucket.org/sluggo/pyramid_sqla/src>`_
+The sample application here is named "Zzz", and the top-level Python package
+within it is "zzz". So wherever it says Zzz or zzz below, it means your actual
+application name or package name.
 
 Paster
 ======
+
+As in Pylons, the "paster" command creates and runs applications.
+
+paster create
+-------------
 
 **paster create** works the same in both Pylons and Pyramid:
 
 .. code-block:: sh
 
-    $ paster create -t pyramid_sqla MyApp
+    $ paster create -t akhet Zzz
 
-The template does not ask any questions, but configures the application for
-Mako and SQLAlchemy.
+This is how you create a new application. Our sample application is named
+"Zzz". It will ask whether to preconfigure SQLAlchemy in the application; the
+default is true. Answer 'n' to skip SQLAlchemy. You can also pass the answer on
+the command line:
+
+.. code-block:: sh
+
+    $ paster create -t akhet Zzz sqlalchemy=n
+
+(The SQLAlchemy question is specific to the 'akhet' template. Other
+application templates may have other questions or no questions.)
+
+The **application name** must be a valid Python identifier. I.e., it must start
+with a letter or underscore; and may contain only letters, numbers, and
+underscore. "paster create" will automatically generate the Python **package
+name** by lowercasing the application name. 
+
+You can't use an application name that's identical to a module in the Python
+standard library.  Paster will create it but Python won't be able to run it. So
+don't name your application "Test".
+
+paster serve
+------------
 
 **paster serve** also works the same:
 
@@ -60,42 +58,76 @@ Mako and SQLAlchemy.
     $ paster serve development.ini
     $ paster serve --reload development.ini
 
-**paster pshell** is similar to Pylons' "paster shell".  **paster proutes**
-prints the current route definitions. Both of these require two arguments, the
-INI file and the application name.
+This runs the application under PasteHTTPServer or another server specified in
+the INI file. Running it under Apache or another Python webserver works the
+same way as in Pylons; see the Pyramid manual for details.
 
-"paster make-config" and "paster setup-app" are
-not supported in Pyramid. Instead the application templates include a
-production.ini, and the pyramid_sqla template has a *create_db* script.
+paster proutes
+--------------
+
+**paster proutes** prints the current route definitions. You have to specify
+both the INI file and the application section in the file, which for Akhet is
+"zzz" regardless of the actual application name:
+
+.. code-block:: sh
+
+    $ paster proutes development.ini zzz
+
+This replaces "paster routes" in Pylons.
+
+Other paster commands
+---------------------
+
+**paster pshell** is covered in the "Shell" section below. It replaces "paster
+shell" in Pylons.
+
+"paster make-config" is not supported in Pyramid. Instead, all Pyramid
+application templates include a production.ini. You can copy it to make other
+INI files.
+
+"paster setup-app" is not supported in Pyramid. Instead, Akhet includes a
+*create_db* script. After you have defined your models, run it to create the
+database tables. You can customize the script if you want to prepopulate the
+dataabse with certain initial records:
+
+.. code-block:: sh
+
+    $ python -m zzz.scripts.create_db development.ini
+
+You can also put other utility scripts in the "scripts" package and run them
+the same way.
+
+"paster controller" and "paster restcontroller" do not exist in Pyramid. You'll
+have to create your handler modules by hand or copy an existing module.
 
 INI files
 =========
+
+development.ini
+---------------
 
 *development.ini* is generally similar to Pylons but has some different sections
 and options:
 
 .. code-block:: ini
 
-    [app:MyApp]
-    use = egg:MyApp
+    [app:myapp]
+    use = egg:Zzz
     reload_templates = true
     debug_authorization = false
     debug_notfound = false
     debug_routematch = false
     debug_templates = true
     default_locale_name = en
-    mako.directories = myapp:templates
+    mako.directories = zzz:templates
     sqlalchemy.url = sqlite:///%(here)s/db.sqlite
     session.type = file
     session.data_dir = %(here)s/data/sessions/data
     session.lock_dir = %(here)s/data/sessions/lock
-    session.key = MyApp
+    session.key = Zzz
     session.secret = 4b391beb818275e9aef4a58207782e5366e9c662
 
-
-    [filter:tm]
-    use = egg:repoze.tm2#tm
-    commit_veto = repoze.tm:default_commit_veto
+.. code-block:: ini
 
     [server:main]
     use = egg:Paste#http
@@ -107,43 +139,55 @@ and options:
     [pipeline:main]
     pipeline =
         egg:WebError#evalerror
-        tm
-        MyApp
+        myapp
 
-(We omitted the logging section to keep the example short. Logging is the same
-as in Pylons. The pipeline is shown separately due to a limitation in Pygments'
-syntax highlighting.)
+..
+    The sections are in different code blocks due to a limitation in Pygments'
+    syntax highlighting. If a value spans multiple lines as the "pipeline"
+    value does, Pygments will not colorize any of the block.
 
 The first thing to notice is that the main section is "[pipeline:main]", not
-"[app:main]". A Paste pipeline defines a series of middlewares. Pyramid does
-not have a middleware.py so all middleware is defined in the INI file.  Pyramid
-does not have have routing, session, or cache middleware. Pyramid handles
-routing and sessions itself, and it doesn't support cache at all (at least out
-of the box).  The default development pipeline has three components:
+"[app:main]". In Pylons middleware is configured in middleware.py, but in
+Pyramid it's configured in the INI file. Pyramid does not require any
+middleware at all; we're only using it here for error handling.  
+
+The default development pipeline has two components:
 
 1. WebError's EvalError, which produces the interactive traceback if
    there's an uncaught exception.
 
-2. "tm", defined in the "[filter:tm]" section. This is a database transaction
-   manager, a feature TurboGears has long had.  At the end of the request it
-   commits the SQLAlchemy scoped session unless an uncaught exception occurs or
-   the application returns a 4xx or 5xx status, in which case it rolls back
-   the session. It also clears out the session for the next request.
+2. "zzz" is the application, defined in the "[app:myapp]" section.
 
-3. "MyApp" is the application, defined in the "[app:MyApp]" section.
+The "[app:myapp]" section has a "use = egg:Zzz" setting, which tells Paste to
+load the Pyramid application by its entry point. An entry point is a shortcut
+alias to a callable. The other variables in this section are arguments to that
+callable, passed using ``\*\*kwargs`` so that the names can contain ".". The
+actual callable is the ``main()`` function in the next section. Entry points
+are defined in the application's *setup.py*.  More information on entry points
+is in the Setup or Distribute documentation.
 
-The "[app:MyApp]" section has a "use = egg:MyApp" setting, which tells Paste to
-load the Pyramid application by its entry point. The "debug\_\*" settings turn
-on various debugging features which output to the console. "reload_templates"
-causes Mako to check the modify time of each template before rendering it, to
-notice any changes. (It also works with Chameleon and some other template
-engines.)
+The "myapp" in the section name is always "myapp". All other "Zzz"'s in this
+article are the actual name of your application, and "myapp"'s are the
+corresponding package name. (Akhet hardcodes the section name to "myapp" so that
+command-line utilities can guess which section contains the application
+settings without having to ask the user.  "paster pshell" asks the user anyway,
+but we're working on that.) 
+
+The "debug\_\*" settings turn on various debugging features which output to the
+console. "reload_templates" causes Mako to check the modify time of each
+template before rendering it, to notice any changes. (It also works with
+Chameleon and some other template engines.)
 
 "sqlalchemy.url" is your database URL, the same as in Pylons. The "session.\*"
 variables are the same as in Pylons. "session.secret" is automatically set to a
 random number when the application is created.
 
-The "[server:main]" section is the same as in Pylons.
+The "[server:main]" section is the same as in Pylons. It tells which WSGI
+server to run. By default this is PasteHTTPServer, a multhtreaded HTTP server
+written in Pylons. 
+
+production.ini
+--------------
 
 *production.ini* has a different pipeline:
 
@@ -152,12 +196,12 @@ The "[server:main]" section is the same as in Pylons.
     [pipeline:main]
     pipeline =
         weberror
-        tm
-        MyApp
+        myapp
 
 Here the WebError middleware replaces EvalException. This is exactly what
-Pylons does; it's just that Pylons uses a global 'debug' variable to choose the
-middleware, and Pyramid just has you configure the middleware directly.
+Pylons does; it's just configured a different way. Pylons has a global 'debug'
+setting that indirectly choses WebError when false, while Pyramid just lets you
+configure the middleware directly.
 WebError dumps exception tracebacks to the console or emails them the
 admistrator. It's is configured in the "[filter:weberror]" section:
 
@@ -178,10 +222,23 @@ admistrator. It's is configured in the "[filter:weberror]" section:
     ;error_message =
 
 Again, these are the same settings as Pylons' production.ini, just in a
-different format.  Leave that 'debug' variable set to false, otherwise it will
-display (static) tracebacks to the user which could give them information to
-crack the site. Set the email variables to have exception reports emailed to
-you.
+different format.  
+
+.. important::
+
+   **To avoid security risks when running in production, ensure that
+   EvalException is NOT used, and that WebError's debug setting is false.**
+   The default production.ini does this, but you should double-check it anyway. 
+
+   EvalException is useful during development, but if the application is
+   exposed to the Internet and a malicious user gets the interactive traceback,
+   either by accidentally getting an exception or by forcing an exception, s/he
+   would have a Python prompt directly into your application's process, and
+   could modify files or variables.
+
+   WebError's debug mode is less dangerous but it does show an exception's
+   traceback to the user, which may reveal details of your application
+   structure and server environment that could be leveraged in an attack.
 
 The "error_message" variable allows you to customize the error message shown to
 the user if an exception occurs. The default message is rather unsatisfactory::
@@ -193,155 +250,252 @@ the user if an exception occurs. The default message is rather unsatisfactory::
 
 This is more of a message to you than a meaningful message to the user, so you
 may want to change it. Whatever text you put in the 'error_message' variable
-will replace the second paragraph of the message.
+will replace the second paragraph of the message. If you have a multi-line
+message, indent the subsequent lines so that ConfigParser knows they're
+continuation lines.
 
-In the "[app:MyApp]" section of *production.ini*, all the "debug\_\*" variables and
-"reload_templates" are false. This saves some CPU cycles as it's processing
+In the application section of *production.ini*, all the "debug\_\*" variables
+and "reload_templates" are false. This saves some CPU cycles as it's processing
 requests. 
 
-The main thing to remember is, **do not use EvalException on a site accessible
-from the Internet** (production or development). The interactive traceback
-allows anybody to enter arbitrary Python commands which execute with the
-application's permissions.  If you must use EvalException exposed to the
-Internet, password-protect the site at a higher level (e.g, in Apache), or run
-it for just a few minutes to diagnose a particular error.
+Logging
+-------
 
-Because Pyramid uses a pipeline, the application section can't be called
-"[app:main]" and has to be "[app:SomethingElse]" instead. This affects some
-command-line utilities which require the application section itself, not the
-pipeline. "paster pshell" requires you to specify the section name if it's not
-"main":
+The bottom half of both INI files contain several sections to configure
+Python's logging system.  This is the same as in Pylons. 
 
-.. code-block:: sh
+We can't explain the entire logging syntax here, but these are the sections
+most often customized by users:
 
-    $ paster pshell development.ini MyApp
+.. code-block:: ini
 
-Some other Paster plugins use the syntax "development.ini#MyApp". This does not
-any that are commonly used with Pyramid, but we mention it here in case you
-encounter it. ("paster setup-app" uses it.)
+    [logger_root]
+    level = WARN
+    handlers = console
 
-Obviously it can be kind of annoying to type the application name repeatedly on
-the command line, especially if it contains uppercase letters.  You can change
-the section name to anything you like (except "main") as long as the same name
-is specified in the pipeline. So you might call it "myapp" in all your
-applications if you wish.
+    [logger_zzz]
+    level = DEBUG
+    handlers =
+    qualname = zzz
+
+    [logger_sqlalchemy]
+    level = INFO
+    handlers =
+    qualname = sqlalchemy.engine
+    # "level = INFO" logs SQL queries.
+    # "level = DEBUG" logs SQL queries and results.
+    # "level = WARN" logs neither.  (Recommended for production systems.)
+
+These define a logger "root", "zzz" (the application's package name), and
+"sqlalchemy.engine" (specified in the qualname). Each has a 'level' variable
+which can be DEBUG, INFO, WARN, ERROR, or CRITICAL. Each level also logs the
+levels on its right, so WARN logs warnings and errors. Logger names are in a
+dotted hierarchy, so that "sqlalchemy.engine" affects all loggers below it
+("sqlalchemy.engine.ENGINE1", etc).  "root" affects all loggers that aren't
+otherwise specified.
+
+Generally, DEBUG is debugging information, INFO is chatty success messages,
+WARN means something might be wrong, ERROR means something is
+definitely wrong, and CRITICAL means you'd better fix it now or else. 
+But each library can choose log at which level. So SQLAlchemy logs SQL queries
+at the INFO level on "sqlalchemy.engine.ENGINE_NAME", even though some people
+would consider this debugging information. 
+
+Logger names do NOT automatically correspond to Python module names, although
+it's customary to do so if there's no better name for the logger. That lets the
+user quickly find the code that produced a log message.  In Akhet applications,
+several loggers are predefined with the same name as the containing module.
+E.g., ``zzz.helpers.main`` has the following code::
+
+    import logging
+    log = logging.getLogger(__name__)
+
+This creates a variable ``log`` which is the "zzz.helpers.main" logger.
+(``__name__`` is a special Python variable which is the name of the current
+moduole.)
+
+By default, *development.ini* sets the root logger to WARN, the application
+logger to DEBUG, and the SQLAlchemy engine logger to INFO. This displays all
+application logging and SQL queries, but suppresses all other messages unless
+they're warnings or errors. *production.ini* sets all of these to WARN, to
+avoid filling up your log files with trivial success messages. You can adjust
+the log levels as you wish. You can also set other loggers to different levels
+by creating a section for them and listing them in the "[loggers]" section.
+they're warnings or errors. 
+
+"paster serve" activates logging when it starts up. If you're not using "paster
+serve", you can activate logging yourself this way::
+
+    import logging.config
+    logging.config.fileConfig(INI_FILENAME)
 
 Init module
 ===========
 
 A Pyramid application revolves around a top-level ``main()`` function in the
-application package::
+application package. "paster serve" does the equivalent of this::
 
     # Instantiate your WSGI application
-    import myapp
-    app = myapp.main(**settings)
+    import zzz
+    app = zzz.main(**settings)
 
-The Pylons equivalent is ``make_app()`` in middleware.py. The
-``main`` function replaces Pylons' middleware.py, config.py, *and* routing.py,
-but is much shorter::
+The Pylons equivalent to ``main()`` is ``make_app()`` in middleware.py. The
+``main()`` function replaces Pylons' middleware.py, config.py, *and* routing.py
+but is much shorter:
+
+.. code-block:: python
+   :linenos:
 
     from pyramid.config import Configurator
+    import akhet
     import pyramid_beaker
-    import pyramid_sqla
+    import sqlahelper
+    import sqlalchemy
 
-    def main(global_config, **settings):
+    def main(global_config, XXsettings):
         """ This function returns a Pyramid WSGI application.
         """
+
+        # Here you can insert any code to modify the ``settings`` dict.
+        # You can:
+        # * Add additional keys to serve as constants or "global variables" in the
+        #   application.
+        # * Set default values for settings that may have been omitted.
+        # * Override settings that you don't want the user to change.
+        # * Raise an exception if a setting is missing or invalid.
+        # * Convert values from strings to their intended type.
+
+        # Create the Pyramid Configurator.
         config = Configurator(settings=settings)
-        config.include('pyramid_handlers')
-        config.include('pyramid_sqla')
+        config.include("pyramid_handlers")
+        config.include("akhet")
 
         # Initialize database
-        pyramid_sqla.add_engine(settings, prefix='sqlalchemy.')
+        engine = sqlalchemy.engine_from_config(settings, prefix="sqlalchemy.")
+        sqlahelper.add_engine(engine)
+        config.include("pyramid_tm")
 
         # Configure Beaker sessions
         session_factory = pyramid_beaker.session_factory_from_settings(settings)
         config.set_session_factory(session_factory)
 
-        # Configure renderers
-        config.add_renderer('.html', 'pyramid.mako_templating.renderer_factory')
-        config.add_subscriber('myapp.subscribers.add_renderer_globals',
-                              'pyramid.events.BeforeRender')
+        # Configure renderers and event subscribers
+        config.add_renderer(".html", "pyramid.mako_templating.renderer_factory")
+        config.add_subscriber("zzz.subscribers.create_url_generator",
+            "pyramid.events.ContextFound")
+        config.add_subscriber("zzz.subscribers.add_renderer_globals",
+                              "pyramid.events.BeforeRender")
 
-        # Set up routes and views
-        config.add_handler('home', '/', 'myapp.handlers:MainHandler',
-                           action='index')
-        config.add_handler('main', '/{action}', 'myapp.handlers:MainHandler',
-            path_info=r'/(?!favicon\.ico|robots\.txt|w3c)')
-        config.add_static_route('myapp', 'static', cache_max_age=3600)
+        # Set up view handlers
+        config.include("zzz.handlers")
+
+        # Set up other routes and views
+        # ** If you have non-handler views, create create a ``zzz.views``
+        # ** module for them and uncomment the next line.
+        #
+        #config.scan("zzz.views")
+
+        # Mount a static view overlay onto "/". This will serve, e.g.:
+        # ** "/robots.txt" from "zzz/static/robots.txt" and
+        # ** "/images/logo.png" from "zzz/static/images/logo.png".
+        #
+        config.add_static_route("zzz", "static", cache_max_age=3600)
+
+        # Mount a static subdirectory onto a URL path segment.
+        # ** This not necessary when using add_static_route above, but it's the
+        # ** standard Pyramid way to serve static files under a URL prefix (but
+        # ** not top-level URLs such as "/robots.txt"). It can also serve files from
+        # ** third-party packages, or point to an external HTTP server (a static
+        # ** media server).
+        # ** The first commented example serves URLs under "/static" from the
+        # ** "zzz/static" directory. The second serves URLs under 
+        # ** "/deform" from the third-party ``deform`` distribution.
+        #
+        #config.add_static_view("static", "zzz:static")
+        #config.add_static_view("deform", "deform:static")
 
         return config.make_wsgi_app()
 
-Line 8 creates a ``Configurator``, which will create the application. (It's not
-the application itself.) Lines 9 and 10 add plug-in functionality to the
-configurator. The argument is the name of a module that contains an
-``includeme()`` function. Line 9 ultimately creates the
-``config.add_handler()`` method; line 10 creates the
+(Note: ``**settings`` in line 7 is displayed as ``XXsettings`` due to a
+limitation in our documentation generator: "``*``" in code blocks
+outside comments make Vim's syntax highlighting go bezerk.)
+
+Lines 11-18 are a long comment explaining how you can modify the ``settings``
+dict. If you have any code to set "global variables" for the application, or to
+validate the settings or convert the values from strings to other types, 
+put the code here. (We're considering a default routine to validate the
+settings but haven't decided whether to use homegrown code, Colander,
+FormEncode, or another validation library.)
+
+Line 21 instantiates a ``Configurator`` which will create the application.
+(It's not the application itself.) Lines 22-23 add plug-in functionality to
+the configurator. The argument is the name of a module that contains an
+``includeme()`` function. Line 22 ultimately creates the
+``config.add_handler()`` method; line 23 creates the
 ``config.add_static_route()`` method. 
 
-Line 13 initialize the ``pyramid_sqla`` library. The call creates a SLQAlchemy
-engine based on the config file, binds a SQLAlchemy scoped session to the
-engine, and binds a declarative base's metadata to the engine. This is all
-preparation for using the model. If your application has multiple databases,
-you would initialize them all here. How you'd do this depends on how you intend
-to use the databases; patterns for different strategies are in the
-``pyramid_sqla`` documentation.
+Line 26 creates a SQLAlchemy engine based on the "sqlalchemy.url" setting in
+*development.ini*. The default setting is
+"sqlite:///%(here)s/db.sqlite", which creates or opens a database "db.sqlite"
+in the same directory as the INI file. You can also pass other engine arguments
+to SQLAlchemy, either by putting them in the INI file with the "sqlalchemy."
+prefix, or by passing them as keyword args. Line 27 adds the engine to the
+``sqlahelper`` library so that the model can use it; it also updates the
+library's contextual session.  Line 28 initializes the "pyramid_tm" transaction
+manager. SQLAHelper is further explained in the Models section below; the
+transaction manager is explained in the "Transaction Manager" chapter.
 
-Lines 16 and 17 configure the session factory. 
+(Note: if you answered 'n' to the SQLAlchemy question when creating the
+application, lines 4-5 and 25-28 will not be present in your module.)
 
-Line 20 tells Pyramid to render *\*.html* templates using Mako. Pyramid out of
+Lines 31-32 configure the session factory. 
+
+Line 35 tells Pyramid to render *\*.html* templates using Mako. Pyramid out of
 the box renders Mako templates with the *\*.mako* or *\*.mak* extensions, and
 Chameleon templates with the *\*.pt* extension, but you have to tell it if you
 want to use a different extension or another template engine. Third-party
-packages are available for using Jinja2 with Pyramid (``pyramid_jinja2``), and
+packages are available for using Jinja2 (``pyramid_jinja2``), and
 a Genshi emulator using Chameleon (``pyramid_genshi_chameleon``),
 
-Line 21 registers an event subscriber, which will add several Pylons-like
-variables to the template namespace whenever a template is rendered.
+Lines 36-39 registers event subscribers, which are callback functions called at
+specific points during request processing. Lines 36-37 register a callback that
+instantiates a URL generator (see "URL Generator" section). Lines 38-39
+register a callback which adds several Pylons-like variables to the template
+namespace whenever a template is rendered. The callbacks are defined in the
+``zzz.subscribers`` module, which you can modify.
 
-Lines 25-29 are routing. Pyramid has several different methods for routing, but
-``config.add_handler`` is the one closest to Pylons. The method is not actually
-part of the Pyramid core but is added by ``pyramid_handlers`` via the
-include call in line 9 above.  We'll
-explore routing more fully later. For now we'll just say that  that line 25
-connects URL "/" to ``myapp.handlers.MainHandler.index()``, and line 27
-connects any one-component URL to a same-name method on the ``MainHandler``
-class.
+Lines 42 configures routing. Actually it calls an include function in the
+handlers package. We'll explore routing more fullyh later.
 
-Line 29 is equivalent to the *public* directory in Pylons applications. It's
+Lines 44-48 and 56-67 are commented code; they show how to enable certain
+advanced features.
+
+Line 54 is equivalent to the *public* directory in Pylons applications. It's
 not a standard part of Pyramid, which handles static files a different way, but
 this method is closer to the Pylons tradition. Any URLs which did not match a
-dynamic route will be compared to the contents of the *myapp/static* directory,
+dynamic route will be compared to the contents of the *zzz/static* directory,
 and if a file exists for the URL, it is served. Unlike Pylons, this happens
 after the dynamic routes are tried rather than before. This means that any
 dynamic route that might accidentally match a static resource must explicitly
-exclude that URL. Lines 27-28 are one such route: "/{action}" would match
-"/favicon.ico", "/robots.txt", and "/w3c" (the `machine-readable privacy policy
-<http://www.w3.org/P3P/>`_ standard), so it has a ``path_info`` argument to
-exclude these.
+exclude that URL. 
 
-This is just one of several ways to serve static files in Pyramid, each way
-having its own advantages and disadvantages. This is discussed below in the
+This is just one of several ways to serve static files in Pyramid, each with
+its own advantages and disadvantages. These are all discussed below in the
 Static Files section.
 
-Line 31 creates and returns a Pyramid WSGI application based on the
+Line 69 creates and returns a Pyramid WSGI application based on the
 configuration.
 
 This short main function -- compared to Pylons' three functions in three
 modules -- allows an entire small application to be defined in a single module.
-This is useful only for small demos, but the principle leads to a different
-developer culture. Pylons' application template is complex enough that most
-people don't stray from it, and the documentation emphasizes using "paster
-serve" rather than other invocation methods. Pyramid's docs encourage users to
-structure everything outside ``main()`` as they wish, and they describe "paster
-serve" as just one way to invoke the application.
-
-You can add or modify keys in the ``settings`` dict before instantiating the
-Configurator. This can be used to set default settings, override keys in the
-config file, change a value's type, or run the settings through a validator to
-make sure they're acceptable to the application (and convert their types). You
-can also use this to set "global" variables that you can't conveniently put
-anywhere else, such as non-SQL database connections.
+Half the lines are comments so they can be deleted.  A short main function is
+useful for small demos, but the principle also leads to a different developer
+culture. Pylons' application template is complex enough that most people don't
+stray from it, and Pylons' documentation emphasizes using "paster serve" rather
+than other invocation methods. Pyramid's docs encourage users to structure
+everything outside ``main()`` as they wish, and they describe "paster serve" as
+just one way to invoke the application. The INI files and "paster serve" are
+just for your convenience; you don't have to use them.
 
 A bit more about Paster
 -----------------------
@@ -364,36 +518,58 @@ in both Pyramid and Pylons::
 Models
 ======
 
-The default ``pyramid_sqla`` *models.py* looks like this::
+The default *zzz/models/__init__.py* looks like this::
 
     import logging
-
-    import pyramid_sqla as psa
+    import sqlahelper
     import sqlalchemy as sa
     import sqlalchemy.orm as orm
     import transaction
 
     log = logging.getLogger(__name__)
 
-    Base = psa.get_base()
-    Session = psa.get_session()
+    Base = sqlahelper.get_base()
+    Session = sqlahelper.get_session()
 
 
     #class MyModel(Base):
-    #    __tablename__ = 'models'
+    #    __tablename__ = "models"
     #
     #    id = sa.Column(sa.Integer, primary_key=True)
     #    name = sa.Column(sa.Unicode(255), nullable=False)
 
-Instead of a ``meta`` module to hold SQLAlchemy's housekeeping objects,
-`pyramid_sqla`` provides a library to contain them. This allows you to
-structure your models as a single module or a package without a ``meta`` module
-and without circular imports. The library provides a SQLAlchemy scoped session,
-a place to store and retrieve engines, and a declarative base. You can use any
-or all of these features, or ignore them and define the corresponding objects
-yourself. A real application would replace the commented ``MyModel`` class with
+Pylons applications have a "zzz.model.meta" model to hold SQLAlchemy's
+housekeeping objects, but Akhet uses the SQLAHelper library which holds them
+instead. This gives you more freedom to structure your models as you wish,
+while still avoiding circular imports (which would happen if you defined
+Session in the main module and then import the other modules into it; the
+other modules would import the main module to get the Session, and voilà
+circular imports).
+
+A real application would replace the commented ``MyModel`` class with
 one or more ORM classes. The example uses SQLAlchemy's "declarative" syntax,
 although of course you don't have to. 
+
+SQLAHelper
+----------
+
+The SQLAHelper library is a holding place for the application's contextual
+session (normally assigned to a ``Session`` variable with a capital S, to
+distinguish it from a regular SQLAlchemy session), all engines used by the
+application, and an optional declarative base. We initialized it via the
+``sqlahelper.add_engine`` line in the main function. Because we did not specify
+an engine name, the library set the engine name to "default", and also bound the
+contextual session and the base's metadata to it. 
+
+There's not much else to know about SQLAHelper. You can call ``get_session()``
+at any time to get the contextual session. You can call ``get_engine()`` or
+``get_engine(name)`` to retrieve an engine that was previously added. You can
+call ``get_base()`` to get the declarative base.  
+
+If you need to modify the session-creation parameters, you can call
+``get_session().config(...)``. But if you modify the session extensions, see
+the "Transaction Manager" chapter to avoid losing the extension that powers the
+transaction manager.
 
 View handlers
 =============
@@ -404,7 +580,7 @@ The default *handlers.py* looks like this::
 
     from pyramid_handlers import action
 
-    #from myapp.models import MyModel
+    #from zzz.models import MyModel
 
     log = logging.getLogger(__name__)
 
@@ -415,7 +591,7 @@ The default *handlers.py* looks like this::
         @action(renderer='index.html')
         def index(self):
             log.debug("testing logging; entered MainHandler.index()")
-            return {'project':'myapp'}
+            return {'project':'zzz'}
 
 This is clearly different from Pylons, and the ``@action`` decorator looks a
 bit like TurboGears. The Pyramid developers decided to go with the
@@ -440,12 +616,12 @@ methods. Note that non-template renderers such as "json" generally ignore it,
 so it's really only useful for HTML-only data like which stylesheet to use.
 
 ``index`` is a view method. Its ``@action`` decorator has a ``renderer`` arg
-naming a template (defined in *myapp/templates/index.html*). The method itself
+naming a template (defined in *zzz/templates/index.html*). The method itself
 does a trivial example of logging and then returns a dict of template variables.
 
 Let's go back to the route that points to this view. ::
 
-    config.add_handler('home', '/', 'myapp.handlers:MainHandler',
+    config.add_handler('home', '/', 'zzz.handlers:MainHandler',
                        action='index')
 
 This route is triggered whenever the URL is "/". It  instantiates
@@ -941,7 +1117,7 @@ variables in the view's return dict, plus the following:
 
 .. attribute:: renderer_name
 
-   The fully-qualified renderer name; e.g., "myapp:templates/foo.mako".
+   The fully-qualified renderer name; e.g., "zzz:templates/foo.mako".
 
 .. attribute:: renderer_info
 
@@ -955,7 +1131,7 @@ The subscriber in your application adds the following additional variables:
 
 .. attribute:: h
 
-   The helpers module, defined as "myapp.helpers". This is set by a subscriber
+   The helpers module, defined as "zzz.helpers". This is set by a subscriber
    callback in your application; it is not built into Pyramid. 
 
 .. attribute:: session
@@ -1019,8 +1195,8 @@ URLs.
 
     This is the default algorithm in the ``pyramid_sqla`` application template,
     and is closest to Pylons. It serves the static directory as an overlay on
-    "/", so that URL "/robots.txt" serves "myapp/static/robots.txt", and URL
-    "/images/logo.png" serves "myapp/static/images/logo.png". If the file does
+    "/", so that URL "/robots.txt" serves "zzz/static/robots.txt", and URL
+    "/images/logo.png" serves "zzz/static/images/logo.png". If the file does
     not exist, the route will not match the URL and Pyramid will try the next
     route or traversal. You cannot use any of the URL generation methods with
     this; instead you can put a literal URL like
@@ -1029,7 +1205,7 @@ URLs.
     Usage::
 
         config.include('pyramid_sqla')
-        config.add_static_route('myapp', 'static', cache_max_age=3600)
+        config.add_static_route('zzz', 'static', cache_max_age=3600)
         # Arg 1 is the Python package containing the static files.
         # Arg 2 is the subdirectory in the package containing the files.
 
@@ -1038,23 +1214,23 @@ URLs.
     This is Pyramid's default algorithm. It mounts a static directory under a
     URL prefix such as "/static". It is not an overlay; it takes over the URL
     prefix completely. So URL "/static/images/logo.png" serves file
-    "myapp/static/images/logo.png". You cannot serve top-level static files like
+    "zzz/static/images/logo.png". You cannot serve top-level static files like
     "/robots.txt" and "/favicon.ico" using this method; you'll have to serve
     them another way. 
 
     Usage::
 
-        config.add_static_view("static", "myapp:static")
+        config.add_static_view("static", "zzz:static")
         # Arg 1 is the view name which is also the URL prefix.
         # It can also be the URL of an external static webserver.
         # Arg 2 is an asset spec referring to the static directory/
 
     To generate "/static/images/logo.png" in a Mako template, which will serve
-    "myapp/static/images/logo.png":
+    "zzz/static/images/logo.png":
 
     .. code-block:: mako
 
-       href="${request.static_url('myapp:static/images/logo.png')}
+       href="${request.static_url('zzz:static/images/logo.png')}
 
     One advantage of add_static_view is that you can copy the static directory
     to an external static webserver in production, and static_url will
@@ -1069,11 +1245,11 @@ URLs.
 
     ..  code-block:: python
 
-        config.add_static_view(settings["static_assets"], "myapp:static")
+        config.add_static_view(settings["static_assets"], "zzz:static")
 
     .. code-block:: mako
 
-        href="${request.static_url('myapp:static/images/logo.png')}"
+        href="${request.static_url('zzz:static/images/logo.png')}"
         ## Generates URL "http://staticserver.com/static/images/logo.png"
 
 Other ways
@@ -1183,15 +1359,32 @@ Shell
 
 .. code-block:: sh
 
-    $ paster pshell development.ini MyApp
+    $ paster pshell development.ini Zzz
     Python 2.6.6 (r266:84292, Sep 15 2010, 15:52:39) 
     [GCC 4.4.5] on linux2
     Type "help" for more information. "root" is the Pyramid app root object, "registry" is the Pyramid registry object.
     >>> registry.settings["sqlalchemy.url"]
-    'sqlite:////home/sluggo/exp/pyramid-docs/main/workspace/MyApp/db.sqlite'
+    'sqlite:////home/sluggo/exp/pyramid-docs/main/workspace/Zzz/db.sqlite'
     >>> import pyramid.threadlocal
     >>> req = pyramid.threadlocal.get_current_request()
     >>> 
+
+Shell
+=====
+
+**paster pshell** is similar to Pylons' "paster shell". It gives you an
+interactive shell in the application's namespace with a dummy request. Unlike
+Pylons, you have to specify the application section on the command line because
+it's not "main". Akhet, for convenience, names the section "myapp" regardless
+of the actual application name. To get the request, but you also need to
+specify the name of the app section because it's not "main".  Akhet, for
+convenience,  names the section "myapp" regardless of the actual application
+name.
+
+.. code-block:: sh
+
+    $ paster pshell development.ini myapp
+
 
 
 Testing
@@ -1214,3 +1407,12 @@ Other Pyramid features
 ======================
 
 XXX Events, hooks, extending (ZCA), ZCML.
+
+XXX URL Generator
+
+XXX Transaction manager
+
+XLines 27-28 are one such route: "/{action}" would match
+"/favicon.ico", "/robots.txt", and "/w3c" (the `machine-readable privacy policy
+<http://www.w3.org/P3P/>`_ standard), so it has a ``path_info`` argument to
+exclude these.
