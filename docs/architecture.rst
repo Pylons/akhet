@@ -574,63 +574,117 @@ transaction manager.
 View handlers
 =============
 
-The default *handlers.py* looks like this::
+The default *zzz.handlers* package contains a *main* module which looks like
+this::
 
     import logging
 
     from pyramid_handlers import action
 
-    #from zzz.models import MyModel
+    import zzz.handlers.base as base
+    import zzz.models as model
 
     log = logging.getLogger(__name__)
 
-    class MainHandler(object):
+    class Main(base.Handler):
+        @action(renderer="index.html")
+        def index(self):
+            log.debug("testing logging; entered Main.index()")
+            return {"project":"Zzz"}
+
+This is clearly different from Pylons, and the ``@action`` decorator looks a
+bit like TurboGears. The decorator has three optional arguments:
+
+name
+    
+    The action name, which is the target of the route. Normally this is the
+    same as the view method name but you can override it, and you must override
+    it when stacking multiple actions on the same view method.
+
+renderer
+
+    A renderer name or template filename (whose extension indicates the
+    renderer). A renderer converts the view's return value into a Response
+    object. Template renderers expect the view to return a dict; other
+    renderers may allow other types. Two non-template renderers are built into
+    Pyramid: "json" serializes the return value to JSON, and "string" calls
+    ``str()`` on the return value unless it's already a Unicode object. If you
+    don't specify a renderer, the view must return a Response object (or any
+    object having three particular attributes described in Pyramid's Response
+    documentation). In all cases the view can return a Response object to
+    bypass the renderer. HTTP errors such as HTTPNotFound also bypass the
+    renderer.
+
+permission
+
+    A string permission name. This is discussed in the Authorization section
+    below.
+
+The Pyramid developers decided to go with the
+return-a-dict approach because it helps in two use cases: 
+
+1.  Unit testing, where you want to test the data calculated rather than
+parsing the HTML output. This works by default because ``@action`` itself does
+not modify the return value or arguments; it merely sets function attributes or
+interacts with the configurator.
+
+2. Situations where several URLs render the same data using different templates
+or different renderers (like "json"). In that case, you can put multiple
+``@action`` decorators on the same method, each with a different name and
+renderer argument.
+
+The handler class inherits from a base class defined in *zzz.handlers.base*::
+
+    """Base classes for view handlers.
+    """
+
+    class Handler(object):
         def __init__(self, request):
             self.request = request
 
-        @action(renderer='index.html')
-        def index(self):
-            log.debug("testing logging; entered MainHandler.index()")
-            return {'project':'zzz'}
+            #c = self.request.tmpl_context
+            #c.something_for_site_template = "Some value."
 
-This is clearly different from Pylons, and the ``@action`` decorator looks a
-bit like TurboGears. The Pyramid developers decided to go with the
-return-a-dict approach because it helps in two use cases: (1) unit testing,
-where you want to test the data calculated rather than parsing the HTML output,
-and (2) cases where the same data is rendered by different templates or
-sometimes as a JSON web service. The testing use is configured by default: the
-view decorators decorators do not modify the return value or arguments, but
-merely set method attributes or interact with the configurator. The
-multi-template scenarios are handled by multiple ``@action`` decorators on the
-same method: each decorator can specify a different action name, which
-determines which URL goes to it, while using the same view callable.
+Pyramid does not require a base class but Akhet defines one for convenience. 
+All handlers should set ``self.request`` in their ``.__init__`` method, and the
+base handler does this. It also provides a place to put common methods used by
+several handler classes, or to set ``tmpl_context`` (``c``) variables which are
+used by your site template template (common to all views or several views). (You
+can use ``c`` in view methods the same way as in Pylons, although this is not
+recommended.)
 
-Pyramid does not have a base handler, although you can create your own to save
-``self.request`` and define any shared methods. 
+Note that non-template renders such as "json" ignore ``c`` variables, so it's
+really only useful for HTML-only data like which stylesheet to use.
 
-If you have any handler-wide variables you want to pass to template, one trick
-is to assign them as attributes to ``self.request.tmpl_context``. That's the
-same as as pylons.tmpl_context except it's not a global; it's just an empty
-object used to pass request-local data to the template or between handler
-methods. Note that non-template renderers such as "json" generally ignore it,
-so it's really only useful for HTML-only data like which stylesheet to use.
+The routes are defined in *zzz/handlers/__init__.py*::
 
-``index`` is a view method. Its ``@action`` decorator has a ``renderer`` arg
-naming a template (defined in *zzz/templates/index.html*). The method itself
-does a trivial example of logging and then returns a dict of template variables.
+    """View handlers package.
+    """
+
+    def includeme(config):
+        """Add the application's view handlers.
+        """
+        config.add_handler("home", "/", "zzz.handlers.main:Main",
+                           action="index")
+        config.add_handler("main", "/{action}", "zzz.handlers.main:Main",
+            path_info=r"/(?!favicon\.ico|robots\.txt|w3c)")
+
+``includeme`` is a configurator "include" function, which we've already seen.
+This function calls ``config.add_handler`` twice to create two routes. The
+first route connects URL "/" to the ``index`` view in the ``Main`` handler.
+
+The second route connects all other one-segment URLs (such as "/hello" or
+"/help") to a same-name method in the ``Main`` handler. "{action}" is a path
+variable which will be set the corresponding substring in the URL. Pyramid will
+look for a method in the handler with the same action name, which can either be
+the method's own name or another name specified in the 'name' argument to
+``@action``. Of course, these other methods "hello" and "help" don't exist in
+the example, so Pyramid will return 400 Not Found status. 
 
 Let's go back to the route that points to this view. ::
 
     config.add_handler('home', '/', 'zzz.handlers:MainHandler',
                        action='index')
-
-This route is triggered whenever the URL is "/". It  instantiates
-``MainHandler``, and calls its ``index`` method. The ``@action`` decorator sets
-up a renderer for the view. The renderer takes the view's return value (a
-dict), invokes the specified template (index.html) using the dict's variables,
-and creates a Response to return to the router. This is the most common pattern
-in a Pylons-like Pyramid application. The view also has the option of creating
-and returning a Response itself; in this case the renderer will be bypassed. 
 
 Redirecting and HTTP errors
 ---------------------------
@@ -662,24 +716,20 @@ Pyramid catches two non-HTTP exceptions by default,
 it sends to the Not Found View and the Forbidden View respectively. You can
 override these views to display custom HTML pages.
 
-app_globals and cache
----------------------
+app_globals
+-----------
 
-Pyramid does not currently have an equivalent to Pylons "app_globals" and
-"cache" variables. For "app_globals" you can use the Pyramid registry or
-abuse "settings" (the config variables from the INI file, available as
-``request.registry.settings``). You can also use ordinary module globals or
-class attributes, provided  you don't run multiple instances of Pyramid
-applications in the same process. (Pyramid does not encourage multiple
-applications per process anyway. Instead Pyramid recommends its extensibility
-features such as its Zope Component Architecture, which allow you to write
-pieces of code to interfaces and plug them into a single application.)
+Pyramid does not have an equivalent to Pylons' "app_globals". Instead you can
+put objects in the ``settings`` dict, which is available in views as
+``self.request.registry.settings``, and in templates as
+``request.registry.settings``.
 
-For caching, you can configure Beaker caching the same way Pylons does, but
-this has not been currently documented. `One user's recommendation`_. Perhaps
-make a cache object in the registry or settings?
+cache
+-----
 
-.. _One user's recommendation: http://groups.google.com/group/pylons-devel/browse_thread/thread/b628bc639711889c
+Pyramid does not have an equivalent to Pylons' ``app_globals.cache``.
+Beaker cache decorators are going to be added to the Akhet application
+template, but they aren't there yet. 
 
 More on routing and traversal
 =============================
@@ -765,11 +815,12 @@ API. Most of these arguments can also be used with ``config.add_route``.
 The arguments are divided into *predicate arguments* and *non-predicate
 arguments*.  Predicate arguments determine whether the route matches the
 current request: all predicates must pass in order for the route to be chosen.
+Non-predicate arguments do not affect whether the route matches.
 
 name
 
-    [Non-predicate] The first positional arg; required. This must be a unique name
-    for the route, and is used in views and templates to generate the URL.
+    [Non-predicate] The first positional arg; required. This must be a unique
+    name for the route, and is used in views and templates to generate the URL.
 
 pattern
 
@@ -821,6 +872,13 @@ request_param
     have the specified parameter (a GET or POST variable). If it does contain
     "=" (e.g., "name=value"), the parameter must have the specified value.
 
+    This is especially useful when tunnelling other HTTP methods via
+    POST. Web browsers can't submit a PUT or DELETE method via a form, so it's
+    customary to use POST and to set a parameter ``_method="PUT"``. The
+    framework or application sees the "_method" parameter and pretends the
+    other HTTP method was requested. In Pyramid you can do this with
+    ``request_param="_method=PUT``.
+
 header
 
     [Predicate] If the value doesn't contain ":"; it  specifies an HTTP header
@@ -865,43 +923,18 @@ custom_predicates
 View arguments
 --------------
 
-These can be specified in ``@action``, ``@view_config``, and
-``config.add_view``.  ``config.add_route`` has counterparts to some of these,
-such as 'view_permission'. 
+The 'name', 'renderer' and 'permission' arguments described for ``@action`` can
+also be used with ``@view_config`` and ``config.add_view``.
 
-view
+``config.add_route`` has counterparts to some of these such as
+'view_permission'.
 
-    A view callable (or asset spec). Useful only in ``config.add_view`` because
-    the decorators already know the view.
+``config.add_view`` also accepts a 'view' arg which is a view callable or asset
+spec. This arg is not useful for the decorators which already know the view.
 
-name
+The 'wrapper' arg can specify another view, which will be called when this view
+returns. (XXX Is this compatible with view handlers?)
 
-    The view name. With view handlers it's the same as the route's 'action',
-    and by default is the same name as the view callable. In traversal it's used
-    to look up a view by name.
-
-renderer
-
-    The name of a renderer or template (whose extension indicates the
-    renderer). A renderer converts a view's return value into a Response.
-    Template renderers expect the view to return a dict. Non-template renderers
-    include "json" which serializes the result to JSON, and "string" which
-    calls ``str()`` on the result unless it's already a Unicode object.  If you
-    don't specify a renderer, the view must return a Response object itself (or
-    any object having three particular attributes). The View can also return a
-    Response object to bypass the renderer.  HTTP errors such as HTTPNotFound
-    also bypass the renderer.
-   
-permission
-
-    A string permission name. This is discussed in the Authorization section
-    below.
-    
-wrapper
-
-    The name of another view which will be called after this view returns. This
-    makes it possible to chain views together. (XXX Is this compatible with
-    view handlers?)
 
 The request object
 ==================
@@ -917,9 +950,11 @@ as an argument.)
 Pyramid's Request_ object is a subclass of WebOb.Request_ just like
 pylons.request is, so it contains all the same attributes in methods like
 ``params``, ``GET``, ``POST``, ``headers``, ``method``, ``charset``, ``date``,
-``environ``, ``body``, ``body_file``. 
-so it contains all 
-attributes and methods.  The following are specific to Pyramid.
+``environ``, ``body``, ``body_file`` described in the Webob.Request
+documentation. The most commonly-used attribute is ``request.params``, which is
+the query parameters or POST variables.
+
+The following attributes and methods are specific to Pyramid.
 
 Special Pyramid attributes and methods
 --------------------------------------
@@ -1140,7 +1175,7 @@ The subscriber in your application adds the following additional variables:
 
 .. attribute:: url
 
-   ``request.route_url``.
+   A URLGenerator object described below.
 
 If you need to fill a template within view code or elsewhere, do this::
 
