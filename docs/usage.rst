@@ -85,7 +85,7 @@ the ones that say "URL dispatch" and "view handlers" in their introduction;
 these are the most similar to Akhet. 
 
 If you're porting an existing Pylons application to Pyramid, the Architecture
-and Migration articles should get you started.
+and Migration chapters should get you started.
 
 .. _Pyramid documentation: http://docs.pylonsproject.org/
 .. _Pyramid tutorials: http://docs.pylonsproject.org/projects/pyramid_tutorials/dev/
