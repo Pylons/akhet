@@ -177,3 +177,109 @@ Then you can do things like this in your views::
     q = models.User.query()
 
 Whether this is a good thing or not depends on your perspective.
+Multiple databases
+==================
+
+The default configuration in *myapp/__init__.py* configures one database::
+
+    import pyramid_sqla as psa
+    psa.add_engine(settings, prefix="sqlalchemy.")
+
+To connect to multiple databases, list them all in
+*development.ini* under distinct prefixes. For instance:
+
+.. code-block: ini
+
+    sqlalchemy.url = postgresql://me:PASSWORD@localhost/mydb
+    stats.url = mysql://account:PASSWORD@example.com/stats
+
+Or:
+
+.. code-block: ini
+
+    data.url = postgresql://me:PASSWORD@localhost/mydb
+    sessions.url = sqlite:///%(here)s/scratch.sqlite
+
+Then modify *myapp/__init__.py* and put an ``add_engine()`` call for each
+database. The examples below elaborate on the API docs.
+
+A default engine plus other engines
+-----------------------------------
+
+In this scenario, the default engine is used for most operations, but two other
+engines are also used occasionally::
+
+    # Initialize the default engine.
+    pyramid_sqla.add_engine(settings, prefix="sqlalchemy.")
+
+    # Initialize the other engines.
+    pyramid_sqla.add_engine(settings, name="engine1", prefix="engine1.")
+    pyramid_sqla.add_engine(settings, name="engine2", prefix="engine2.")
+
+Queries will use the default engine by default. To use a different engine
+you have to use the ``bind=`` argument the method that executes the query, 
+``engine.execute(sql)`` to run a SQL SELECT or command in a particular engine.
+
+Two engines, but no default engine
+----------------------------------
+
+In this scenario, two engines are equally important, and neither is predominent
+enough to deserve being the default engine. This is useful in applications
+whose main job is to copy data from one database to another. ::
+
+    pyramid_sqla.init_dbsession()
+    pyramid_sqla.add_engine(settings, name="engine1", prefix="engine1.")
+    pyramid_sqla.add_engine(settings, name="engine2", prefix="engine2.")
+
+Because there is no default engine, queries will fail unless you specify an
+engine every time using the ``bind=`` argument or ``engine.execute(sql)``.
+
+Different tables bound to different engines
+-------------------------------------------
+
+It's possible to bind different ORM classes to different engines in the same
+database session.  Configure your application with no default engine, and then
+call the Session's ``.configure`` method with the ``binds=`` argument to
+specify which classes go to which engines. For instance::
+
+    pyramid_sqla.add_engine(settings, name="engine1", prefix="engine1.")
+    pyramid_sqla.add_engine(settings, name="engine2", prefix="engine2.")
+    Session = pyramid_sqla.get_dbsession()
+    import myapp.models as models
+    binds = {models.Person: engine1, models.Score: engine2}
+    Session.configure(binds=binds)
+
+The keys in the ``binds`` dict can be SQLAlchemy ORM classes, table objects, or
+mapper objects.
+
+
+Reflected tables
+================
+
+Reflected tables pose a dilemma because it depends on a live database
+connection in order to be initialized. But the engine may not be configured yet
+when the model is imported. ``pyramid_sqla`` does not address this issue
+directly. Pylons 1 models traditionally have an ``init_model(engine)`` function
+which performs any initialization that requires a live connection. Pyramid
+applications typically do not need this function because the Session, engines,
+and base are initialized in the ``pyramid_sqla`` library before the model is
+imported. But in the case of reflection, you may need an ``init_model``
+function.
+
+When not using declarative, the ORM classes can be defined at module level in
+the model, but the table definitions and mappers will have to be set up inside
+the ``init_model`` function using a ``global`` statement to set the module
+globals.
+
+When using declarative, we *think* the entire ORM class must be defined inside
+the function, again using a ``global`` statement to project the values into
+the module scope. That's unfortunate but we can't think of a way around it.
+If you can, please tell us.
+
+
+.. _Engine Configuration: http://www.sqlalchemy.org/docs/core/engines.html
+.. _Dialects: http://www.sqlalchemy.org/docs/dialects/index.html
+.. _Configuring Logging: http://www.sqlalchemy.org/docs/core/engines.html#configuring-logging
+.. _scoped session: http://www.sqlalchemy.org/docs/orm/session.html#contextual-thread-local-sessions
+.. _Using a Commit Veto: http://docs.repoze.org/tm2/#using-a-commit-veto
+

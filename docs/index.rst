@@ -58,9 +58,8 @@ Documentation
    architecture
    migration
    transaction_manager
-   unfinished-usage
-   non_database_features
    model_examples
+   unfinished-usage
    bugs
    changes
 
