@@ -1400,23 +1400,8 @@ To organize the form display-validate-action route, we recommend the
 decorator because too many people found the decorator too inflexible: they
 ended up copying part of the code into their action method.
 
-``webhelpers.paginate`` is mostly compatible, except that if you want to use the
-``Page.pager()`` method, you have to create your own URL generator callback and
-pass it to the constructor. Pyramid does not have ``pylons.url`` or
-``route.url_for`` globals, so Paginate can't use them to calculate the URLs to
-other pages.  Here's one way to create a URL generator::
-
-    from webhelpers.paginate import Page
-    from webhelpers.util import update_params
-
-    # Inside a view method -- ``self`` comes from the surrounding scope.
-    def url_generator(page):
-        return update_params(self.request.path_qs, page=page) 
-    records = Page(collection, page=1, items_per_page=20, url=url_generator)
-
-There is a patch pending to make Paginate take a ``request`` arg, and to make
-the URL-calculation routine a public method for subclassing. These will make it
-easier to use Paginate with Pyramid.
+WebHelpers 1.3b1 has some new URL generator classes to make it easier to use
+with Pyramid. See the ``webhelpers.paginate`` documentation for details.
 
 
 Authentication and Authorization
