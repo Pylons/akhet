@@ -122,3 +122,18 @@ port certain constructs, do ask about it because it may be a missing
 FAQ or a hole in the docs, or something we just haven't considered
 yet.
 
+app_globals
+-----------
+
+Pyramid does not have an equivalent to Pylons' "app_globals". Instead you can
+put objects in the ``settings`` dict, which is available in views as
+``self.request.registry.settings``, and in templates as
+``request.registry.settings``.
+
+cache
+-----
+
+Beaker cache decorators will be added soon to the Akhet application
+skeleton, but they aren't there yet. 
+Pyramid does not have an equivalent to Pylons' ``app_globals.cache``.
+

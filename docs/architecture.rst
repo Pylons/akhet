@@ -6,99 +6,12 @@ Introduction
 
 Here we'll go through the code in an Akhet application, explaining what each
 part is and how it differs from Pylons. Some features come from Pyramid and are
-common to Pyramid's built-in application templates, while others features are
+common to Pyramid's built-in application skeletons, while others features are
 added by Akhet. We'll try to specify which features come from where.
 
 The sample application here is named "Zzz", and the top-level Python package
 within it is "zzz". So wherever it says Zzz or zzz below, it means your actual
 application name or package name.
-
-Paster
-======
-
-As in Pylons, the "paster" command creates and runs applications.
-
-paster create
--------------
-
-**paster create** works the same in both Pylons and Pyramid:
-
-.. code-block:: sh
-
-    $ paster create -t akhet Zzz
-
-This is how you create a new application. Our sample application is named
-"Zzz". It will ask whether to preconfigure SQLAlchemy in the application; the
-default is true. Answer 'n' to skip SQLAlchemy. You can also pass the answer on
-the command line:
-
-.. code-block:: sh
-
-    $ paster create -t akhet Zzz sqlalchemy=n
-
-(The SQLAlchemy question is specific to the 'akhet' template. Other
-application templates may have other questions or no questions.)
-
-The **application name** must be a valid Python identifier. I.e., it must start
-with a letter or underscore; and may contain only letters, numbers, and
-underscore. "paster create" will automatically generate the Python **package
-name** by lowercasing the application name. 
-
-You can't use an application name that's identical to a module in the Python
-standard library.  Paster will create it but Python won't be able to run it. So
-don't name your application "Test".
-
-paster serve
-------------
-
-**paster serve** also works the same:
-
-.. code-block:: sh
-
-    $ paster serve development.ini
-    $ paster serve --reload development.ini
-
-This runs the application under PasteHTTPServer or another server specified in
-the INI file. Running it under Apache or another Python webserver works the
-same way as in Pylons; see the Pyramid manual for details.
-
-paster proutes
---------------
-
-**paster proutes** prints the current route definitions. You have to specify
-both the INI file and the application section in the file, which for Akhet is
-"zzz" regardless of the actual application name:
-
-.. code-block:: sh
-
-    $ paster proutes development.ini zzz
-
-This replaces "paster routes" in Pylons.
-
-Other paster commands
----------------------
-
-**paster pshell** is covered in the "Shell" section below. It replaces "paster
-shell" in Pylons.
-
-"paster make-config" is not supported in Pyramid. Instead, all Pyramid
-application templates include a production.ini. You can copy it to make other
-INI files.
-
-"paster setup-app" is not supported in Pyramid. Instead, Akhet includes a
-*create_db* script. After you have defined your models, run it to create the
-database tables. You can customize the script if you want to prepopulate the
-dataabse with certain initial records:
-
-.. code-block:: sh
-
-    $ python -m zzz.scripts.create_db development.ini
-
-You can also put other utility scripts in the "scripts" package and run them
-the same way.
-
-"paster controller" and "paster restcontroller" do not exist in Pyramid. You'll
-have to create your handler modules by hand or copy an existing module.
 
 INI files
 =========
@@ -490,7 +403,7 @@ This short main function -- compared to Pylons' three functions in three
 modules -- allows an entire small application to be defined in a single module.
 Half the lines are comments so they can be deleted.  A short main function is
 useful for small demos, but the principle also leads to a different developer
-culture. Pylons' application template is complex enough that most people don't
+culture. Pylons' application skeleton is complex enough that most people don't
 stray from it, and Pylons' documentation emphasizes using "paster serve" rather
 than other invocation methods. Pyramid's docs encourage users to structure
 everything outside ``main()`` as they wish, and they describe "paster serve" as
@@ -668,7 +581,7 @@ Pyramid does not require a base class but Akhet defines one for convenience.
 All handlers should set ``self.request`` in their ``.__init__`` method, and the
 base handler does this. It also provides a place to put common methods used by
 several handler classes, or to set ``tmpl_context`` (``c``) variables which are
-used by your site template template (common to all views or several views). (You
+used by your site template (common to all views or several views). (You
 can use ``c`` in view methods the same way as in Pylons, although this is not
 recommended.)
 
@@ -735,21 +648,6 @@ Pyramid catches two non-HTTP exceptions by default,
 ``pyramid.exceptions.NotFound`` and ``pyramid.exceptions.Forbidden``, which
 it sends to the Not Found View and the Forbidden View respectively. You can
 override these views to display custom HTML pages.
-
-app_globals
------------
-
-Pyramid does not have an equivalent to Pylons' "app_globals". Instead you can
-put objects in the ``settings`` dict, which is available in views as
-``self.request.registry.settings``, and in templates as
-``request.registry.settings``.
-
-cache
------
-
-Beaker cache decorators will be added soon to the Akhet application
-template, but they aren't there yet. 
-Pyramid does not have an equivalent to Pylons' ``app_globals.cache``.
 
 More on routing and traversal
 =============================
@@ -962,194 +860,52 @@ The request object
 The Request object contains all information about the current request state and
 application state. It's available as ``self.request`` in handler views, the
 ``request`` arg in view functions, and the ``request`` variable in templates.
-(In other places you can get it via
-``pyramid.threadlocal.get_current_request()``, but you really shouldn't except in
-unit tests or pshell. If something you call from the view requires it, pass it
-as an argument.)
+In pshell or unit tests you can get it via 
+``pyramid.threadlocal.get_current_request()``. (You shouldn't use the
+threadlocal back door in most other cases. If something you call from the view
+requires it, pass it as an argument.)
 
-Pyramid's Request_ object is a subclass of WebOb.Request_ just like
-pylons.request is, so it contains all the same attributes in methods like
+Pyramid's ``Request`` object is a subclass of WebOb Request just like
+'pylons.request' is, so it contains all the same attributes in methods like
 ``params``, ``GET``, ``POST``, ``headers``, ``method``, ``charset``, ``date``,
-``environ``, ``body``, ``body_file`` described in the Webob.Request
-documentation. The most commonly-used attribute is ``request.params``, which is
-the query parameters or POST variables.
+``environ``, ``body``, and ``body_file``. The most commonly-used attribute is
+``request.params``, which is the query parameters and POST variables.
+
+Pyramid adds several attributes and methods. ``context``, ``matchdict``,
+``matched_route``, ``registry``, ``registry.settings``, ``session``, and
+``tmpl_context`` access the request's state data and global application data. 
+``route_path``, ``route_url``, ``resource_url``, and ``static_url`` generate
+URLs, shadowing the functions in ``pyramid.url``. (One function,
+``current_route_url``, is available only as a function.)
+
+Rather than repeating the existing documentation for these attributes and
+methods, we'll just refer you to the original docs:
+
+* `Pyramd Request, Response, HTTP Exceptions, and MultiDict <http://docs.pylonsproject.org/projects/pyramid/1.0/narr/webob.html>`_
+* `Pyramid Request API <http://docs.pylonsproject.org/projects/pyramid/1.0/api/request.html#request-module>`_
+* `WebOb Request API <http://pythonpaste.org/webob/reference.html#id1>`_
+* `Pyramid Response API <http://docs.pylonsproject.org/projects/pyramid/1.0/api/response.html>`_
+* `WebOb Response API <http://pythonpaste.org/webob/reference.html#id2>`_
+
+MultiDict is not well documented so we've written our own `MultiDict API`_
+page. In short, it's a dict-like object that can have multiple values for each
+key.  ``request.params``, ``request.GET``, and ``request.POST`` are MultiDicts.
+
+Pyramid has no pre-existing Response object when your view starts executing. To
+change the response status type or headers, you can either instantiate your own
+``pyramid.response.Response`` object and return it, or use these special
+Request attributes defined by Pyramid::
+
+    request.response_status = "200 OK"
+    request.response_content_type = "text/html"
+    request.response_charset = "utf-8"
+    request.response_headerlist = [
+        ('Set-Cookie', 'abc=123'), ('X-My-Header', 'foo')]
+    request.response_cache_for = 3600    # Seconds
+
+Akhet adds one Request attribute. ``request.url_generator``, which is used to
+implement the ``url`` template global described below.
 
-The following attributes and methods are specific to Pyramid.
-
-Special Pyramid attributes and methods
---------------------------------------
-
-.. attribute:: context
-
-   The request context, used mainly in authorization and traversal.
-
-.. attribute:: matchdict
-
-   The routing match dict, whose keys are the placeholders in the route
-   pattern, and whose values are the substrings matched by those placeholders.
-   ``None`` if no route matched the URL (which would occur only with
-   traversal).
-
-.. attribute:: matched_route
-
-   The route object that matched the URL. It has ``.name`` and ``.pattern``
-   attributes.
-
-.. attribute:: registry
-
-   The Pyramid registry, which is global to the application.
-
-.. attribute:: registry.settings
-
-   The settings parsed from the INI file.
-    
-.. attribute:: session
-
-   The session.
-
-.. attribute:: tmpl_context
-
-   An empty object used to pass data to the template or between methods in the
-   view handler. Equivalent to "pylons.tmpl_context". This is mainly used in
-   the handler's constructor to pass handler-wide data to the template without
-   having to make the view method put it in its return dict. This object is
-   available as the ``c`` variable in templates, and in views you can assign it
-   to a local variable ``c`` for convenience.
-
-.. attribute:: root, subpath, traversed, view_name
-
-   Attributes useful with traversal.
-
-.. attribute:: virtual_root, virtual_root_path
-
-   Attributes useful in virtual hosting.
-
-.. attribute:: exception
-
-   Defined only in the exception view or in certain callbacks. It indicates the
-   exception that was raised, or ``None`` if no exception.
-
-.. attribute:: get_response(app, catch_exc_info=False)
-
-   Call another WSGI application and return a Response. This can be used in a
-   view to delegate to an external WSGI application.
-
-URL generation methods
-----------------------
-
-.. method:: route_path(route_name, \*elements, \*\*kw)
-
-   Generate a URL by route name. Equivalent to "pylons.url(route_name,
-   \*\*kw)".  XXX What are 'elements'?
-
-.. method:: route_url(route_name, \*elements, \*\*kw)
-
-   Same as ``route_path`` but include the scheme and domain. Equivalent to
-   "pylons.url(route_name, qualified=True, \*\*kw)".
-
-.. method:: resource_url(resource, \*elements, \*\*kw)
-
-   Generate a URL to a resource. This is mainly used with traversal, and is not
-   useful in a pure Pylons-like application.
-
-.. method:: static_url(path, \*\*kw)
-
-   Generate a URL to a static resource defined with
-   ``config.add_static_view()``. This is not useful with the default
-   ``pyramid_sqla`` application template, which uses
-   ``config.add_static_route()`` instead of ``config.add_static_view()``. 
-
-Path attributes
----------------
-
-These correspond to parts of the request URL.
-
-.. attribute:: path
-
-    The full URL path including SCRIPT_NAME and PATH_INFO, but not including
-    the scheme, host, or query string. 
-
-.. attribute:: application_url
-
-    A partial URL including the scheme, host, and SCRIPT_NAME. 
-
-.. attribute:: script_name
-
-    The first part of the URL path corresponding to the application itself.
-    It's either empty or starts with a slash, but does not end with a slash.
-    E.g., "" or "/my-application".
-
-.. attribute:: path_info
-
-    The part of the URL path after the SCRIPT_NAME. This is the part the
-    application is responsible for parsing. It always starts with a slash and
-    does not include the query string.  In certain situations, segments are
-    moved from path_info to script_name. 
-
-.. attribute:: path_qs
-
-    The full URL path with query string, but without the scheme or host.
-
-.. attribute:: path_url
-
-    The absolute URL including the scheme, host, script_name, and path_info,
-    but not the query string.
-
-.. attribute:: scheme, script_name, path_info, query_string
-
-     Individual parts of the URL.
-
-.. attribute:: url
-
-     The complete URL including scheme, host, script_name, path_info, and query
-     string.
-
-Attributes affecting the response
----------------------------------
-
-The following attributes tell the renderer what kind of Response to create.
-
-.. attribute:: response_status
-
-   The response status in WSGI format (e.g., "200 OK").
-
-.. attribute:: response_content_type
-
-   The MIME type of the response; e.g., "text/xml".
-
-.. attribute:: response_charset
-
-   The charcter set of the response (e.g., "utf-8").
-
-.. attribute:: response_headerlist
-
-   A list of tuples representing HTTP headers to be set in the response.
-   E.g., ``[('Set-Cookie', 'abc=123'), ('X-My-Header', 'foo')]``.
-
-.. attribute:: response_cache_for
-
-   A value in seconds which will influence the "Cache-Control" and "Expires"
-   headers in the response.
-
-Callbacks
----------
-
-.. method:: add_response_callback(callback)
-
-    Push a callback function to be called after the response is created. The
-    function will be called as ``callback(request, response)``. You may modify
-    the response. Callbacks will be called in the order pushed. Callbacks will
-    not be called if an exception occurs.
-
-.. method:: add_finished_callback(callback)
-
-    Push a callback function to be called at the end of request processing,
-    even if an exception occurs. The function will be called as
-    ``callback(request)``. You can't use this to modify the effective
-    response.
-
-.. _Request: http://docs.pylonsproject.org/projects/pyramid/1.0/api/request.html
-.. _WebOb.Request: http://pythonpaste.org/webob/reference.html#id1
 
 Templates
 =========
@@ -1200,6 +956,12 @@ The subscriber in your application adds the following additional variables:
    requires you to pass the route name as the first arg and the request as the
    second arg.
 
+   The URLGenerator object has convenience methods for generating URLs based on
+   your application's routes. See the complete list on the API_ page.
+
+Advanced template usage
+-----------------------
+
 If you need to fill a template within view code or elsewhere, do this::
 
     from pyramid.renderers import render
@@ -1208,11 +970,23 @@ If you need to fill a template within view code or elsewhere, do this::
 
 There's also a ``render_to_response`` function which invokes the template and
 returns a Response, but usually it's easier to let ``@action`` or
-``@view_config`` do this.
+``@view_config`` do this. However, if your view has an if-stanza that needs to
+override the template specified in the decorator, ``render_to_response`` is
+the way to do it. ::
+
+    @action(renderer="index.html")
+    def index(self):
+        records = models.MyModel.all()
+        if not records:
+            return render_to_response("no_records.html")
+        return {"records": records}
 
 For further information on templating see the Templates section in the Pyramid
 manual, the Mako manual, and the Chameleon manual.  You can customize Mako's
 TemplateLookup by setting "mako.*" variables in the INI file.
+
+Site template
+-------------
 
 Most applications using Mako will define a site template something like this:
 
@@ -1404,14 +1178,6 @@ WebHelpers 1.3b1 has some new URL generator classes to make it easier to use
 with Pyramid. See the ``webhelpers.paginate`` documentation for details.
 
 
-Authentication and Authorization
-================================
-
-XXX Eric Rasmussen will write this chapter. Pyramid has a built-in auth API
-that should be your first choice. Repoze.who is more complex due to being
-middleware, but it has some authentication methods that the built-in auth
-doesn't have. XXX Can you use them together? 
-
 Shell
 =====
 
@@ -1439,24 +1205,16 @@ can access the settings. To get the request, you have to use Pyramid's
 threadlocal library to fetch it. This is one of the few places where it's
 recommended to use the threadlocal library.
 
-Testing
-=======
-
-XXX To be written. Pyramid makes it easier to write unit tests than Pylons
-does.
-
 Deployment
 ==========
 
 Deployment is the same for Pyramid as for Pylons. Use "paster serve" with
 mod_proxy, or mod_wsgi, or whatever else you prefer. 
 
-Internationalization
-====================
-
-XXX Support exists. I've never done this so I can't explain it.
-
 Other Pyramid features
 ======================
 
 XXX Events, hooks, extending (ZCA), ZCML.
+
+.. _MultiDict API: multidict.html
+.. _API: api.html

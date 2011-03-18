@@ -36,7 +36,7 @@ site-packages.
 Creating an application
 =======================
 
-Create an application with Paster using the "akhet" application template.
+Create an application with Paster using the "akhet" application skeleton.
 
 .. code-block:: sh
 
