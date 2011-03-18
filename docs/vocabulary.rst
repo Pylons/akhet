@@ -116,4 +116,3 @@ Asset Spec
     colon is the relative path inside the package, using "/" delimeters
     regardless of platform. For instance, "myapp:static/" or
     "myapp.lib:images/logo.png".
-
