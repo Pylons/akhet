@@ -109,24 +109,31 @@ are MultiDicts.
 
 .. class:: TrackableMultiDict(dic=None, \*\*kw)
 
-   This appears to be a debugging class that acts as an observable.
+   This is a MultiDict that functions as an observable. It's used internally
+   in WebOb where other parts of the API need to know when a GET or POST
+   variable changes. 
+
    In addition to the regular MultiDict constructor args, you can pass
    ``__tracker`` (two leading underscores) which is a callback function, and
    ``__name`` which is the object's ``repr()`` name.
 
-   The callback function is an observer, and is called when most of the
-   MultiDict's methods are invoked. It should accept three optional
-   positional arguments: ``self``, ``key``, and ``value`` (although the
-   callback can name them differently). ``self`` is the MultiDict's self.
-   ``key`` is passed if the method deletes a particular key. ``value`` is
-   passed if the method sets a particular key or adds an additional value to a
-   key.
+   The callback function is called with zero to three positional args:
+   ``self``, ``key``, and ``value`` (although the callback can name them
+   differently, but it should give default values to all of them). ``self`` is
+   the MultiDict's self.  ``key`` is passed if the method deletes a particular
+   key. ``value`` is passed if the method sets a particular key or adds an
+   additional value to a key.
 
    The ``.copy`` method returns a regular MultiDict. The tracker is not
    propagated to it.
 
+   There appears to be a bug in the source, that if you instantiate a
+   TrackableMultiDuct without a tracker, it defaults to None and you'll get an
+   exception when a routine tries to call it.
+
 .. class:: NoVars(reason=None)
 
     This is an always-empty MultiDict. Adding an item item raises ``KeyError``. 
-    The docstring says to use this object "when no variables are applicable",
-    whatever that means.
+    It's used internally in WebOb to distinguish between dicts that happen to
+    be empty vs dicts that must be empty; e.g., ``request.POST`` in a GET
+    request.
