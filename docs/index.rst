@@ -63,7 +63,6 @@ Documentation
    transaction_manager
    model_examples
    auth
-   auth2
    unfinished-usage
    bugs
    changes
