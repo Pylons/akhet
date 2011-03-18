@@ -118,29 +118,3 @@ API
 .. autofunction:: akhet.static.add_static_route
 
 .. _w3c: http://www.w3.org/P3P/ 
-
-Helpers and the ``h`` variable
-==============================
-
-The *myapp/helpers.py* module is automatically available in templates as the
-``h`` variable. This is borrowed from Pylons 1 and makes a convenient place to
-put generic formatting functions or other convenience functions you use
-throughout your templates.
-
-You can also import the helpers module into your view handlers or other
-code, but for that you'll have to do the import yourself.
-
-The WebHelpers_ library contains a variety of helpers including an HTML tag
-builder, form input tag builders, text and number formatting, etc. WebHelpers
-is available separately in PyPI.
-
-*Note:* ``webhelpers.paginate`` is not compatible with Pyramid unless you
-provide a custom URL generation callback. A Pyramid-compatible alternative is
-under development. The helpers in ``webhelpers.pylonslib`` are not compatible
-with Pyramid due to their dependency on Pylons 1's magic globals. An
-alternative system for flash messages and secure forms is built into Pyramid's
-session object.
-
-You can change which variables automatically appear in all templates. The code
-is in *myapp/subscribers.py*.
-
