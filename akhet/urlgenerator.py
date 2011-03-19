@@ -19,14 +19,14 @@ from pyramid.decorator import reify
 import pyramid.url as url
 
 class URLGenerator(object):
-    def __init__(self, context, request, qualified=True):
+    def __init__(self, context, request, qualified=False):
         """Instantiate a URLGenerator based on the current request.
         
         * ``request``: a Pyramid Request.
         * ``context``: a Pyramid Context.
-        * ``qualified``: If true (default), return fully-qualified URLs
-          with the "scheme://host" prefix. If false, return only the URL
-          path if the underlying API allows it.
+        * ``qualified``: If true, return fully-qualified URLs
+          with the "scheme://host" prefix. If false (default), return only the
+          URL path if the underlying Pyramid function allows it.
         """
         self.context = context
         self.request = request
