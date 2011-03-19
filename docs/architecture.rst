@@ -1225,10 +1225,6 @@ Deployment
 Deployment is the same for Pyramid as for Pylons. Use "paster serve" with
 mod_proxy, or mod_wsgi, or whatever else you prefer. 
 
-Other Pyramid features
-======================
 
-XXX Events, hooks, extending (ZCA), ZCML.
-
-.. _MultiDict API: multidict.html
+.. _MultiDict API: api.html#multidict
 .. _API: api.html
