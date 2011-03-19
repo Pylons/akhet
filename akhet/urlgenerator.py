@@ -30,6 +30,7 @@ class URLGenerator(object):
         """
         self.context = context
         self.request = request
+        self.qualified = qualified
 
     @reify
     def context(self):
