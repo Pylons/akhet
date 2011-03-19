@@ -1,5 +1,5 @@
 Model Examples
-==============
+%%%%%%%%%%%%%%
 
 This chapter gives some examples for writing your application models. These are
 based on the `SQLAlchemy documentation`_, which should be your primary guide.
@@ -10,16 +10,16 @@ Python, use the ``%`` operator instead of the the string ``.format`` method.
 .. _SQLAlchemy documentation: http://www.sqlalchemy.org/docs/
 
 A simple one-table model
-------------------------
+========================
 
 ::
 
-    import pyramid_sqla as psa
+    import sqlahelper
     import sqlalchemy as sa
     import sqlalchemy.orm as orm
 
-    Base = psa.get_base()
-    Session = psa.get_session()
+    Base = sqlahelper.get_base()
+    Session = sqlahelper.get_session()
 
     class User(Base):
         __tablename__ = "users"
@@ -33,18 +33,17 @@ This model has one ORM class, ``User`` corresponding to a database table
 
 
 A three-table model
--------------------
+===================
 
 We can expand the above into a three-table model suitable for a medium-sized
-application. (This example uses the string ``.format`` method introduced in
-Python 2.6. In older versions, use the ``%`` operator instead.) ::
+application.  ::
 
-    import pyramid_sqla as psa
+    import sqlahelper
     import sqlalchemy as sa
     import sqlalchemy.orm as orm
 
-    Base = psa.get_base()
-    Session = psa.get_session()
+    Base = sqlahelper.get_base()
+    Session = sqlahelper.get_session()
 
     class User(Base):
         __tablename__ = "users"
@@ -139,30 +138,32 @@ database record, as with the ``Address.__str__`` method. We can also define
 class methods that operate on several records or return a query object, as with
 the ``User.by_name`` method. 
 
-There are arguments both ways on whether ``User.by_name`` should be a class
-method or a static method. Normally in a class method you'd use the ``class_``
-variable so that it would refer to the subclass in subclasses, but using the
-class's proper name (``User``) makes queries easier to read, and ORM classes
-are rarely subclassed anyway. Here we split the difference by using a class
-method but creating a local variable with the same name as the class to use in
-queries. It's hard to say whether this is the best way or not, so take your
-pick.
+There's a bit of disagreement on whether ``User.by_name`` works better as a
+class method or static method. Normally with class methods, the first argument
+is called ``class_`` or ``cls`` or ``klass`` and you use it that way throughout
+the method, but in ORM queries it's more normal to refer to the ORM class by
+its proper name. But if you do that you're not using the ``class_`` variable
+so why not make it a static method? But the method does belong to the class in
+a way that an ordinary static method does not. I go back and forth on this, and
+sometimes assign ``User = class_`` at the beginning of the method. But none of
+these ways feels completely satisfactory, so I'm not sure which is best.
 
 Common base class
------------------
+=================
 
 You can define a superclass for all your ORM classes, with common class methods
-that all of them can use. You can't use ``pyramid_sqla.Base`` in this case
-though so you'll have to define your own declarative base::
+that all of them can use. You can't use SQLAHelper's declarative base in this
+case because it's already defined with another superclass, so you'll have to
+define your own declarative base::
 
     class ORMClass(object):
         @classmethod
         def query(class_):
-            return pyramid_sqla.get_dbsession().query(class_)
+            return Session.query(class_)
 
         @classmethod
         def get(class_, id):
-            return pyramid_sqla.get_dbsession().query(class_).get(id)
+            return Session.query(class_).get(id)
 
     Base = declarative.declarative_base(cls=ORMClass)
     
@@ -177,76 +178,85 @@ Then you can do things like this in your views::
     q = models.User.query()
 
 Whether this is a good thing or not depends on your perspective.
+
 Multiple databases
 ==================
 
-The default configuration in *myapp/__init__.py* configures one database::
-
-    import pyramid_sqla as psa
-    psa.add_engine(settings, prefix="sqlalchemy.")
-
-To connect to multiple databases, list them all in
-*development.ini* under distinct prefixes. For instance:
+The default configuration in the main function configures one database. To
+connect to multiple databases, list them all in
+*development.ini* under distinct prefixes. You can put additional engine
+arguments under the same prefixes. For instance:
 
 .. code-block: ini
 
     sqlalchemy.url = postgresql://me:PASSWORD@localhost/mydb
-    stats.url = mysql://account:PASSWORD@example.com/stats
+    sqlalchemy.logging_name = maindb
+    stats.url = sqlite:///%(here)s/scratch.sqlite
+    stats.logging_name = sessionsdb
 
-Or:
+Then modify the main function to add each engine. You can also pass even more
+engine arguments that override any same-name ones in the INI file. ::
 
-.. code-block: ini
+    engine = sa.engine_from_config(settings, prefix="sqlalchemy.",
+        pool_recycle=3600, convert_unicode=True)
+    stats = sa.engine_from_config(settings, prefix="stats.")
+    sqlahelper.add_engine(engine)
+    sqlahelper.add_engine(stats, "stats")
 
-    data.url = postgresql://me:PASSWORD@localhost/mydb
-    sessions.url = sqlite:///%(here)s/scratch.sqlite
+In this scenario, the 'engine' engine was added without a name (no second
+argument), so it becomes the default engine named "default". The contextual
+session is bound to it, and the declarative base's metadata is bound to it too.
+To retrieve it later, call ``sqlahelper.get_engine()``.
 
-Then modify *myapp/__init__.py* and put an ``add_engine()`` call for each
-database. The examples below elaborate on the API docs.
+The 'stats' engine was added under the name "stats", so it is not bound to
+anything. To use it, you must pass the 'bind=stats' argument to any ORM method
+or SQL method that executes a query or command, or execute the code directly on
+the engine itself::
 
-A default engine plus other engines
------------------------------------
+    # ORM example
+    records = Session.query(MyTable).all(bind=stats)
 
-In this scenario, the default engine is used for most operations, but two other
-engines are also used occasionally::
+    # SQL example
+    sql = sa.select([MyTable.__table__])
+    rslt = stats.execute(sql)
+    records = rslt.fetchall()
 
-    # Initialize the default engine.
-    pyramid_sqla.add_engine(settings, prefix="sqlalchemy.")
+If you're in a function and need a reference to the engine, retrieve it by
+name: ``sqlahelper.get_engine("stats")``.
 
-    # Initialize the other engines.
-    pyramid_sqla.add_engine(settings, name="engine1", prefix="engine1.")
-    pyramid_sqla.add_engine(settings, name="engine2", prefix="engine2.")
+You can, of course, create an engine directly without going through the
+application settings::
 
-Queries will use the default engine by default. To use a different engine
-you have to use the ``bind=`` argument the method that executes the query, 
-``engine.execute(sql)`` to run a SQL SELECT or command in a particular engine.
+    engine = sa.create_engine("mysql://me:PASSWORD@localhost/farm")
+    sqlahelper.add_engine(engine, "farm")
 
 Two engines, but no default engine
-----------------------------------
+==================================
 
 In this scenario, two engines are equally important, and neither is predominent
 enough to deserve being the default engine. This is useful in applications
-whose main job is to copy data from one database to another. ::
+whose main job is to copy data from one database to another. The configuration
+is the same except that we name both engines::
 
-    pyramid_sqla.init_dbsession()
-    pyramid_sqla.add_engine(settings, name="engine1", prefix="engine1.")
-    pyramid_sqla.add_engine(settings, name="engine2", prefix="engine2.")
+    sqlahelper.add_engine(db1, "db1")
+    sqlahelper.add_engine(db2, "db2")
 
-Because there is no default engine, queries will fail unless you specify an
-engine every time using the ``bind=`` argument or ``engine.execute(sql)``.
+Because there is no default engine, you will have to use the 'bind' argument
+for all queries, or execute them directly on the engine.
 
 Different tables bound to different engines
--------------------------------------------
+===========================================
 
-It's possible to bind different ORM classes to different engines in the same
+You can bind different ORM classes to different engines in the same
 database session.  Configure your application with no default engine, and then
 call the Session's ``.configure`` method with the ``binds=`` argument to
 specify which classes go to which engines. For instance::
 
-    pyramid_sqla.add_engine(settings, name="engine1", prefix="engine1.")
-    pyramid_sqla.add_engine(settings, name="engine2", prefix="engine2.")
-    Session = pyramid_sqla.get_dbsession()
-    import myapp.models as models
-    binds = {models.Person: engine1, models.Score: engine2}
+    sqlahelper.add_engine(db1, "db1")
+    sqlahelper.add_engine(db2, "db2")
+    Session = sqlahelper.get_session()
+    import zzz.models as models
+    binds = {models.Person: db1, models.Score: db1}
     Session.configure(binds=binds)
 
 The keys in the ``binds`` dict can be SQLAlchemy ORM classes, table objects, or
@@ -256,25 +266,24 @@ mapper objects.
 Reflected tables
 ================
 
-Reflected tables pose a dilemma because it depends on a live database
+Reflected tables pose a dilemma because they depend on a live database
 connection in order to be initialized. But the engine may not be configured yet
-when the model is imported. ``pyramid_sqla`` does not address this issue
-directly. Pylons 1 models traditionally have an ``init_model(engine)`` function
-which performs any initialization that requires a live connection. Pyramid
-applications typically do not need this function because the Session, engines,
-and base are initialized in the ``pyramid_sqla`` library before the model is
-imported. But in the case of reflection, you may need an ``init_model``
-function.
+when the model is imported. SQLAHelper does not address this issue
+directly. Pylons 1 models traditionally have a ``model.init_model(engine)``
+function which performs any initialization that requires a live connection.
+Pyramid applications typically do not need this function because the Session,
+engines, and base are initialized in the ``sqlahelper`` library before the
+model is imported. But in the case of reflection, you'll probably need an 
+``init_model`` function that sets global variables. You'll just have to
+remember to call the function before using anything in the model.
 
-When not using declarative, the ORM classes can be defined at module level in
-the model, but the table definitions and mappers will have to be set up inside
-the ``init_model`` function using a ``global`` statement to set the module
-globals.
+If you're using SQLAlchemy's declarative syntax as in the examples above, we
+*think* you'd have to define the entire ORM class inside the function, and use
+a ``global`` statement to put the class into the module namespace.
 
-When using declarative, we *think* the entire ORM class must be defined inside
-the function, again using a ``global`` statement to project the values into
-the module scope. That's unfortunate but we can't think of a way around it.
-If you can, please tell us.
+If you're not using declarative, the ORM class can be defined at module level,
+but the table will have to be defined in the function with a ``global``
+statement, and the mapper call will also have to be in the function.
 
 
 .. _Engine Configuration: http://www.sqlalchemy.org/docs/core/engines.html

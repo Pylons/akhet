@@ -10,8 +10,8 @@ common to Pyramid's built-in application skeletons, while others features are
 added by Akhet. We'll try to specify which features come from where.
 
 The sample application here is named "Zzz", and the top-level Python package
-within it is "zzz". So wherever it says Zzz or zzz below, it means your actual
-application name or package name.
+within it is "zzz". So wherever this manual says Zzz or zzz, it means your
+actual application name or package name.
 
 INI files
 =========
@@ -372,10 +372,11 @@ a Genshi emulator using Chameleon (``pyramid_genshi_chameleon``),
 
 Lines 36-39 registers event subscribers, which are callback functions called at
 specific points during request processing. Lines 36-37 register a callback that
-instantiates a URL generator (see "URL Generator" section). Lines 38-39
-register a callback which adds several Pylons-like variables to the template
-namespace whenever a template is rendered. The callbacks are defined in the
-``zzz.subscribers`` module, which you can modify.
+instantiates a URL generator (described in the Templates section below and in
+the API_ chapter). Lines 38-39 register a callback which adds several
+Pylons-like variables to the template namespace whenever a template is
+rendered. The callbacks are defined in the ``zzz.subscribers`` module, which
+you can modify.
 
 Lines 42 configures routing. Actually it calls an include function in the
 handlers package. We'll explore routing more fullyh later.
@@ -959,6 +960,17 @@ The subscriber in your application adds the following additional variables:
    The URLGenerator object has convenience methods for generating URLs based on
    your application's routes. See the complete list on the API_ page.
 
+   By default the generator creates unqualified URLs (i.e., without the
+   "scheme://hostname" prefix) if the underlying Pyramid functions allow it.
+   To get absolute URLs throughout the application, edit *zzz/subscribers.py*,
+   go to the line where the URLGenerator is instantiated, and change the
+   'qualified' argument to True. Pylons traditionally uses unqualified URLs,
+   while Pyramid traditionally uses qualified URLs. Note that qualified URLs
+   may be wrong if the application is running behind a reverse proxy! (E.g.,
+   Apache's mod_proxy.) The generated URL may be "http://localhost:5000" which
+   is correct for the application but invalid to the end user (who needs the
+   proxy's URL, "https://example.com").  
+
 Advanced template usage
 -----------------------
 
@@ -1175,7 +1187,9 @@ decorator because too many people found the decorator too inflexible: they
 ended up copying part of the code into their action method.
 
 WebHelpers 1.3b1 has some new URL generator classes to make it easier to use
-with Pyramid. See the ``webhelpers.paginate`` documentation for details.
+with Pyramid. See the ``webhelpers.paginate`` documentation for details. (Note:
+this is *not* the same as Akhet's URL generator; it's a different kind of class
+specifically for the paginator's needs.)
 
 
 Shell

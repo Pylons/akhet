@@ -67,7 +67,6 @@ Documentation
    testing
    i18n
    migration
-   unfinished-usage
    api
    bugs
    changes
