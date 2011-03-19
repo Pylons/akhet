@@ -53,26 +53,31 @@ Create an application with Paster using the "akhet" application skeleton.
     Running /home/sluggo/.virtualenvs/pyramid/bin/python setup.py egg_info
     (myvenv)$ 
 
-
-It should work out of the box:
+**Then install the application to pull in the dependencies it needs.** (These
+dependencies aren't installed with Akhet itself because they're different for
+different applications.) There are several ways to do this: "python setup.py
+develop", "pip install -e .", and "pip install .", and "python setup.py
+install" :
 
 .. code-block:: sh
 
-    (venv)$ cd MyApp
+    (venv)$ cd Zzz
     (venv)$ pip install -e .
+
+(A few systems don't work with the "-e" option or "python setup.py develop".
+If you get an ImportError on "Zzz", try installing it again without the "-e".
+My home computer does this but none of my other computers.)
+
+It should work out of the box now:
+
+.. code-block:: sh
+
     (venv)$ paster serve development.ini
 
 Go to the URL indicated in your web browser (http://127.0.0.1:5000).
 The default application doesn't define any tables or models so it doesn't
 actually do anything except display some help links. When you get bored, press
 ctrl-C to quit the HTTP.
-
-The second line -- "pip install -e ." -- installs the application into the
-virtualenv, which also installs its dependencies and updates the package's
-metadata (the egg-info directory). The "-e" option installs a link to the
-development directory rather than a copy of the application. This may not work
-on some systems (Python will complain it can't import the application); in that
-case omit the "-e" option.
 
 Building an application
 =======================
