@@ -116,3 +116,21 @@ Asset Spec
     colon is the relative path inside the package, using "/" delimeters
     regardless of platform. For instance, "myapp:static/" or
     "myapp.lib:images/logo.png".
+
+Settings
+
+    A dict of application configuration settings. This combines:
+    
+    * "deployment settings" parsed from the INI file (or passed in by
+      whatever top-level script launches the application).
+    * "application settings", or site-wide constants, set in the main function.
+    * "application globals": data structures, non-SQLAlchemy database
+      connections, a cache object, or other things that are global to all
+      requests. These are also normally set in the main function.
+
+Registry
+
+    An object that is global to the application and contains internal framework
+    data such as which routes and views have been defined. Application writers
+    generally ignore it except when they need a setting, which are in the
+    ``.settings`` attribute.

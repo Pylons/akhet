@@ -1,6 +1,6 @@
 Akhet
 =====
-:Version: 1.0b1, released XXXX-XX-XX
+:Version: 1.0b1, released 2010-03-19
 :PyPI: http://pypi.python.org/pypi/Akhet
 :Docs: https://bitbucket.org/sluggo/akhet/wiki/html/index.html
 :Source: https://bitbucket.org/sluggo/akhet (Mercurial)
@@ -10,17 +10,15 @@ Akhet
 Pyramid_ web framework, along with a small support library to make Pyramid a
 bit easier to use. This manual explains Akhet and also attempts to be a gentle
 introduction to the Pyramid manual, which some people find overwhelming at
-first. This manual assumes you're familiar with Python web development. If
-you're a new web developer, look for the Akhet tutorials which will be coming
-out soon: they will show how to build a web application wtih Akhet step by
-step.
+first. This manual assumes you're familiar with Python web development.
+Tutorials for new web developers are in development but are not ready yet.
 
 Akhet version 1.0b1 is a public beta to give it some testing before the final
 release. Please send feedback to the pylons-discuss_ list, and report bugs on
-the `bug tracker`_. The Akhet package was
-previously named "pyramid_sqla"; it was changed to reflect its evolution from a
-SQLALchemy application skeleton to a more full-fledged Pylons-like skeleton.
-The SQLAlchemy library was spun off to the "SQLAHelper" package.
+the `bug tracker`_. Akhet was previously called "pyramid_sqla"; it was changed
+to reflect its evolution from a SQLALchemy application skeleton to a more
+full-fledged Pylons-like skeleton.  The SQLAlchemy library from pyramid_sqla
+was spun off to the "SQLAHelper" package.
 
 The word "akhet" is the name of the hieroglyph that is Pylons' icon: a sun
 shining over two pylons. It means "horizon" or "mountain of light".
@@ -68,6 +66,7 @@ Documentation
    i18n
    migration
    api
+   other_pyramid_features
    bugs
    changes
 

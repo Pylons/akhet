@@ -1,4 +1,4 @@
-1.0b1 (unreleased)
+1.0b1 (2011-03-19)
 ------------------
 - Rename distribution to Akhet and app template to akhet.
 - Delete all code pertaining to the SQLAlchemy library, which is now in the
