@@ -15,13 +15,12 @@ the `Installing Pyramid`_ chapter in the Pyramid manual. I use the OS packages
 in Ubuntu Linux 10.10: python-setuptools, python-virtualenv, and
 virtualenvwrapper.
 
-You'll probably want Virtualenv's "--no-site-packages" option to avoid
-undesired interactions with with other Python packages installed in the global
-site-packages directory. In particular,
-"zope" is a namespace package that can't be split between the global
-site-packages and the virtualenv. Ubuntu installs some Zope packages and
-Pyramid installs others, and this can lead to import errors unless you use
-"--no-site-packages". If you do need particular global packages (such as those
+You'll probably want Virtualenv's ``--no-site-packages`` option to avoid
+undesired interactions with with other Python packages installed globally
+(outside the virtualenv). In particular, "zope" is a namespace package that
+can't be split between the global site-packages and the virtualenv. Ubuntu
+installs some Zope packages and that can lead to ImportError unless you use
+``--no-site-packages``. If you do need particular global packages (such as those
 with C dependencies that can be hard to install yourself), make symbolic links
 from the virtualenv's site-packages to the packages in the global
 site-packages.
