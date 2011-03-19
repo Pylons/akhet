@@ -6,7 +6,5 @@ Akhet.egg-info
 build/
 dist/
 docs/_build
+docs/_themes
 env26/
-
-syntax: regexp
-^unfinished/.*egg-info
