@@ -1,7 +1,7 @@
-**Akhet** is set of application templates for Pyramid_ inspired by
-the Pylons 1 application style. It also includes some convenience functions
-that can be used without the templates.
-Currently there's only one application template called "akhet".
+Akhet is a Pylons-like application template for the Pyramid web framework,
+along with a small library to make Pyramid a bit easier to use. It has
+extensive documentation that covers the differences between Pylons and Pyramid
+and can serve as a gentle introduction to the Pyramid manual.
 
 Documentation is in the 'docs' directory.
 

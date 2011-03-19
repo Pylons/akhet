@@ -11,7 +11,9 @@ Pyramid_ web framework, along with a small support library to make Pyramid a
 bit easier to use. This manual explains Akhet and also attempts to be a gentle
 introduction to the Pyramid manual, which some people find overwhelming at
 first. This manual assumes you're familiar with Python web development.
-Tutorials for new web developers are in development but are not ready yet.
+
+Coming soon: tutorials for new web developers, and a higher-level skeleton with
+more batteries. These are being written by third parties.
 
 Akhet version 1.0b1 is a public beta to give it some testing before the final
 release. Please send feedback to the pylons-discuss_ list, and report bugs on
