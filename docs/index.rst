@@ -2,7 +2,7 @@ Akhet
 =====
 :Version: 1.0b1, released 2010-03-19
 :PyPI: http://pypi.python.org/pypi/Akhet
-:Docs: https://bitbucket.org/sluggo/akhet/wiki/html/index.html
+:Docs: http://sluggo.scrapping.cc/python/Akhet/
 :Source: https://bitbucket.org/sluggo/akhet (Mercurial)
 
 
