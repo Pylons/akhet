@@ -48,7 +48,7 @@ SQLAlchemy session extension (a class that enhances the session's behavior).
 ``pyramid_tm`` takes care of issuing the commit or rollback at the end of the
 request processing.
 
-SQlAHelper maintains a ZopeTransactionExtension in the ``sqlahelper._zte``
+SQLAHelper maintains a ZopeTransactionExtension in the ``sqlahelper._zte``
 variable. It automatically configures the Session to use that extension.
 
 You can customize the circumstances under which an automatic rollback occurs by
