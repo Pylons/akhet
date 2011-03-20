@@ -1,3 +1,10 @@
+1.0b2 (unreleased)
+------------------
+- App skeleton:
+
+  + Add Beaker cache configuration
+  + Fix bug in urlgenerator: missing variable assignment
+
 1.0b1 (2011-03-19)
 ------------------
 - Rename distribution to Akhet and app template to akhet.

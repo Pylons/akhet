@@ -1,6 +1,12 @@
 [app:myapp]
 use = egg:{{project}}
 reload_templates = false
+cache.regions = default_term, second, short_term, long_term
+cache.type = memory
+cache.second.expire = 1
+cache.short_term.expire = 60
+cache.default_term.expire = 300
+cache.long_term.expire = 3600
 debug_authorization = false
 debug_notfound = false
 debug_routematch = false
@@ -16,14 +22,6 @@ session.data_dir = %(here)s/data/sessions/data
 session.lock_dir = %(here)s/data/sessions/lock
 session.key = {{project}}
 session.secret = {{random_string}}
-
-#cache
-cache.regions = default_term, second, short_term, long_term
-cache.type = memory
-cache.second.expire = 1
-cache.short_term.expire = 60
-cache.default_term.expire = 300
-cache.long_term.expire = 3600
 
 
 [filter:weberror]
