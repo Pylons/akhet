@@ -1,6 +1,6 @@
 Akhet
 =====
-:Version: 1.0b1, released 2010-03-19
+:Version: 1.0b2, released 2010-03-19
 :PyPI: http://pypi.python.org/pypi/Akhet
 :Docs: http://sluggo.scrapping.cc/python/Akhet/
 :Source: https://bitbucket.org/sluggo/akhet (Mercurial)
@@ -15,8 +15,13 @@ first. This manual assumes you're familiar with Python web development.
 Coming soon: tutorials for new web developers, and a higher-level skeleton with
 more batteries. These are being written by third parties.
 
-Akhet version 1.0b1 is a public beta to give it some testing before the final
-release. Please send feedback to the pylons-discuss_ list, and report bugs on
+Akhet version 1.0b2 is a beta version to give it some use in test apps before
+the final release. Changes in 1.0b2:
+
+* Bugfix in URLGenerator.
+* Add Beaker cache configuration.
+
+Please send feedback to the pylons-discuss_ list, and report bugs on
 the `bug tracker`_. Akhet was previously called "pyramid_sqla"; it was changed
 to reflect its evolution from a SQLALchemy application skeleton to a more
 full-fledged Pylons-like skeleton.  The SQLAlchemy library from pyramid_sqla

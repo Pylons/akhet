@@ -168,8 +168,8 @@ Pyramid's ``settings`` dict. You can set them at the top of the main function,
 and access them in views as``self.request.registry.settings["my_setting"]``,
 and in templates as ``request.registry.settings["my_setting"]``.
 
-If you're using Python's/Beaker's cache decorators, you can set up the
-equivalent in Pyramid by following:
+Beaker caching is initialized in the settings. To use the cache decorators, see
+the following:
 
 *  http://docs.pylonsproject.org/projects/pyramid_beaker/dev/#beaker-cache-region-support
 * http://beaker.groovie.org/caching.html#cache-regions
