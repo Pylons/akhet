@@ -4,6 +4,5 @@
 class Handler(object):
     def __init__(self, request):
         self.request = request
-        self.url_generator = request.url_generator 
         #c = self.request.tmpl_context
         #c.something_for_site_template = "Some value."

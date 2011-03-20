@@ -6,6 +6,12 @@ debug_notfound = false
 debug_routematch = false
 debug_templates = true
 default_locale_name = en
+cache.regions = default_term, second, short_term, long_term
+cache.type = memory
+cache.second.expire = 1
+cache.short_term.expire = 60
+cache.default_term.expire = 300
+cache.long_term.expire = 3600
 mako.directories = {{package}}:templates
 mako.strict_undefined = true
 {{if sqlalchemy}}
@@ -16,14 +22,6 @@ session.data_dir = %(here)s/data/sessions/data
 session.lock_dir = %(here)s/data/sessions/lock
 session.key = {{project}}
 session.secret = {{random_string}}
-
-#cache
-cache.regions = default_term, second, short_term, long_term
-cache.type = memory
-cache.second.expire = 1
-cache.short_term.expire = 60
-cache.default_term.expire = 300
-cache.long_term.expire = 3600
 
 
 [pipeline:main]
