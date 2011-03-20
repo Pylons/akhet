@@ -7,6 +7,7 @@ from setuptools import find_packages
 
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, "README.txt")).read()
+README = README.split("\n\n", 1)[0] + "\n"
 CHANGES = open(os.path.join(here, "CHANGES.txt")).read()
 
 requires = [
@@ -19,7 +20,7 @@ entry_points = """
 """
 
 setup(name="Akhet",
-      version="1.0b1",
+      version="1.0b2",
       description="Pyramid application templates inspired by Pylons 1.",
       long_description=README,
       #long_description=README + "\n\n" +  CHANGES,
