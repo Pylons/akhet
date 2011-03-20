@@ -379,7 +379,7 @@ rendered. The callbacks are defined in the ``zzz.subscribers`` module, which
 you can modify.
 
 Lines 42 configures routing. Actually it calls an include function in the
-handlers package. We'll explore routing more fullyh later.
+handlers package. We'll explore routing more fully later.
 
 Lines 44-48 and 56-67 are commented code; they show how to enable certain
 advanced features.
