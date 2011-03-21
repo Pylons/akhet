@@ -33,7 +33,7 @@ class URLGenerator(object):
         self.qualified = qualified
 
     @reify
-    def context(self):
+    def ctx(self):
         """The URL of the default view for the current context.
 
         I'm a "reified" attribute which means I start out as a property but
