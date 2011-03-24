@@ -1,3 +1,10 @@
+dev (unreleased)
+----------------
+- App skeleton:
+
+  + Simplify home page and add a Mako site template that can be easily
+    extended by the user.
+
 1.0b2 (2011-03-19)
 ------------------
 - App skeleton:

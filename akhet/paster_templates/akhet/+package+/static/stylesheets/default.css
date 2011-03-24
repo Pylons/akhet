@@ -1,0 +1,15 @@
+body {
+    font-family: sans-serif;
+    }
+
+a {
+    text-decoration: none;
+    }
+
+dl {
+    font-weight: bold;
+    }
+
+h1#title {
+    text-align: center;
+    }
