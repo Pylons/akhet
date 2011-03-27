@@ -4,6 +4,7 @@ dev (unreleased)
 
   + Simplify home page and add a Mako site template that can be easily
     extended by the user.
+  + Add "flash message" demo to home page.
 
 1.0b2 (2011-03-19)
 ------------------

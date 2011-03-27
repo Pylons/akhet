@@ -14,6 +14,11 @@ ${self.head_extra()}
       <h1 id="title">${self.body_title()}</h1>
     </div>
 
+<div id="flash-messages">
+% for message in request.session.pop_flash():
+    <div class="info">${message}</div>
+% endfor
+</div>
 
 <!-- *** BEGIN page content *** -->
 ${self.body()}

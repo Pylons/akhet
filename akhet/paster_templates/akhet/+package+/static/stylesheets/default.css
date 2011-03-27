@@ -1,5 +1,5 @@
 body {
-    font-family: sans-serif;
+    font-family: helvetica, verdana, sans-serif;
     }
 
 a {
@@ -12,4 +12,15 @@ dl {
 
 h1#title {
     text-align: center;
+    }
+
+div#flash-messages {
+    }
+
+.info {
+    background-color: #54ff95;  /* SeaGreen1 */
+    font-size: larger;
+    font-style: italic;
+    margin: 10px 80px;
+    padding: 10px;
     }
