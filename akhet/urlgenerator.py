@@ -54,8 +54,8 @@ class URLGenerator(object):
         I turn into an ordinary string attribute on the first access.
         This saves CPU cycles if I'm accessed often.
 
-        I return the application prefix of the URL. Append a slash to get the
-        home page, or append a slash and segments to get a sub-page.
+        I return the application prefix of the URL, ending in a slash. This
+        alone will get the home page, or append segments to get a sub-URL.
 
         If the constructor arg 'qualified' is true, I return
         ``request.application_url``, otherwise I return ``request.path``.
