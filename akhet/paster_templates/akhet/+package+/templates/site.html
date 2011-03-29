@@ -11,9 +11,10 @@ ${self.head_extra()}
   </head>
   <body>
     <div id="header">
-      <h1 id="title">${self.body_title()}</h1>
+    <img src="${url.app}images/pyramid-negative.png"/>
     </div>
 
+<div id="content">
 <div id="flash-messages">
 % for message in request.session.pop_flash():
     <div class="info">${message}</div>
@@ -21,11 +22,13 @@ ${self.head_extra()}
 </div>
 
 <!-- *** BEGIN page content *** -->
+<h1 id="title">${self.body_title()}</h1>
 ${self.body()}
 <!-- *** END page content ***-->
-
+</div>
 
     <div id="footer">
+    Powered by <a href="http://pylonsproject.org">Pyramid Web Framework</a>
     </div>
   </body>
 </html>
