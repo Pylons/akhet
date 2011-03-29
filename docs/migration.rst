@@ -129,8 +129,7 @@ The current URL is ``${request.path}`` (path only without query),
 
 Making URLs to static files is trickier because the methods above won't
 work for that. ``${url.app}`` is the application's base URL, so you can do
-``${url.app}/subdir/filename.css`` to semi-hardcode the URL. (XXX Check if
-url.app ends with a slash.)
+``${url.app}subdir/filename.css`` to semi-hardcode the URL.
 
 Or you can switch to Pyramid's default way of serving static files
 (add_static_view), which exposes the "/static" prefix to the user. Then you can
