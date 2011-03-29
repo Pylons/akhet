@@ -48,6 +48,10 @@ table {
 }
 
 /* restyling */
+strong{
+    font-weight: bold;
+}
+
 sub {
     vertical-align: sub;
     font-size: smaller;
