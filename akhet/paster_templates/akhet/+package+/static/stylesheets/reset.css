@@ -47,8 +47,10 @@ table {
     border-spacing: 0;
 }
 
+
 /* restyling */
-strong{
+
+strong {
     font-weight: bold;
 }
 
@@ -62,6 +64,10 @@ sup {
     vertical-align: super;
     font-size: smaller;
     line-height: normal;
+}
+
+p {
+    margin: 1em 0;
 }
 
 /* lists */
@@ -81,6 +87,10 @@ ol {
 
 li {
     display: list-item;
+}
+
+dt {
+    font-weight: bold;
 }
 
 /* nested lists have no top/bottom margins */
@@ -104,10 +114,6 @@ ol ol ul,ol ul ul,ol menu ul,ol dir ul,ol ol menu,ol ul menu,ol menu menu,ol dir
 
 .hidden {
     display: none;
-}
-
-p {
-    line-height: 1.5em;
 }
 
 h1 {
