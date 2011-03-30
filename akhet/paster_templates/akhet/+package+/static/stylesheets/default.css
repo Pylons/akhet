@@ -1,16 +1,12 @@
 @import url('reset.css');
 
-body{
+body {
     background-color: rgb(243,241,234);
-    line-height: 1.5em;
     font-family: helvetica, verdana, sans-serif;
     color: rgb(66,66,66)
 }
 
-p{
-    font-size: 0.75em;
-}
-#header{
+#header {
 	background-color: rgb(36,36,36);
     padding: 10px 15px 30px 5%;
     -webkit-box-shadow: 0 30px 80px #cfa84b;
@@ -19,32 +15,24 @@ p{
 	text-shadow: 2px 2px 5px rgb(0,0,0);
 }
 
-
-#footer{
+#footer {
     width: 90%;
     margin: 10px auto;
     font-size: 0.75em;
     text-align: right;
     opacity: 0.5;
 }
-#footer:hover{
-    opacity:1;
+
+#footer:hover {
+    opacity: 1;
 }
 
-#footer a, #footer a:link, #footer a:visited{
+a, a:link, a:visited {
     text-decoration: none;
-    font-weight: bold;
-    color: rgb(255,90,0)
+    color: blue;
 }
 
-
-#content a, #content a:link, #content a:visited{
-    text-decoration: none;
-    font-weight: bold;
-    color: rgb(255,90,0)
-}
-
-#content{
+#content {
     width: 90%;
     margin: -20px auto 0px auto;
     background-color: rgb(252,250,244);
@@ -54,6 +42,14 @@ p{
     box-shadow: 0px 0px 11px #d4cbb5;
 	-moz-border-radius: 15px;
 	border-radius: 15px; 
+}
+
+h2 {
+    margin-top: 1em;
+}
+
+ul, ol, dl {
+    margin: 0;
 }
 
 /* flash */
@@ -76,7 +72,6 @@ p{
     border: 1px solid #25A24B;
     border-left: 5px solid;
     color: #25A24B;
-    background-image: url('../images/icons/accept.png');
 }
 
 #flash-messages .warning {
@@ -84,7 +79,6 @@ p{
     border: 1px solid #E57C00;
     border-left: 5px solid;
     color: #000000;
-    background-image: url('../images/icons/error.png');
 }
 
 #flash-messages .error {
@@ -92,5 +86,4 @@ p{
     border: 1px solid #B90D0D;
     border-left: 5px solid;
     color: #B90D0D;
-    background-image: url('../images/icons/delete.png');
 }
