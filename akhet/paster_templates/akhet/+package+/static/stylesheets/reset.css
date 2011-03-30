@@ -1,0 +1,141 @@
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+body {
+    line-height: 1;
+}
+ol, ul {
+    list-style: none;
+}
+blockquote, q {
+    quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: '';
+    content: none;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+
+/* restyling */
+
+strong {
+    font-weight: bold;
+}
+
+sub {
+    vertical-align: sub;
+    font-size: smaller;
+    line-height: normal;
+}
+
+sup {
+    vertical-align: super;
+    font-size: smaller;
+    line-height: normal;
+}
+
+p {
+    margin: 1em 0;
+}
+
+/* lists */
+ul,menu,dir {
+    display: block;
+    list-style-type: disc;
+    margin: 1em 0;
+    padding-left: 40px;
+}
+
+ol {
+    display: block;
+    list-style-type: decimal-leading-zero;
+    margin: 1em 0;
+    padding-left: 40px;
+}
+
+li {
+    display: list-item;
+}
+
+dt {
+    font-weight: bold;
+}
+
+/* nested lists have no top/bottom margins */
+ul ul,ul ol,ul dir,ul menu,ul dl,ol ul,ol ol,ol dir,ol menu,ol dl,dir ul,dir ol,dir dir,dir menu,dir dl,menu ul,menu ol,menu dir,menu menu,menu dl,dl ul,dl ol,dl dir,dl menu,dl dl
+    {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+/* 2 deep unordered lists use a circle */
+ol ul,ul ul,menu ul,dir ul,ol menu,ul menu,menu menu,dir menu,ol dir,ul dir,menu dir,dir dir
+    {
+    list-style-type: circle;
+}
+
+/* 3 deep (or more) unordered lists use a square */
+ol ol ul,ol ul ul,ol menu ul,ol dir ul,ol ol menu,ol ul menu,ol menu menu,ol dir menu,ol ol dir,ol ul dir,ol menu dir,ol dir dir,ul ol ul,ul ul ul,ul menu ul,ul dir ul,ul ol menu,ul ul menu,ul menu menu,ul dir menu,ul ol dir,ul ul dir,ul menu dir,ul dir dir,menu ol ul,menu ul ul,menu menu ul,menu dir ul,menu ol menu,menu ul menu,menu menu menu,menu dir menu,menu ol dir,menu ul dir,menu menu dir,menu dir dir,dir ol ul,dir ul ul,dir menu ul,dir dir ul,dir ol menu,dir ul menu,dir menu menu,dir dir menu,dir ol dir,dir ul dir,dir menu dir,dir dir dir
+    {
+    list-style-type: square;
+}
+
+.hidden {
+    display: none;
+}
+
+h1 {
+    font-size: 1.75em; /* 28px */
+    line-height: 1.7em;
+    font-family: helvetica, verdana;
+}
+
+h2 {
+    font-size: 1.5em; /* 24px */
+    line-height: 1.7em;
+    font-family: helvetica, verdana;
+}
+
+h3 {
+    font-size: 1.25em; /* 20px */
+    line-height: 1.7em;
+    font-family: helvetica, verdana;
+}
+
+h4 {
+    font-size: 1em;
+    line-height: 1.7em;
+    font-family: helvetica, verdana;
+}
