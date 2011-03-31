@@ -1,11 +1,6 @@
-import os
-import shutil
-import tempfile
 import unittest
 
 import pyramid.view
-import sqlalchemy as sa
-from sqlalchemy.engine.base import Engine
 
 import akhet
 import akhet.static
@@ -54,23 +49,12 @@ class TestStaticViewPredicate(unittest.TestCase):
 
     def test___call___resource_exists(self):
         inst = self._makeOne("akhet", "tests")
-        self.assertEqual(inst({"match":{"subpath":("test.py",)}}, None), True)
+        self.assertEqual(
+            inst({"match":{"subpath":("test_static.py",)}}, None), True)
 
     def test___call___resource_doesnt_exist(self):
         inst = self._makeOne("akhet", "tests")
         self.assertEqual(inst({"match":{"subpath":("wont.py",)}}, None), False)
-
-class Test_includeme(unittest.TestCase):
-    def _callFUT(self, config):
-        return akhet.includeme(config)
-
-    def test_it(self):
-        from akhet.static import add_static_route
-        config = DummyConfig()
-        self._callFUT(config)
-        self.assertEqual(config.directives["add_static_route"],
-                         add_static_route)
-
 
 class DummyConfig(object):
     def __init__(self):
@@ -80,5 +64,3 @@ class DummyConfig(object):
     def add_route(self, name, pattern, **kw):
         self.routes.append({"name":name, "pattern":pattern, "kw":kw})
 
-    def add_directive(self, name, value):
-        self.directives[name] = value
