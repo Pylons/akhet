@@ -116,7 +116,7 @@ class URLGenerator(object):
         and ``anchor`` are the same as the ``_query`` and ``_anchor`` args to
         ``.route``.
 
-        When called without arguments, I return the same as ``.context``.
+        When called without arguments, I return the same as ``.ctx``.
         """
         return url.resource_url(self.context, self.request, *elements, **kw)
 
