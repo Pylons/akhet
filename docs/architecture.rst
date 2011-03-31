@@ -32,13 +32,20 @@ and options:
     debug_routematch = false
     debug_templates = true
     default_locale_name = en
+    cache.regions = default_term, second, short_term, long_term
+    cache.type = memory
+    cache.second.expire = 1
+    cache.short_term.expire = 60
+    cache.default_term.expire = 300
+    cache.long_term.expire = 3600
     mako.directories = zzz:templates
-    sqlalchemy.url = sqlite:///%(here)s/db.sqlite
+    mako.strict_undefined = true
     session.type = file
     session.data_dir = %(here)s/data/sessions/data
     session.lock_dir = %(here)s/data/sessions/lock
     session.key = Zzz
-    session.secret = 4b391beb818275e9aef4a58207782e5366e9c662
+    session.secret = 3f4c8f62600a4edda7026f0ce13befbccd8bbcdb
+    sqlalchemy.url = sqlite:///%(here)s/db.sqlite
 
 .. code-block:: ini
 

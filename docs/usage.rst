@@ -15,22 +15,20 @@ the `Installing Pyramid`_ chapter in the Pyramid manual. I use the OS packages
 in Ubuntu Linux 10.10: python-setuptools, python-virtualenv, and
 virtualenvwrapper.
 
-You'll probably want Virtualenv's ``--no-site-packages`` option to avoid
-undesired interactions with with other Python packages installed globally
-(outside the virtualenv). In particular, "zope" is a namespace package that
-can't be split between the global site-packages and the virtualenv. Ubuntu
-installs some Zope packages and that can lead to ImportError unless you use
-``--no-site-packages``. If you do need particular global packages (such as those
-with C dependencies that can be hard to install yourself), make symbolic links
-from the virtualenv's site-packages to the packages in the global
-site-packages.
-
 .. code-block:: sh
 
     $ virtualenv --no-site-packages ~/directory/myvenv
     $ source ~/directory/myvenv/bin/activate
     (myvenv)$ pip install Akhet
     ...
+
+You'll probably need Virtualenv's ``--no-site-packages`` option as above to
+avoid undesired interactions with with other Python packages installed globally
+(outside the virtualenv). I had particular trouble due to some Zope packages
+Ubuntu installs by default. If you need certain global packages (e.g., those
+with C dependencies that can be hard to install yourself), make symbolic links
+to them in the virtualenv's site-packages.
+
 
 Creating an application
 =======================
@@ -39,7 +37,7 @@ Create an application with Paster using the "akhet" application skeleton.
 
 .. code-block:: sh
 
-    (myvenv)$ paster create -t akhet MyApp
+    (myvenv)$ paster create -t akhet Zzz
         Selected and implied templates:
       Akhet#akhet  A Pylons-like Pyramid project
 
@@ -53,22 +51,51 @@ Create an application with Paster using the "akhet" application skeleton.
     Running /home/sluggo/.virtualenvs/pyramid/bin/python setup.py egg_info
     (myvenv)$ 
 
-**Then install the application to pull in the dependencies it needs.** (These
-dependencies aren't installed with Akhet itself because they're different for
-different applications.) There are several ways to do this: "python setup.py
-develop", "pip install -e .", and "pip install .", and "python setup.py
-install" :
+You can answer the question on the command line so that it won't prompt you:
 
 .. code-block:: sh
 
-    (venv)$ cd Zzz
-    (venv)$ pip install -e .
+    (myvenv)$ paster create -t akhet Zzz sqlalchemy=y
 
-(A few systems don't work with the "-e" option or "python setup.py develop".
-If you get an ImportError on "Zzz", try installing it again without the "-e".
-My home computer does this but none of my other computers.)
+Our sample application is called "Zzz". It has a top-level directory "Zzz"
+containing a Python package ``zzz`` (lowercase). Throughout this manual we'll
+use Zzz and zzz as shorthands for your application name and package name. You
+can name your application anything, but don't use "Test" or any other name in
+the Python standard library, otherwise it won't run. It's easiest to stick with
+a valid Python identifier: a letter or underscore followed by zero or more
+letters, numbers, or underscores.
 
-It should work out of the box now:
+Install the application's dependencies. For convenience these are listed both
+in a *requirements.txt* file and in *setup.py*.
+
+.. code-block:: sh
+
+    (myvenv)$ cd Zzz
+    (myvenv)$ pip install -r requirements.txt
+    ...
+
+Generate the package's metadata ("egg_info" files):
+
+.. code-block:: sh
+
+    (myvenv)$ python setup.py egg_info
+    running egg_info
+    writing requirements to Zzz.egg-info/requires.txt
+    writing Zzz.egg-info/PKG-INFO
+    writing top-level names to Zzz.egg-info/top_level.txt
+    writing dependency_links to Zzz.egg-info/dependency_links.txt
+    writing entry points to Zzz.egg-info/entry_points.txt
+    writing paster_plugins to Zzz.egg-info/paster_plugins.txt
+    reading manifest file 'Zzz.egg-info/SOURCES.txt'
+    writing manifest file 'Zzz.egg-info/SOURCES.txt'
+
+.. tip::
+
+    Whenever you run the application, re-run this command first *if* you've
+    added/deleted any files or modified *setup.py*. You do not have to re-run
+    it if you've merely modified the files.
+
+The application should now run out of the box:
 
 .. code-block:: sh
 
@@ -79,8 +106,10 @@ The default application doesn't define any tables or models so it doesn't
 actually do anything except display some help links. When you get bored, press
 ctrl-C to quit the HTTP.
 
-Building an application
-=======================
+Building the application
+========================
+
+You can now customize the application as you see fit.
 
 If you've never built a (Pylons) web application before, there will be
 Akhet-specifc tutorials coming but they're not finished yet. In the meantime,
