@@ -14,14 +14,14 @@ cache.default_term.expire = 300
 cache.long_term.expire = 3600
 mako.directories = {{package}}:templates
 mako.strict_undefined = true
-{{if sqlalchemy}}
-sqlalchemy.url = sqlite:///%(here)s/db.sqlite
-{{endif}}
 session.type = file
 session.data_dir = %(here)s/data/sessions/data
 session.lock_dir = %(here)s/data/sessions/lock
 session.key = {{project}}
 session.secret = {{random_string}}
+{{if sqlalchemy}}
+sqlalchemy.url = sqlite:///%(here)s/db.sqlite
+{{endif}}
 
 
 [pipeline:main]
