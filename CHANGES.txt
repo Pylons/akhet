@@ -1,10 +1,15 @@
-dev (unreleased)
+1.0 (unreleased)
 ----------------
 - App skeleton:
 
   + Simplify home page and add a Mako site template that can be easily
     extended by the user.
+  + New default layout and stylesheet by Marcin Lulek (Ergo^), designed to
+    be extensible and a learning tool.
+  + Separate industry-standard "reset" stylesheet for cross-browser
+    consistency.
   + Add "flash message" demo to home page.
+  + "Requirements" file for easy installation of dependencies.
 
 1.0b2 (2011-03-19)
 ------------------

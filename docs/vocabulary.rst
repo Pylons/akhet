@@ -3,15 +3,15 @@ Pyramid Vocabulary
 
 Router
 
-    A Pyramid WSGI application, an instance of ``pyramid.router.Router``.
-    Equivalent to ``PylonsApp``.
+    A Pyramid WSGI application, which is an instance of
+    ``pyramid.router.Router``.  Equivalent to ``PylonsApp``.
 
 View (View Callable)
 
     A function or method equivalent to a Pylons controller action. It takes a
-    Request object representing a web request, and returns a Response object.
-    (In Akhet the view's arguments and return value are different because of
-    handlers and renderers.)
+    ``Request`` object representing a web request, and returns a ``Response``
+    object.  (In Akhet the view's arguments and return value are different
+    than this because of handlers and renderers.)
 
 Handler (View Handler)
 
@@ -22,15 +22,13 @@ Handler (View Handler)
 MVC
 
     The Model-View-Controller pattern used in programming. Pyramid is more of a
-    MV (Model-View) framework than MVC. Many contemporary web developers --
-    while still supporting the basic principle of keeping your business
-    logic separate from your user interface code -- have given up on the formal
-    categories of MVC as not being well suited to the web.  MVC envisions a
+    MV (Model-View) framework than MVC. Many contemporary web developers have
+    given up on MVC as not being well suited to the web.  MVC envisions a
     three-way split between business logic, user interface, and framework
-    interface, but in practice the latter two are hard to separate. MVC was
-    invented in the 1980s to separate application code from low-level
-    keyboard drivers and video drivers, a situation not directly applicable to
-    modern web development.
+    interface, but in practice the latter two are hard to separate. A two-way
+    split is more useful: the *model* which is all code specific to your
+    business and can be used on its own, and the *view* which is all code
+    specific to the framework, user interface, and HTTP/HTML environment.
 
 URL Dispatch
 
@@ -40,9 +38,9 @@ URL Dispatch
 Traversal
 
     Pyramid's other routing mechanism, which looks up a view and a context by
-    matching the URL to a node in a resource tree.  Many Akhet applications do
-    not use traversal, and the Akhet docs don't cover how to use it.
-    Nevertheless, we'll briefly explain what it is.
+    matching the URL to a node in a resource tree.  Most simple Akhet
+    applications do not use traversal, and this manual does not cover how to
+    use it.  Nevertheless, we'll briefly explain what it is.
 
     Traversal is especially suited to situations where URLs can be arbitrarily
     deep in ways that are unknown at application startup, such as a CMS system
@@ -58,11 +56,11 @@ Traversal
 Resource Tree, Root, Resource
 
     In traversal, a *resource tree* is a nested dict-like structure such as a
-    ZODB database or a group of nested dicts. The outermost container object is
-    the *root*. Each value in the nested dicts is a *resource*.
+    ZODB object database or a group of nested dicts. The outermost container
+    object is the *root*. Each value in the nested dicts is a *resource*.
 
     In URL dispatch, the *root* can be any object. Normally you don't specify
-    it, and the system provides a default root.
+    it, and Pyramid provides a default root.
 
 Context
 
@@ -77,15 +75,18 @@ Context
 
 Request
 
-    A subclass of WebOb.Request which contains all state data pertinent to the
-    current request and the application runtime. Its attributes subsume the
-    functionality of several Pylons globals (request, response, session,
-    tmpl_context or c, url), the match dict, query parameters, etc. 
+    An object which contains all state data pertinent to the current web
+    request and the application runtime. It's a subclass of ``WebOb.Request``.
+    Its attributes subsume the functionality of several Pylons globals
+    (request, response, session, tmpl_context or c, url), the match dict, query
+    parameters, etc. 
 
 Response
 
-    A subclass of WebOb.Response, or any object with the same ``status``,
-    ``headerlist`` and ``app_iter`` attributes that a Response has.  
+    An object which specifies what kind of response to return to the user:
+    the HTTP status, HTTP headers, and body content. It's normally a subclass
+    of ``WebOb.Response`` but you can substite any object with the appropriate
+    ``status``, ``headerlist``, and ``app_iter`` attributes.
     A view must return a Response unless it's using a renderer.
 
 Renderer
@@ -132,5 +133,5 @@ Registry
 
     An object that is global to the application and contains internal framework
     data such as which routes and views have been defined. Application writers
-    generally ignore it except when they need a setting, which are in the
+    generally ignore it except when they need a setting, which are in its
     ``.settings`` attribute.
