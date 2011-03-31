@@ -1,0 +1,14 @@
+Akhet
+pyramid>=1.0a10
+pyramid_beaker
+pyramid_handlers
+{{if sqlalchemy}}
+pyramid_tm
+SQLAHelper
+SQLAlchemy
+transaction
+{{endif}}
+WebError
+{{if sqlalchemy}}
+zope.sqlalchemy
+{{endif}}
