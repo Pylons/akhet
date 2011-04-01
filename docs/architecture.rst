@@ -98,9 +98,14 @@ console. "reload_templates" causes Mako to check the modify time of each
 template before rendering it, to notice any changes. (It also works with
 Chameleon and some other template engines.)
 
-"sqlalchemy.url" is your database URL, the same as in Pylons. The "session.\*"
-variables are the same as in Pylons. "session.secret" is automatically set to a
-random number when the application is created.
+"sqlalchemy.url" is your database URL, the same as in Pylons. 
+
+The "cache" and "session" settings are for Beaker caching and sessions
+respectively. "session.secret" is automatically set to a random number when the
+application is created. The "mako" settings are for Mako templates. The
+defaults are fine for running an application, so in most cases you won't need
+to change them.  "%(here)s" in some values is expanded to the absolute path of
+the directory containing the INI file.
 
 The "[server:main]" section is the same as in Pylons. It tells which WSGI
 server to run. By default this is PasteHTTPServer, a multhtreaded HTTP server
@@ -249,8 +254,8 @@ serve", you can activate logging yourself this way::
     import logging.config
     logging.config.fileConfig(INI_FILENAME)
 
-Init module
-===========
+Init module and main function
+=============================
 
 A Pyramid application revolves around a top-level ``main()`` function in the
 application package. "paster serve" does the equivalent of this::
@@ -642,15 +647,14 @@ To issue a redirect inside a view, return an HTTPFound::
 You can return other HTTP errors the same way: ``HTTPNotFound``, ``HTTPGone``,
 ``HTTPForbidden``, ``HTTPUnauthorized``, ``HTTPInternalServerError``, etc.
 These are all subclasses of both ``Response`` and ``Exception``.  Although you
-can raise them, Pyramid prefers that you return them instead.
-
-If you intend to raise them, you have to do two extra things. One, define an
-exception view for each one that returns the exception object itself
-(``request.exception``). Two, if you want to be compatible with Python 2.4 and
-2.3, do ``raise HTTPNotFound().exception()`` rather than raising the instance
-directly. HTTP exceptions are new-style classes which can't be raised in Python
-2.4 or 2.3.  See the Views chapter in the Pyramid manual for details on
-exception views and raising HTTP exceptions.
+can raise them, Pyramid prefers that you return them instead. If you intend to
+raise them, you have to define an exception view that receives the exception
+argument and returns it, as shown in the Views chapter in the Pyramid manual.
+(On Python 2.4, you also have to call the instance's ``.exception()`` method
+and raise that, because you can't raise instances of new-style classes in 2.4.) 
+A future version of Pyramid may have an exception view built-in; this would
+conflict with your exception view so you'd need to delete it, but there's no
+need to worry about that until/if it actually happens.
 
 Pyramid catches two non-HTTP exceptions by default,
 ``pyramid.exceptions.NotFound`` and ``pyramid.exceptions.Forbidden``, which
@@ -1193,7 +1197,7 @@ To organize the form display-validate-action route, we recommend the
 decorator because too many people found the decorator too inflexible: they
 ended up copying part of the code into their action method.
 
-WebHelpers 1.3b1 has some new URL generator classes to make it easier to use
+WebHelpers 1.3 has some new URL generator classes to make it easier to use
 with Pyramid. See the ``webhelpers.paginate`` documentation for details. (Note:
 this is *not* the same as Akhet's URL generator; it's a different kind of class
 specifically for the paginator's needs.)
