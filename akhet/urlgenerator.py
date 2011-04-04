@@ -5,7 +5,7 @@ the request. My main use is in templates where my method names are shorter than
 the originals and you don't have to pass a request argument. In Akhet, a
 subscriber callback registers an instance of me as ``request.url_generator``,
 and another callback aliases me to the ``url`` global in templates. These
-callbacks are defined in myapp/subscribers.py.
+callbacks are defined in *myapp/subscribers.py*.
 
 The source code contains commented examples of "static_url" methods. We're not
 sure what's best here so we're leaving them commented and you can define them in
