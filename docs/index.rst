@@ -48,12 +48,14 @@ Documentation
    vocabulary
    paster
    architecture
+   default_content
    transaction_manager
    model_examples
    auth
    testing
    i18n
    migration
+   upgrading
    api
    other_pyramid_features
    bugs
