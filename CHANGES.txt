@@ -1,15 +1,19 @@
-1.0 (unreleased)
+1.1 (unreleased)
+----------------
+- Bug in ``URLGenerator.app``: returns wrong value.
+
+1.0 (2011-04-04)
 ----------------
 - App skeleton:
 
   + Simplify home page and add a Mako site template that can be easily
-    extended by the user.
+    extended by the user. New documentation chapters.
   + New default layout and stylesheet by Marcin Lulek (Ergo^), designed to
     be extensible and a learning tool.
   + Separate industry-standard "reset" stylesheet for cross-browser
     consistency.
   + Add "flash message" demo to home page.
-  + "Requirements" file for easy installation of dependencies.
+  + Add "requirements" file for easy installation of dependencies.
 
 1.0b2 (2011-03-19)
 ------------------

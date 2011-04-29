@@ -54,16 +54,16 @@ class URLGenerator(object):
         I turn into an ordinary string attribute on the first access.
         This saves CPU cycles if I'm accessed often.
 
-        I return the application prefix of the URL, ending in a slash. This
-        alone will get the home page, or append segments to get a sub-URL.
+        I return the application prefix of the URL. Append a slash to get the
+        home page URL, or additional path segments to get a sub-URL.
 
         If the constructor arg 'qualified' is true, I return
-        ``request.application_url``, otherwise I return ``request.path``.
+        ``request.application_url``, otherwise I return ``request.script_name``.
         """
         if self.qualified:
             return self.request.application_url
         else:
-            return self.request.path
+            return self.request.script_name
 
     def route(self, route_name, *elements, **kw):
         """Generate a route URL.
