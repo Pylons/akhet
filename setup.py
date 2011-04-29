@@ -20,7 +20,7 @@ entry_points = """
 """
 
 setup(name="Akhet",
-      version="1.0",
+      version="1.0.1",
       description="Pyramid application templates inspired by Pylons 1.",
       long_description=README,
       #long_description=README + "\n\n" +  CHANGES,
