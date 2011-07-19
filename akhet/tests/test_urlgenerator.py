@@ -41,7 +41,7 @@ class TestURLGenerator(unittest.TestCase):
         request = testing.DummyRequest()
         inst = self._makeOne(context, request, False)
         result = inst.app
-        self.assertEqual(result, '/')
+        self.assertEqual(result, '')
 
     def test_route_qualified(self):
         self.config.add_route('home', '/')
