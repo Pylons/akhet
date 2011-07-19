@@ -1,6 +1,7 @@
-1.0.1 (unreleased)
+1.0.1 (2011-07-18)
 ----------------
-- Bug in ``URLGenerator.app``: returns wrong value.
+- Fix bug in ``URLGenerator.app``: it was returning the wrong value and was
+  documented wrong.
 
 1.0 (2011-04-04)
 ----------------
