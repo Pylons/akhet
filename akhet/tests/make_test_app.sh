@@ -12,4 +12,6 @@ fi
 
 paster create -t akhet $APPNAME $*
 cd $APPNAME
+pip install -r requirements.txt
+python setup.py egg_info
 paster serve development.ini
