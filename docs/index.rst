@@ -1,6 +1,6 @@
 Akhet
 =====
-:Version: 1.0.1, released 2011-07-18
+:Version: 1.0.2, released 2011-07-20
 :PyPI: http://pypi.python.org/pypi/Akhet
 :Docs: http://docs.pylonsproject.org/projects/akhet/dev/
 :Source: https://bitbucket.org/sluggo/akhet (Mercurial)
@@ -14,7 +14,7 @@ bit easier to use. This manual explains Akhet and also attempts to be a gentle
 introduction to the Pyramid manual, which some people find overwhelming at
 first. This manual assumes you're familiar with Python web development.
 
-Version 1.0.1 fixes a bug in ``URLGenerator.app`` (aka ``url.app`` in
+Version 1.0.2 fixes a bug in ``URLGenerator.app`` (aka ``url.app`` in
 templates).
 
 **Existing Akhet applications:** Akhet 1.1 will be released soon, and will
