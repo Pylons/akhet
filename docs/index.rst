@@ -49,8 +49,9 @@ shining over two pylons. It means "horizon" or "mountain of light".
 
 
 
-.. [#] The term "scaffold" has replaced "application template" and "paster
-   template" to avoid confusion with HTML templates. 
+.. [#] The term "scaffold" is the same as "application template", "paster
+   template", and "skeleton". Pyramid has standardized on the term "scaffold"
+   to avoid confusion with HTML templates. 
 
 
 .. _Pyramid: http://docs.pylonshq.com/pyramid/dev/

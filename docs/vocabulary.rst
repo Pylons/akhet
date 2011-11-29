@@ -10,14 +10,15 @@ View (View Callable)
 
     A function or method equivalent to a Pylons controller action. It takes a
     ``Request`` object representing a web request, and returns a ``Response``
-    object.  (In Akhet the view's arguments and return value are different
-    than this because of handlers and renderers.)
+    object.  (The return value may be different when using a renderer.)
 
-Handler (View Handler)
+View Class (Handler)
 
     A class containing view methods, so equivalent to a Pylons controller.
-    Handlers are defined in the ``pyramid_handlers`` package and are
-    documentated there.
+    If the view is a method rather than a function, the ``request`` argument is
+    passed to the class constructor rather than to the method. The
+    ``pyramid_handlers`` package offers one Pylons-like way to define and
+    register view classes.
 
 MVC
 
@@ -29,6 +30,7 @@ MVC
     split is more useful: the *model* which is all code specific to your
     business and can be used on its own, and the *view* which is all code
     specific to the framework, user interface, and HTTP/HTML environment.
+    (The "controller" then is the framework itself.)
 
 URL Dispatch
 
@@ -71,7 +73,7 @@ Context
 
     In URL dispatch, the context is normally the same as the root, an
     unimportant default object. However, you can override the context on a
-    per-route basis to provide authorization information.
+    per-route basis to provide authorization information or data objects.
 
 Request
 
