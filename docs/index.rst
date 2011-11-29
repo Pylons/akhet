@@ -1,56 +1,30 @@
 Akhet
 =====
-:Version: 1.0.2, released 2011-07-20
+:Version: 2.0, released XXXX-XX-XX
 :PyPI: http://pypi.python.org/pypi/Akhet
 :Docs: http://docs.pylonsproject.org/projects/akhet/dev/
 :Source: https://bitbucket.org/sluggo/akhet (Mercurial)
 :Bugs: https://bitbucket.org/sluggo/akhet/issues
 :Discuss: pylons-discuss_ list
 
+Akhet is a set of tutorial-level documentation and convenience code for
+Pyramid_. Version 2 focuses more heavily on documentation, and does not contain
+an application scaffold [#]_. Instead of a scaffold, the
+documentation shows how to customize Pyramid's built-in scaffolds to give a
+Pylons-like environment. The Akhet library (the ``akhet`` Python package) is
+still around; it's unchanged in this release.
 
-**Akhet** is a Pylons-like application template (or "skeleton") for the
-Pyramid_ web framework, along with a small support library to make Pyramid a
-bit easier to use. This manual explains Akhet and also attempts to be a gentle
-introduction to the Pyramid manual, which some people find overwhelming at
-first. This manual assumes you're familiar with Python web development.
-
-Version 1.0.2 fixes a bug in ``URLGenerator.app`` (aka ``url.app`` in
-templates).
-
-**Existing Akhet applications:** Akhet 1.1 will be released soon, and will
-depend on Pyramid 1.1. If you don't want to upgrade, set your dependencies in your
-application's *setup.py*: "Akhet>= 1.0, <= 1.0.99" and "pyramid>=1.0a10, <=
-1.0.99".
-
-.. _Pyramid: http://docs.pylonshq.com/pyramid/dev/
-.. _pylons-discuss: http://groups.google.com/group/pylons-discuss
-
-Features
---------
-
-* URL dispatch and view handlers, similar to Pylons' Routes and controllers.
-* Asks whether to configure SQLAlchemy.
-* Sets up a transaction manager for request-wide commit and rollback.
-* A script to initialize the database (replaces "paster setup-app").
-* Serves static files under "/", mixed with your dynamic URLs.
-* Listens on localhost:5000 by default.
-* Logging configured in development.ini and production.ini.
-* Templates ending in .html are passed to Mako (or to your desired templater)
-* A helpers.py module tied to the ``h`` template global.
-  (You can also choose your own template globals.)
-* "handlers", "models", and "lib" are packages to give plenty of room for large
-  applications.
-* An extensible home page template, site template, and default stylesheet.
+Akhet 2.0 runs on Python 2.5 - 2.7.   The next version will probably add
+Python 3 support and drop Python 2.5, as Pyramid 1.3 is doing.
 
 
-Documentation
--------------
 
 .. toctree::
    :maxdepth: 1
 
-   usage
+   intro
    vocabulary
+   usage
    paster
    architecture
    default_content
@@ -63,7 +37,6 @@ Documentation
    upgrading
    api
    other_pyramid_features
-   bugs
    changes
 
 * :ref:`genindex`
@@ -71,15 +44,15 @@ Documentation
 * :ref:`search`
 
 
-Akhet was previously called "pyramid_sqla"; it was changed
-to reflect its evolution from a SQLALchemy application skeleton to a more
-full-fledged Pylons-like skeleton.  The SQLAlchemy library from pyramid_sqla
-was spun off to the "SQLAHelper" package.
-
 The word "akhet" is the name of the hieroglyph that is Pylons' icon: a sun
 shining over two pylons. It means "horizon" or "mountain of light".
 
-Akhet was developed on Python 2.6 and Ubuntu Linux 10.10. Pyramid runs on
-Python 2.4 - 2.7; Mac, Windows, Unix; CPython, Jython, and Google App Engine.
-It does not run on Python 3 yet; several dependencies are being updated for
-that.
+
+
+.. [#] The term "scaffold" has replaced "application template" and "paster
+   template" to avoid confusion with HTML templates. 
+
+
+.. _Pyramid: http://docs.pylonshq.com/pyramid/dev/
+.. _pylons-discuss: http://groups.google.com/group/pylons-discuss
+

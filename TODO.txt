@@ -1,0 +1,1 @@
+Delete 'akhet' scaffold and 'paster_templates' directory; remove entry points.

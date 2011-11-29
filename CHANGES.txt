@@ -1,6 +1,10 @@
+2.0 (unreleased)
+----------------
+- Revamp documentation to focus on Pyramid's 'alchemy' scaffold.
+
 1.0.2 (2011-07-20)
 ------------------
--Adjust app skeleton to match URLGenerator.app fix in 1.0.1.
+- Adjust app skeleton to match URLGenerator.app fix in 1.0.1.
 
 1.0.1 (2011-07-18)
 ------------------
