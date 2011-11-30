@@ -25,7 +25,6 @@ Python 3 support and drop Python 2.5, as Pyramid 1.3 is doing.
    intro
    vocabulary
    usage
-   paster
    architecture
    default_content
    transaction_manager
@@ -37,7 +36,10 @@ Python 3 support and drop Python 2.5, as Pyramid 1.3 is doing.
    upgrading
    api
    other_pyramid_features
-   changes
+
+   appendix/changes
+   appendix/no_site_packages
+   appendix/uninstalling
 
 * :ref:`genindex`
 * :ref:`modindex`

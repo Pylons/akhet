@@ -1,1 +1,5 @@
 Delete 'akhet' scaffold and 'paster_templates' directory; remove entry points.
+
+Does Akhet without scaffolds require 'pyramid' dependency? If so, which
+versions, and how will it handle future Pyramid version changes? Is it still
+depending on Paste or PasteScript?
