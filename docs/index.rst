@@ -1,6 +1,6 @@
 Akhet
 =====
-:Version: 2.0, released XXXX-XX-XX
+:Version: 2.0b1, released XXXX-XX-XX
 :PyPI: http://pypi.python.org/pypi/Akhet
 :Docs: http://docs.pylonsproject.org/projects/akhet/dev/
 :Source: https://bitbucket.org/sluggo/akhet (Mercurial)
@@ -9,7 +9,7 @@ Akhet
 
 Akhet is a set of tutorial-level documentation and convenience code for
 Pyramid_. Version 2 focuses more heavily on documentation, and does not contain
-an application scaffold [#]_. Instead the documentation shows how to customize
+an application scaffold [#]_. Instead, the documentation shows how to customize
 Pyramid's built-in scaffolds to give a Pylons-like environment. The
 documentation focuses on things that either aren't in the Pyramid manual or
 deserve highlighting, and it also discusses the tradeoffs between various
@@ -38,10 +38,7 @@ Python 3 support and drop Python 2.5, as Pyramid 1.3 is doing.
    upgrading
    api
    other_pyramid_features
-
-   appendix/changes
-   appendix/no_site_packages
-   appendix/uninstalling
+   changes
 
 * :ref:`genindex`
 * :ref:`modindex`
