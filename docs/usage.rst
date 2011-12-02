@@ -19,7 +19,8 @@ For Pyramid 1.3 (unreleased; this won't work until it's released):
     (myvenv)$ pip install Akhet
     (myvenv)$ pcreate -s alchemy Zzz
     (myenv)$ cd Zzz
-    (myenv)$ python setup.py egg_info
+    (myenv)$ pip install -e .
+    (myenv)$ populate_Zzz development.ini
     (myenv)$ pserve development.ini
 
 For Pyramid 1.2 and earlier:
@@ -32,7 +33,8 @@ For Pyramid 1.2 and earlier:
     (myvenv)$ pip install Akhet
     (myvenv)$ paster create -t routesalchemy Zzz
     (myenv)$ cd Zzz
-    (myenv)$ python setup.py egg_info
+    (myenv)$ pip install -e .
+    (myenv)$ populate_Zzz development.ini
     (myenv)$ paster serve development.ini
 
 Throughout this manual we'll use "Zzz" for your application's name, and ``zzz``
@@ -50,9 +52,15 @@ some Zope packages but not all the ones Pyramid needs, and ``zope`` is a
 namespace package which can't be split between the global directory and the
 virtualenv.) 
 
-Remember to re-run the "egg_info" command whenever you add or delete files in
-the application, in order to update the package metadata (*Zzz.egg-info*
-directory). 
+"pip install -e ." installs the application and all dependencies listed in
+setup.py. This is necessary with the 'akhet' scaffold to install SQLAlchemy.
+In a simpler application with no dependencies, you can get by with just running
+"python setup.py egg_info" (which updates the distribution metadata without
+installing the distribution) *if* you always chdir to the application's
+directory before running it.
+
+Remember for later: whenever you add or delete a file in the application
+directory, run "python setup.py egg_info" to update the metadata.
 
 See `Uninstalling <appendix/uninstalling.html>`_ if you want to uninstall
 things later.
@@ -74,7 +82,8 @@ repositories. Pyramid, however, requires additional steps.
     (myvenv)$ pip install -e ./Akhet
     (myvenv)$ pcreate -s alchemy Zzz
     (myenv)$ cd Zzz
-    (myenv)$ python setup.py egg_info
+    (myenv)$ pip install -e .
+    (myenv)$ populate_Zzz development.ini
     (myenv)$ pserve development.ini
 
 

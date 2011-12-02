@@ -35,7 +35,6 @@ Python 3 support and drop Python 2.5, as Pyramid 1.3 is doing.
    testing
    i18n
    migration
-   upgrading
    api
    other_pyramid_features
    changes

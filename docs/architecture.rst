@@ -1,17 +1,14 @@
-Akhet Architecture
-%%%%%%%%%%%%%%%%%%%%%%%
+Pyramid Architecture
+%%%%%%%%%%%%%%%%%%%%
 
 Introduction
 ============
 
-Here we'll go through the code in an Akhet application, explaining what each
-part is and how it differs from Pylons. Some features come from Pyramid and are
-common to Pyramid's built-in application skeletons, while others features are
-added by Akhet. We'll try to specify which features come from where.
-
-The sample application here is named "Zzz", and the top-level Python package
-within it is "zzz". So wherever this manual says Zzz or zzz, it means your
-actual application name or package name.
+Here we'll go through the code in the application created in the previous
+chapter. (I.e., an application created from the 'alchemy' scaffold in Pyramid
+1.3 or the 'routesalchemy' scaffold in Pyramid 1.2 and earlier.) We'll look at
+what each part is, how it differs from Pylons, how to add the features Akhet 1
+had, and some alternative enhancements and their tradeoffs.
 
 INI files
 =========
@@ -19,183 +16,154 @@ INI files
 development.ini
 ---------------
 
-*development.ini* is generally similar to Pylons but has some different sections
-and options:
+*development.ini* is similar to Pylons but some of the options are different:
 
 .. code-block:: ini
 
-    [app:myapp]
+    [app:main]
     use = egg:Zzz
-    reload_templates = true
-    debug_authorization = false
-    debug_notfound = false
-    debug_routematch = false
-    debug_templates = true
-    default_locale_name = en
-    cache.regions = default_term, second, short_term, long_term
-    cache.type = memory
-    cache.second.expire = 1
-    cache.short_term.expire = 60
-    cache.default_term.expire = 300
-    cache.long_term.expire = 3600
-    mako.directories = zzz:templates
-    mako.strict_undefined = true
-    session.type = file
-    session.data_dir = %(here)s/data/sessions/data
-    session.lock_dir = %(here)s/data/sessions/lock
-    session.key = Zzz
-    session.secret = 3f4c8f62600a4edda7026f0ce13befbccd8bbcdb
-    sqlalchemy.url = sqlite:///%(here)s/db.sqlite
 
-.. code-block:: ini
+    pyramid.reload_templates = true
+    pyramid.debug_authorization = false
+    pyramid.debug_notfound = false
+    pyramid.debug_routematch = false
+    pyramid.debug_templates = true
+    pyramid.default_locale_name = en
+    pyramid.includes = pyramid_debugtoolbar
+                       pyramid_tm
+
+    sqlalchemy.url = sqlite:///%(here)s/Zzz.db
 
     [server:main]
-    use = egg:Paste#http
-    host = 127.0.0.1
-    port = 5000
+    use = egg:pyramid#wsgiref
+    host = 0.0.0.0
+    port = 6543
 
-.. code-block:: ini
+The structure is the same as Pylons, but simpler than earlier versions of
+Pyramid. The "[app:main]" section is the runtime configuration for our
+application. The "[server:main]" section tells which WSGI server to run it
+under.  (We've omitted the logging sections, which are the bottom 2/3 of the
+file. We'll cover logging below.) 
 
-    [pipeline:main]
-    pipeline =
-        egg:WebError#evalerror
-        myapp
+The "use = egg:Zzz" tells which Python distribution to load, in this case our
+"Zzz" application. The "pyramid.\*" options are mostly debugging variables.
+Set any of them to "true" to enable various kinds of debug logging.
+"pyramid.reload_templates" tells whether to recheck the timestamp of template
+source files whenever it renders a template, in case the file has been updated
+since startup. (Mako and Chameleon respect this value, but not all template
+engines understand it.)  "pyramid.default_locale_name" sets the predominent
+region/language for the application.
 
-..
-    The sections are in different code blocks due to a limitation in Pygments'
-    syntax highlighting. If a value spans multiple lines as the "pipeline"
-    value does, Pygments will not colorize any of the block.
+"pyramid_includes" lists the "tweens" to wrap around the application. Tweens
+are like WSGI middleware but are specific to Pyramid. "pyramid_debugtoolbar" is
+the debug toolbar at the right margin of browser screens, and shows an
+interactive traceback screen if an exception occurs. "pyramid_tm" is the
+transaction manager which is covered in a later chapter.
 
-The first thing to notice is that the main section is "[pipeline:main]", not
-"[app:main]". In Pylons middleware is configured in middleware.py, but in
-Pyramid it's configured in the INI file. Pyramid does not require any
-middleware at all; we're only using it here for error handling.  
+To see the interactive traceback in action, edit *zzz/views.py* and add a line
+"raise RuntimeError" before the "return" line in my_view().
 
-The default development pipeline has two components:
+"sqlalchemy.url" tells which database the application should use. "%(here)s"
+expands to the path of the directory containing this file.
 
-1. WebError's EvalError, which produces the interactive traceback if
-   there's an uncaught exception.
+Your application can define its own additional options here, and they will be
+visible in the application code as Pyramid "settings".
 
-2. "zzz" is the application, defined in the "[app:myapp]" section.
-
-The "[app:myapp]" section has a "use = egg:Zzz" setting, which tells Paste to
-load the Pyramid application by its entry point. An entry point is a shortcut
-alias to a callable. The other variables in this section are arguments to that
-callable, passed using ``\*\*kwargs`` so that the names can contain ".". The
-actual callable is the ``main()`` function in the next section. Entry points
-are defined in the application's *setup.py*.  More information on entry points
-is in the Setup or Distribute documentation.
-
-The "myapp" in the section name is always "myapp". All other "Zzz"'s in this
-article are the actual name of your application, and "myapp"'s are the
-corresponding package name. (Akhet hardcodes the section name to "myapp" so that
-command-line utilities can guess which section contains the application
-settings without having to ask the user.  "paster pshell" asks the user anyway,
-but we're working on that.) 
-
-The "debug\_\*" settings turn on various debugging features which output to the
-console. "reload_templates" causes Mako to check the modify time of each
-template before rendering it, to notice any changes. (It also works with
-Chameleon and some other template engines.)
-
-"sqlalchemy.url" is your database URL, the same as in Pylons. 
-
-The "cache" and "session" settings are for Beaker caching and sessions
-respectively. "session.secret" is automatically set to a random number when the
-application is created. The "mako" settings are for Mako templates. The
-defaults are fine for running an application, so in most cases you won't need
-to change them.  "%(here)s" in some values is expanded to the absolute path of
-the directory containing the INI file.
+Some Pyramid add-ons also look here for configuration settings. For instance,
+Beaker looks for "cache.\*" and "session.\*" settings, and Mako looks for
+"mako.\*" settings.  You can use these to configure what kind of persistent
+session store to use, how long until idle sessions are discarded, and what
+character encoding to use for template output (the default is "utf-8").
+possible options are listed in the Pyramid manual or the add-on's manual.
 
 The "[server:main]" section is the same as in Pylons. It tells which WSGI
-server to run. By default this is PasteHTTPServer, a multhtreaded HTTP server
-written in Pylons. 
+server to run. Pyramid 1.3 defaults to the wsgiref HTTP server in the
+Python standard library. It's single-threaded so it can only handle one request
+at a time, but that's good enough for development or debugging. 
+
+I normally set "host = 127.0.0.1" and "port = 5000" after creating an
+application. That way it serves only request coming from the same computer
+rather than from any computer on the network. That enhances security when the
+debug toolbar is enabled. Port 5000 is the Pylons tradition, and it's easier to
+remember and type than 6543. 
+
+Pyramid no longer uses WSGI middleware by default. If you want to add your own
+middleware, see the `PasteDeploy manual`_ for the syntax. But first consider
+whether making a Pyramid tween would be more convenient.
+
+You can of course create multiple INI files if you want to try the application
+out under different configuration scenarios, for instance to compare a
+database and a PostgresSQL database. You can even run them simultaneously as
+long as each configuration specifies a different port.
 
 production.ini
 --------------
 
-*production.ini* has a different pipeline:
+The default production file is just slightly different from the development
+file:
 
 .. code-block:: ini
 
-    [pipeline:main]
-    pipeline =
-        weberror
-        myapp
+    [app:main]
+    use = egg:Zzz
 
-Here the WebError middleware replaces EvalException. This is exactly what
-Pylons does; it's just configured a different way. Pylons has a global 'debug'
-setting that indirectly choses WebError when false, while Pyramid just lets you
-configure the middleware directly.
-WebError dumps exception tracebacks to the console or emails them the
-admistrator. It's is configured in the "[filter:weberror]" section:
+    pyramid.reload_templates = false
+    pyramid.debug_authorization = false
+    pyramid.debug_notfound = false
+    pyramid.debug_routematch = false
+    pyramid.debug_templates = false
+    pyramid.default_locale_name = en
+    pyramid.includes = pyramid_tm
 
-.. code-block:: ini
+    sqlalchemy.url = sqlite:///%(here)s/Zzz.db
 
-    [filter:weberror]
-    use = egg:WebError#error_catcher
-    debug = false
-    ;error_log = 
-    ;show_exceptions_in_wsgi_errors = true
-    ;smtp_server = localhost
-    ;error_email = janitor@example.com
-    ;smtp_username = janitor
-    ;smtp_password = "janitor's password"
-    ;from_address = paste@localhost
-    ;error_subject_prefix = "Pyramid Error"
-    ;smtp_use_tls =
-    ;error_message =
+    [server:main]
+    use = egg:pyramid#wsgiref
+    host = 0.0.0.0
+    port = 6543
 
-Again, these are the same settings as Pylons' production.ini, just in a
-different format.  
+The most important difference here is that "pyramid_debugtoolbar" is NOT
+enabled. **This is vital for security!**  Otherwise miscreants can type
+arbitrary Python commands in the interactive traceback if an exception occurs,
+and potentially read password files or damage the system.
 
-.. important::
+If an exception occurs during a production request, the user will get a plain
+white error screen, "A server error occurred.  Please contact the
+administrator." To customize that, see "Exception Views" in the Pyramid manual.
+The traceback will be dumped to the console, and will not be shown to the user.
+To customize how tracebacks are reported to the administrator, install the
+pyramid_exclog_ tween, which is covered below in Logging. (This replaces the
+WebError#error_catcher middleware which was used in Pylons and earlier versions
+of Pyramid.)
 
-   **To avoid security risks when running in production, ensure that
-   EvalException is NOT used, and that WebError's debug setting is false.**
-   The default production.ini does this, but you should double-check it anyway. 
+The debug settings are all set to false in production. This saves a few CPU
+cycles while it's processing requests.
 
-   EvalException is useful during development, but if the application is
-   exposed to the Internet and a malicious user gets the interactive traceback,
-   either by accidentally getting an exception or by forcing an exception, s/he
-   would have a Python prompt directly into your application's process, and
-   could modify files or variables.
+The server section is unchanged from development.ini.  The correct settings
+here depend on what webserver you're running the application with, so you'll
+have to configure this part yourself. 
 
-   WebError's debug mode is less dangerous but it does show an exception's
-   traceback to the user, which may reveal details of your application
-   structure and server environment that could be leveraged in an attack.
+If you're using Apache's mod_proxy to proxy to a Python HTTP server, you might
+want to change this to "use = egg:pyramid#cherrypy". This uses the CherryPy
+server, which is multithreaded like paste.httpserver (which Pylons and older
+versions of Pyramid used), but is more robust under high loads. (You'll have to
+install CherryPy to use this.)
 
-The "error_message" variable allows you to customize the error message shown to
-the user if an exception occurs. The default message is rather unsatisfactory::
-
-    Server Error
-
-    An error occurred. See the error logs for more information. (Turn debug on
-    to display exception reports here) 
-
-This is more of a message to you than a meaningful message to the user, so you
-may want to change it. Whatever text you put in the 'error_message' variable
-will replace the second paragraph of the message. If you have a multi-line
-message, indent the subsequent lines so that ConfigParser knows they're
-continuation lines.
-
-In the application section of *production.ini*, all the "debug\_\*" variables
-and "reload_templates" are false. This saves some CPU cycles as it's processing
-requests. 
+The Pyramid manual and Cookbook discuss other deployment scenarios like
+mod_wsgi and FastCGI.
 
 Logging
 -------
 
-The bottom half of both INI files contain several sections to configure
-Python's logging system.  This is the same as in Pylons. 
-
-We can't explain the entire logging syntax here, but these are the sections
-most often customized by users:
+The bottom 2/3 of both INI files contain several sections to configure
+Python's logging system.  This is the same as in Pylons.  We can't explain the
+entire logging syntax here, but these are the sections most often customized by
+users:
 
 .. code-block:: ini
 
     [logger_root]
-    level = WARN
+    level = INFO
     handlers = console
 
     [logger_zzz]
@@ -222,22 +190,26 @@ otherwise specified.
 Generally, DEBUG is debugging information, INFO is chatty success messages,
 WARN means something might be wrong, ERROR means something is
 definitely wrong, and CRITICAL means you'd better fix it now or else. 
-But each library can choose log at which level. So SQLAlchemy logs SQL queries
-at the INFO level on "sqlalchemy.engine.ENGINE_NAME", even though some people
-would consider this debugging information. 
+But there's nothing to enforce this, so each library chooses how to log things.
+So SQLAlchemy logs SQL queries at the INFO level on
+"sqlalchemy.engine.ENGINE_NAME", even though some people would consider this
+debugging information. 
 
 Logger names do NOT automatically correspond to Python module names, although
-it's customary to do so if there's no better name for the logger. That lets the
-user quickly find the code that produced a log message.  In Akhet applications,
-several loggers are predefined with the same name as the containing module.
-E.g., ``zzz.helpers.main`` has the following code::
+it's customary to do so if there's no better name for the logger. You can do
+this by putting the following at the top of each module:
 
     import logging
     log = logging.getLogger(__name__)
 
-This creates a variable ``log`` which is the "zzz.helpers.main" logger.
-(``__name__`` is a special Python variable which is the name of the current
-moduole.)
+This creates a variable ``log`` which is a logger named after the module. So if
+the module is ``zzz.views``, the logger is "zzz.views".
+
+The default *development.ini* displays all messages from the application
+modules (logger_zzz = DEBUG). It displays SQL queries (logger_sqlalchemy =
+INFO). It displays other messages only if they're warnings or above
+(logger_root = WARN).  The default *production.ini* sets all these to WARN, so
+it will not log anything except warnings or errors.
 
 By default, *development.ini* sets the root logger to WARN, the application
 logger to DEBUG, and the SQLAlchemy engine logger to INFO. This displays all
@@ -1239,3 +1211,5 @@ mod_proxy, or mod_wsgi, or whatever else you prefer.
 
 .. _MultiDict API: api.html#multidict
 .. _API: api.html
+.. _PasteDeploy manual: http://pythonpaste.org/deploy/
+.. _pyramid_exclog: http://docs.pylonsproject.org/projects/pyramid_exclog/en/latest/
