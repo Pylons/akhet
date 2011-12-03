@@ -1,6 +1,13 @@
 Introduction to Akhet 2
 %%%%%%%%%%%%%%%%%%%%%%%
 
+This chapter discusses Akhet's history and current status. The second chapter
+introduces some vocabulary terms. The third chapter summarizes how to create a
+Pyramid application using the recommended skeleton, and how to use the Pyramid
+and Akhet development versions. The next several chapters analyze different
+aspects of the default application, and discuss various enhancements you can
+add to it. The final chapters discuss other Pyramid topics.
+
 Akhet evolved out of a Pyramid/SQLAlchemy application scaffold. It then grew
 more Pylons-like features, a small library, and documentation that
 expanded to become a general introduction to Pyramid.  In Akhet 2, the
@@ -13,9 +20,9 @@ reversal?  Pyramid, in version 1.3 (to be released at the end of 2011 or early
 * 'starter': traversal only, no database [#]_
 
 Thus, rather than having scaffolds for all combinations of libraries, Pyramid
-will have scaffolds for just the most widely-used application styles. Most
-people use URL dispatch with SQLAlchemy, and traversal with ZODB, so these are
-the combinations offered.
+1.3 just has scaffold for the most widely-used application styles. Most people
+use URL dispatch with SQLAlchemy, and traversal with ZODB, so these are the
+combinations offered.
 
 If you're coming from Akhet 1, or from Pylons/Django/Rails/PHP, use the
 'alchemy' scaffold in Pyramid 1.3 (or in Pyramid 1.2, the 'routesalchemy'

@@ -1,17 +1,19 @@
-Usage
-%%%%%
+Creating an Application and Using Development Versions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Creating a Pyramid/Akhet application
-====================================
+Creating a Pyramid application
+==============================
 
 Here are the basic steps to install Pyramid and Akhet, create a virtualenv and
-activate it, create an application, and run it so you can see it in the
-browser. The sample application is called "Zzz"; it contains a Python package
-``zzz``.
+activate it, create an application using the recommended scaffold, initialize
+the database, and run the application so you can see it in your web browser.
+Our sample application is called "Zzz"; it contains a Python package ``zzz``.
+A prebuilt tarball is available: Zzz.tar.gz_ [#]_.  The chapters after this
+will walk through this default application.
 
 For Pyramid 1.3 (unreleased; this won't work until it's released):
 
-.. code-block:: sh
+.. code-block:: console
 
     $ virtualenv --no-site-packages ~/directory/myvenv
     $ source ~/directory/myvenv/bin/activate
@@ -25,7 +27,7 @@ For Pyramid 1.3 (unreleased; this won't work until it's released):
 
 For Pyramid 1.2 and earlier:
 
-.. code-block:: sh
+.. code-block:: console
 
     $ virtualenv --no-site-packages ~/directory/myvenv
     $ source ~/directory/myvenv/bin/activate
@@ -36,9 +38,6 @@ For Pyramid 1.2 and earlier:
     (myenv)$ pip install -e .
     (myenv)$ populate_Zzz development.ini
     (myenv)$ paster serve development.ini
-
-Throughout this manual we'll use "Zzz" for your application's name, and ``zzz``
-for the top-level Python module in the application.
 
 The "--no-site-packages" option is recommended for Pyramid; it isolates the
 virtualenv from packages installed globally on the computer, which may be
@@ -71,7 +70,7 @@ Using development versions
 Installing Akhet from its source repository works like most Python
 repositories. Pyramid, however, requires additional steps.
 
-.. code-block::  sh
+.. code-block::  console
 
     $ virtualenv --no-site-packages ~/directory/myvenv
     $ source ~/directory/myvenv/bin/activate
@@ -104,7 +103,7 @@ Uninstalling
 To uninstall an application or package that was installed with pip, use "pip
 uninstall":
 
-.. code-block:: sh
+.. code-block:: console
 
    (myvenv)$ pip uninstall Zzz
 
@@ -118,8 +117,14 @@ egg_info), *Zzz.egg* (easy_install directory or ZIP file), and *Zzz.egg-link*
 if present.
 
 
+.. [#] The tarball was built with Pyramid 1.3-dev (2011-12-02, rev.
+   d5666e630a08c943a22682540aa51174cee6851f), Python 2.7.2, on Ubuntu 11.10
+   (Linux). 
+
+
 .. _Pyramid documentation: http://docs.pylonsproject.org/en/latest/docs/pyramid.html
 .. _Pyramid tutorials: http://docs.pylonsproject.org/projects/pyramid_tutorials/dev/
 .. _virtualenv: http://pypi.python.org/pypi/virtualenv
 .. _Installing Pyramid: http://docs.pylonsproject.org/projects/pyramid/1.0/narr/install.html
 .. _submodules: http://schacon.github.com/git/git-submodule.html
+.. _Zzz.tar.gz: _static/Zzz.tar.gz
