@@ -4,11 +4,14 @@ Creating an Application and Using Development Versions
 Creating a Pyramid application
 ==============================
 
-Here are the basic steps to install Pyramid and Akhet, create a virtualenv and
-activate it, create an application using the recommended scaffold, initialize
-the database, and run the application so you can see it in your web browser.
+Here are the basic steps to install Pyramid and Akhet, create a virtualenv,
+create an application using the recommended 'alchemy' scaffold, and run it in
+your web browser. The steps are effectively the same as the installation
+chapter in Pyramid's `Wiki2 tutorial`_; I'm just using pip more for
+installation.  
+
 Our sample application is called "Zzz"; it contains a Python package ``zzz``.
-A prebuilt tarball is available: Zzz.tar.gz_ [#]_.  The chapters after this
+A prebuilt tarball is available: Zzz.tar.gz_ [#]_.  The following chapters
 will walk through this default application.
 
 For Pyramid 1.3 (unreleased; this won't work until it's released):
@@ -128,3 +131,4 @@ if present.
 .. _Installing Pyramid: http://docs.pylonsproject.org/projects/pyramid/1.0/narr/install.html
 .. _submodules: http://schacon.github.com/git/git-submodule.html
 .. _Zzz.tar.gz: _static/Zzz.tar.gz
+.. _Wiki2 tutorial: http://docs.pylonsproject.org/projects/pyramid/en/latest/tutorials/wiki2/installation.html

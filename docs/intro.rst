@@ -1,10 +1,10 @@
 Introduction to Akhet 2
 %%%%%%%%%%%%%%%%%%%%%%%
 
-This chapter discusses Akhet's history and current status. The second chapter
+This chapter discusses Akhet's history and current status. The next chapter
 introduces some vocabulary terms. The third chapter summarizes how to create a
 Pyramid application using the recommended skeleton, and how to use the Pyramid
-and Akhet development versions. The next several chapters analyze different
+and Akhet development versions. The subsequent chapters analyze different
 aspects of the default application, and discuss various enhancements you can
 add to it. The final chapters discuss other Pyramid topics.
 
@@ -17,30 +17,34 @@ reversal?  Pyramid, in version 1.3 (to be released at the end of 2011 or early
 
 * 'alchemy': URL dispatch + SQLAlchemy
 * 'zodb': traversal + ZODB
-* 'starter': traversal only, no database [#]_
+* 'starter': URL dispatch only, no database
 
-Thus, rather than having scaffolds for all combinations of libraries, Pyramid
-1.3 just has scaffold for the most widely-used application styles. Most people
-use URL dispatch with SQLAlchemy, and traversal with ZODB, so these are the
-combinations offered.
+Thus, Pyramid 1.3 focuses on the two most widely-used application styles,
+rather than on having scaffolds for all possible combinations of libraries.
+Most people use URL dispatch with SQLAlchemy, and traversal with ZODB, so these
+are the combinations offered.
 
 If you're coming from Akhet 1, or from Pylons/Django/Rails/PHP, use the
-'alchemy' scaffold in Pyramid 1.3 (or in Pyramid 1.2, the 'routesalchemy'
-scaffold which is identical). Then read on to see how to customize the
-application to add all the features Akhet 1 had. Each feature requires pasting
-in only a few lines of code, and by doing it yourself you'll get a better feel
-of how it's implemented and what it's doing. 
+'alchemy' scaffold in Pyramid 1.3 (or the 'routesalchemy' scaffold in Pyramid
+1.2, which is identical). Then read on to see how to customize the application
+to add all the features Akhet 1 had. Each feature requires pasting in only a
+few lines of code, and by doing it yourself you'll get a better feel of how
+it's implemented and what it's doing. 
 
 Rant about scaffolds and PasteScript
 ------------------------------------
 
 The main reason the 'akhet' scaffold is gone is that maintaining it turned out
 to be a significant burden. Testing a scaffold requires several manual steps --
-every time you change a bit of code. Scaffolds aren't inheritable, so you can't
-just specify the differences from an existing scaffold, you have to copy the
-whole thing... and then duplicate any later changes that get made to the
-original.  The scaffold API is primitive and limited; e.g., it has questions
-and variables but they're clumsy. 
+change a line of code, generate an app, install it, test a URL, test some other
+URLs, change the application, backport the change to the scaffold, generate
+another app, install and test it, -OR- make changes directly to the scaffold
+and generate an app to see whether it works. If it requires custom application
+code to trigger the bug, you have to re-apply the code every time you crete the
+app. Beyond that, Pyramid evolves over time, so the scaffolds have to be
+updated even if they were working OK. And the scaffold API is primitive and
+limited; e.g., you can't inherit from a scaffold and specify just the changes
+between yours and the parent.
 
 The final barrier
 was Python 3. Other packages descended from Paste have been ported to 3
@@ -72,8 +76,6 @@ without the scaffold. And as I work on my own applications and come up with new
 pieces of advice or new convenience classes, I need a place to put them, and
 Akhet 2 is an ideal place. So viva the new, scaffold-free, Akeht 2.
 
-.. [#] 'starter' might possibly switch to URL dispatch,
-   but it had not done so as of this writing.
 
 .. _Usage: usage.html
 .. _Kotti: http://pypi.python.org/pypi/Kotti
