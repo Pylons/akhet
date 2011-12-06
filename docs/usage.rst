@@ -1,20 +1,34 @@
-Creating an Application and Using Development Versions
+Installing Pyramid and Creating Applications
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Creating a Pyramid application
-==============================
+Here are the basic steps to install Pyramid and Akhet and create an
+application. For more details see the `Installing Pyramid`_ and `Creating a
+Pyramid Project`_ chapters in the Pyramid manual.  New users should also do
+the `SQLAlchemy + URL Dispatch Wiki Tutorial`_, which explains Pyramid while
+you build a simple wiki application. 
 
-Here are the basic steps to install Pyramid and Akhet, create a virtualenv,
-create an application using the recommended 'alchemy' scaffold, and run it in
-your web browser. The steps are effectively the same as the installation
-chapter in Pyramid's `Wiki2 tutorial`_; I'm just using pip more for
-installation.  
+The steps here are effectively the same as
+the installation chapter of the Wiki tutorial; we're just using pip rather than
+other installation commands because it makes uninstallation easier, and because
+it's the `new hotness`_. We also activate the virtualenv_, which allows us to
+keep the application source outside the virtualenv without having to type
+convoluted paths to run virtualenv commands. Keeping the application outside
+the virtualenv makes it easier to delete/recreate the virtualenv if it gets
+hosed, and to run the application under multiple virtualenvs (e.g., to see how
+it works under different Python versions, different Pyramid versions, and
+different dependency versions). 
 
-Our sample application is called "Zzz"; it contains a Python package ``zzz``.
-A prebuilt tarball is available: Zzz.tar.gz_ [#]_.  The following chapters
-will walk through this default application.
+Our sample application is called "Zzz"; it contains a Python package ``zzz``. A
+prebuilt tarball is available: Zzz.tar.gz_ [#]_.  The following chapters will
+walk through this default application.
 
-For Pyramid 1.3 (unreleased; this won't work until it's released):
+These steps assume you have Python, virtualenv_, and SQLite_ installed.
+
+Creating an application with Pyramid 1.3 and Akhet
+==================================================
+
+(Pyramid 1.3 is unreleased as of this writing. This alternative won't work
+until it's released, so use one of the other two alternatives instead.)
 
 .. code-block:: console
 
@@ -28,7 +42,9 @@ For Pyramid 1.3 (unreleased; this won't work until it's released):
     (myenv)$ populate_Zzz development.ini
     (myenv)$ pserve development.ini
 
-For Pyramid 1.2 and earlier:
+
+Creating an application with Pyramid 1.2 and Akhet
+==================================================
 
 .. code-block:: console
 
@@ -42,33 +58,9 @@ For Pyramid 1.2 and earlier:
     (myenv)$ populate_Zzz development.ini
     (myenv)$ paster serve development.ini
 
-The "--no-site-packages" option is recommended for Pyramid; it isolates the
-virtualenv from packages installed globally on the computer, which may be
-incompatible or have conflicting versions. If you have trouble installing a
-package that has C extensions (e.g., a database library, PIL, NumPy), you can
-try making a symlink from the virtualenv's site-packages directory to the OS
-version of the package; it may take some jiggering to make the package happy.
 
-(I found --no-site-packages necessary on Ubuntu 10, because Ubuntu installs
-some Zope packages but not all the ones Pyramid needs, and ``zope`` is a
-namespace package which can't be split between the global directory and the
-virtualenv.) 
-
-"pip install -e ." installs the application and all dependencies listed in
-setup.py. This is necessary with the 'akhet' scaffold to install SQLAlchemy.
-In a simpler application with no dependencies, you can get by with just running
-"python setup.py egg_info" (which updates the distribution metadata without
-installing the distribution) *if* you always chdir to the application's
-directory before running it.
-
-Remember for later: whenever you add or delete a file in the application
-directory, run "python setup.py egg_info" to update the metadata.
-
-See `Uninstalling <appendix/uninstalling.html>`_ if you want to uninstall
-things later.
-
-Using development versions
-==========================
+Creating an application with development versions of Pyramid and Akhet
+======================================================================
 
 Installing Akhet from its source repository works like most Python
 repositories. Pyramid, however, requires additional steps.
@@ -99,11 +91,47 @@ Three things to note here:
 * Pyramid *must* be installed as a link (with "-e") because a regular install
   won't copy the scaffolds or other supplemental files. (That's because the
   repository does not contain a MANIFEST.in file.)
+* The extra "./" is so that "pip install -e" recognizes the argument as a path
+  name rather than as something to download from PyPI.
+
+
+Observations
+============
+
+The "--no-site-packages" option is recommended for Pyramid; it isolates the
+virtualenv from packages installed globally on the computer, which may be
+incompatible or have conflicting versions. If you have trouble installing a
+package that has C extensions (e.g., a database library, PIL, NumPy), you can
+try making a symlink from the virtualenv's site-packages directory to the OS
+version of the package; it may take some jiggering to make the package happy.
+
+I found --no-site-packages necessary on Ubuntu 10 because Ubuntu installs
+some Zope packages but not all the ones Pyramid needs, and ``zope`` is a
+namespace package which can't be split between the global directory and the
+virtualenv. I have not had this problem with Ubuntu 11.10 so far, so it may be
+fixed.
+
+"pip install -e ." installs the application and all dependencies listed in
+setup.py. That's necessary for this application because it depends on
+SQLAlchemy, which is not installed with raw Pyramid. Installation also sets up
+the 'populate_Zzz' command. In a simpler application without these restrictions
+(such as the 'starter' scaffold), you can get by without installation. You'll
+have to run "python setup.py egg_info" instead (which updates the
+distribution's metadata, and is one of the installation steps. Also, if you
+don't install the application, you'll have to always chdir to the application's
+directory before running it, because Python won't be able to import it
+otherwise.
+
+**Remember for later:** whenever you add or delete a file in the application
+directory, run "python setup.py egg_info" to update the metadata.
+
+See `Uninstalling <appendix/uninstalling.html>`_ if you want to uninstall
+things later.
 
 Uninstalling
 ============
 
-To uninstall an application or package that was installed with pip, use "pip
+To uninstall an application or package that was installed via pip, use "pip
 uninstall":
 
 .. code-block:: console
@@ -125,10 +153,11 @@ if present.
    (Linux). 
 
 
-.. _Pyramid documentation: http://docs.pylonsproject.org/en/latest/docs/pyramid.html
-.. _Pyramid tutorials: http://docs.pylonsproject.org/projects/pyramid_tutorials/dev/
 .. _virtualenv: http://pypi.python.org/pypi/virtualenv
-.. _Installing Pyramid: http://docs.pylonsproject.org/projects/pyramid/1.0/narr/install.html
+.. _SQLite: http://sqlite.org
 .. _submodules: http://schacon.github.com/git/git-submodule.html
 .. _Zzz.tar.gz: _static/Zzz.tar.gz
-.. _Wiki2 tutorial: http://docs.pylonsproject.org/projects/pyramid/en/latest/tutorials/wiki2/installation.html
+.. _Installing Pyramid: http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/install.html
+.. _Creating a Pyramid Project: http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/project.html
+.. _SQLAlchemy + URL Dispatch Wiki Tutorial: http://docs.pylonsproject.org/projects/pyramid/en/latest/tutorials/wiki2/installation.html
+.. _new hotness: http://python-distribute.org/pip_distribute.png

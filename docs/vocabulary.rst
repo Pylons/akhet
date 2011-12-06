@@ -1,6 +1,10 @@
 Pyramid Vocabulary
 %%%%%%%%%%%%%%%%%%
 
+This is a supplement to the Glossary_ in the Pyramid manual. It focuses on the
+subset of terms critical for Akhet, and compares them to Pylons.
+
+
 Router
 
     A Pyramid WSGI application, which is an instance of
@@ -137,3 +141,6 @@ Registry
     data such as which routes and views have been defined. Application writers
     generally ignore it except when they need a setting, which are in its
     ``.settings`` attribute.
+
+
+.. _Glossary: http://docs.pylonsproject.org/projects/pyramid/en/latest/glossary.html

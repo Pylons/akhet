@@ -10,10 +10,10 @@ Akhet
 Akhet is a set of tutorial-level documentation and convenience code for
 Pyramid_. Version 2 focuses more heavily on documentation, and does not contain
 an application scaffold [#]_. Instead the documentation shows how to customize
-Pyramid's built-in 'alchemy' scaffold to give a Pylons-like environment. The
-documentation walks through the default application's structure,
-highlighting Useful Bits of Information that are buried in the Pyramid manual
-or are not in the manual.  It also discusses some alternative APIs and the
+Pyramid's built-in scaffolds to give a Pylons-like environment. The
+documentation walks through the default application's structure, providing a
+supplement to the Pyramid documentation and showing how the structure differs
+from Pylons.  It also discusses some alternative APIs and the
 tradeoffs between them. The Akhet library (the convenience classes) are
 unchanged in this release.
 
@@ -40,6 +40,7 @@ Python 3 and drop Python 2.5, as Pyramid 1.3 is doing.
    other_pyramid_features
    changes
    unfinished
+   rant_scaffold
 
 * :ref:`genindex`
 * :ref:`modindex`

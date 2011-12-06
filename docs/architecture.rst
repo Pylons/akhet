@@ -1071,5 +1071,4 @@ mod_proxy, or mod_wsgi, or whatever else you prefer.
 .. _MultiDict API: api.html#multidict
 .. _API: api.html
 .. _minimal application: http://docs.pylonsproject.org/projects/pyramid/en/1.2-branch/narr/firstapp.html
-.. _asset syntax:
-http://docs.pylonsproject.org/projects/pyramid/en/1.2-branch/narr/assets.html#asset-specifications
+.. _asset syntax: http://docs.pylonsproject.org/projects/pyramid/en/1.2-branch/narr/assets.html#asset-specifications
