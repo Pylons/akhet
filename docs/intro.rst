@@ -35,11 +35,11 @@ how traversal with SQLAlchemy can be implemented robustly, check out the Kotti_
 content-management system.) 
 
 For those coming from Akhet 1, Pylons, Django, Rails, and similar frameworks
-with something akin to Routes, URL dispatch and SQL databases will be familiar.
-For those coming from a Java servlet or PHP-without-a-framework background, URL
-dispatch will be new but it's a good rule-based way to handle URLs. Traversal
-is an entirely different concept, which is most useful when site users are
-allowed to create their own URLs with multiple levels (as in a
+with something akin to Routes, URL dispatch and SQL databases will be somewhat
+familiar.  For those coming from a Java servlet or PHP-without-a-framework
+background, URL dispatch will be new but it's a good rule-based way to handle
+URLs. Traversal is an entirely different concept, which is most useful when
+site users are allowed to create their own URLs with multiple levels (as in a
 content-management system or file manager). Traversal maps naturally to nested
 objects, which is why it's often paired with an object database. 
 

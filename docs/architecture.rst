@@ -1,7 +1,12 @@
 Pyramid Architecture
 %%%%%%%%%%%%%%%%%%%%
 
-The Zzz application you created has several aspects similar to Pylons: INI
+This chapter walks through the default 'alchemy' application you created in the
+last chapter (or downloaded the tarball). We'll skim just briefly over material
+that's covered in the Wiki tutorial, instead focusing on how Pyramid differs
+from Pylons.
+
+The Zzz application has several aspects similar to Pylons: INI
 files, a startup function, views (called Controllers in Pylons), templates, and
 models. However, the filenames are different and the API syntax is
 different.  Pyramid is more flexible than Pylons, so you can create a `minimal
@@ -181,7 +186,7 @@ the INI file. ``DBSession`` is a global object used to access SQLAlchemy's
 object-relational mapper (ORM). 
 
 Line 11 instantiates a ``Configurator`` which will instantiate the application.
-(It's not the application itself.)  
+(It's not the application itself.)
 
 Line 12 tells the configurator to serve the static directory (*zzz/static*)
 under URL "/static". The arguments are more than they appear, as we'll see in
@@ -195,6 +200,154 @@ This imports all the modules under ``zzz``.
 
 Line 15 instantiates a Pyramid WSGI application based on the configuration, and
 returns it.
+
+Configurator constructor arguments
+----------------------------------
+
+The Configurator constructor accepts the following optional arguments:
+
+authentication_policy, authorization_policy
+
+    Callbacks to enable Pyramid's built-in authorization mechanism. The
+    Authorizatoin chapter in the Wiki tutorial has an example of their use.
+
+root_factory
+
+    A callback that returns a *resource root*. See next section.
+    has an extra piece of data called the *context*. 
+    this, so Pyramid uses a default factory that always returns ``None``.
+    value called the *context* 
+    the *context* 
+    deliveredc to the view as its *context*. In URL dispatch, the root will be
+    delivered directly to the view as the *context*. The example does *not*
+    specify this argument, so Pyramid uses a default root factory that always
+    delivers ``None`` as a context. The Wiki tutorial
+
+    
+
+Note that the ``Configurator`` constructor does *not* have a ``root_factory=``
+argument. In URL dispatch, root factories are used only in advanced cases.
+The argument is a 
+mainly to set authorization permissions or as a fancy way to deliver database
+objects to the view. 
+mainly to set up authorization permissions or to deliver database objects to
+the view. Pyramid will fall back to a default root factory, which always
+delivers a ``None`` context to the view.
+
+Route arguments and predicates
+------------------------------
+
+``config.add_route`` accepts a large number of keyword
+arguments. Here are the ones most commonly used in Pylons-like applications.
+
+The arguments are divided into *predicate arguments* and *non-predicate
+arguments*.  Predicate arguments determine whether the route matches the
+current request: all predicates must pass in order for the route to be chosen.
+Non-predicate arguments do not affect whether the route matches.
+
+name
+
+    [Non-predicate] The first positional arg; required. This must be a unique
+    name for the route. The name will be used to register a view for this route,
+    and to generate URLs.
+
+pattern
+
+    [Predicate] The second positional arg; required. This is the URL path with
+    optional "{variable}" placeholders; e.g., "/articles/{id}" or
+    "/abc/{filename}.html". The leading slash is optional. By default the
+    placeholder matches all characters up to a slash, but you can specify a
+    regex to make it match less (e.g., "{variable:\d+}" for a numeric variable)
+    or more ("{variable:.*}" to match the entire rest of the URL including
+    slashes). The substrings matched by the placeholders will be available as
+    *request.matchdict* in the view.
+
+    A wildcard syntax "\*varname" matches the rest of the URL and puts it into
+    the matchdict as a tuple of segments instead of a single string.  So a
+    pattern "/foo/{action}/\*fizzle" would match a URL "/foo/edit/a/1" and
+    produce a matchdict ``{'action': u'edit', 'fizzle': (u'a', u'1')}``.
+
+    Two special wildcards exist, "\*traverse" and "\*subpath". These are used
+    in advanced cases to do traversal on the remainder of the URL.
+
+factory
+
+    [Non-predicate] A callable (or asset spec). This is used to define a
+    route-specific context. In URL dispatch, this returns a
+    *root resource* which is also used as the *context*. If you don't specify
+    this, a default root will be used. In traversal, the root contains one
+    or more resources, and one of them will be chosen as the context.
+
+xhr
+
+    [Predicate] True if the request must have an "X-Reqested-With" header. Some
+    Javascript libraries (JQuery, Prototype, etc) set this header in AJAX
+    requests.
+
+request_method
+
+    [Predicate] An HTTP method: "GET", "POST", "HEAD", "DELETE", "PUT". Only
+    requests of this type will match the route.
+
+path_info
+
+    [Predicate] A regex compared to the URL path (the part of the URL after the
+    application prefix but before the query string). The URL must match this
+    regex in order for the route to match the request.
+
+request_param
+
+    [Predicate] If the value doesn't contain "=" (e.g., "q"), the request must
+    have the specified parameter (a GET or POST variable). If it does contain
+    "=" (e.g., "name=value"), the parameter must have the specified value.
+
+    This is especially useful when tunnelling other HTTP methods via
+    POST. Web browsers can't submit a PUT or DELETE method via a form, so it's
+    customary to use POST and to set a parameter ``_method="PUT"``. The
+    framework or application sees the "_method" parameter and pretends the
+    other HTTP method was requested. In Pyramid you can do this with
+    ``request_param="_method=PUT``.
+
+header
+
+    [Predicate] If the value doesn't contain ":"; it  specifies an HTTP header
+    which must be present in the request (e.g., "If-Modified-Since"). If it
+    does contain ":", the right side is a regex which the header value must
+    match; e.g., "User-Agent:Mozilla/.\*". The header name is case insensitive.
+
+accept
+
+    [Predicate] A MIME type such as "text/plain", or a wildcard MIME type with
+    a star on the right side ("text/\*") or two stars ("\*/\*"). The request
+    must have an "Accept:" header containing a matching MIME type.
+
+custom_predicates
+
+    [Predicate] A sequence of callables which will be called in order to
+    determine whether the route matches the request. The callables should
+    return ``True`` or ``False``. If any callable returns ``False``, the route
+    will not match the request. The callables are called with two arguments,
+    ``info`` and ``request``. ``request`` is the current request. ``info`` is a
+    dict which contains the following::
+    
+        info["match"]  =>  the match dict for the current route
+        info["route"].name  =>  the name of the current route
+        info["route"].pattern  =>  the URL pattern of the current route
+
+    Use custom predicates argument when none of the other predicate args fit
+    your situation.  See
+    <http://docs.pylonsproject.org/projects/pyramid/1.0/narr/urldispatch.html#custom-route-predicates>`
+    in the Pyramid manual for examples.
+
+    You can modify the match dict to affect how the view will see it. For
+    instance, you can look up a model object based on its ID and put the object
+    in the match dict under another key. If the record is not found in the
+    model, you can return False to prevent the route from matching the request;
+    this will ultimately case HTTPNotFound if no other route or traversal
+    matches the URL.  The difference between doing this and returning
+    HTTPNotFound in the view is that in the latter case the following routes
+    and traversal will never be consulted. That may or may not be an advantage
+    depending on your application.
 
 Models
 ======
@@ -224,7 +377,6 @@ separate Python distribution, which they import into the Pyramid application.
 Others put domain logic directly into the views, but this is not recommended
 unless it's a small amount of code because it mixes framework-independent and
 framework-dependent code. 
-
 
 The default *zzz/models.py* looks like this::
 
@@ -256,81 +408,108 @@ The default *zzz/models.py* looks like this::
             self.name = name
             self.value = value
 
-
-        import logging
-        import sqlahelper
-        import sqlalchemy as sa
-        import sqlalchemy.orm as orm
-        import transaction
-
-        log = logging.getLogger(__name__)
-
-        Base = sqlahelper.get_base()
-        Session = sqlahelper.get_session()
+This is just one way to organize a SQLAlchemy model. All SQLAlchemy models
+models will have a DBSession, declarative base, and ORM classes unless you're
+doing something unusual like not using the object-relational mapper or not
+using the declararive syntax. But different people have different ideas about
+what to name the variables or where to put them. We'll see an alternative
+structure later. If you're unfamiliar with SQLAlchemy, the `SQLAlchemy manual`_
+is well written and informative.
 
 
-        #class MyModel(Base):
-        #    __tablename__ = "models"
-        #
-        #    id = sa.Column(sa.Integer, primary_key=True)
-        #    name = sa.Column(sa.Unicode(255), nullable=False)
-
-This represents one way to organize a SQLAlchemy model.
-
-
-Pylons applications have a "zzz.model.meta" model to hold SQLAlchemy's
-housekeeping objects, but Akhet uses the SQLAHelper library which holds them
-instead. This gives you more freedom to structure your models as you wish,
-while still avoiding circular imports (which would happen if you defined
-Session in the main module and then import the other modules into it; the
-other modules would import the main module to get the Session, and voilà
-circular imports).
-
-A real application would replace the commented ``MyModel`` class with
-one or more ORM classes. The example uses SQLAlchemy's "declarative" syntax,
-although of course you don't have to. 
-
-SQLAHelper
-----------
-
-The SQLAHelper library is a holding place for the application's contextual
-session (normally assigned to a ``Session`` variable with a capital S, to
-distinguish it from a regular SQLAlchemy session), all engines used by the
-application, and an optional declarative base. We initialized it via the
-``sqlahelper.add_engine`` line in the main function. Because we did not specify
-an engine name, the library set the engine name to "default", and also bound the
-contextual session and the base's metadata to it. 
-
-There's not much else to know about SQLAHelper. You can call ``get_session()``
-at any time to get the contextual session. You can call ``get_engine()`` or
-``get_engine(name)`` to retrieve an engine that was previously added. You can
-call ``get_base()`` to get the declarative base.  
-
-If you need to modify the session-creation parameters, you can call
-``get_session().config(...)``. But if you modify the session extensions, see
-the "Transaction Manager" chapter to avoid losing the extension that powers the
-transaction manager.
-
-View handlers
+Views
 =============
 
-The default *zzz.handlers* package contains a *main* module which looks like
-this::
+A Pyramid view is equivalent to a Pylons controller action: it's the
+page-specific routine where the request is processed and an HTML response is
+generated. The default *zzz.views* module looks like this::
 
-    import logging
+    from pyramid.view import view_config
 
-    from pyramid_handlers import action
+    from .models import (
+        DBSession,
+        MyModel,
+        )
 
-    import zzz.handlers.base as base
-    import zzz.models as model
+    @view_config(route_name='home', renderer='templates/mytemplate.pt')
+    def my_view(request):
+        one = DBSession.query(MyModel).filter(MyModel.name=='one').first()
+        return {'one':one, 'project':'Zzz'}
 
-    log = logging.getLogger(__name__)
+A view can be either a function or a method, and it can be located anywhere.
+You must register each view with the configurator, either by calling
+``config.add_view()`` or -- as in this example -- by using the ``@view_config``
+decorator in conjunction with ``config.scan()``. The scan method imports the
+application's modules recursively, and registers all callables decorated with
+``@view_config``.
 
-    class Main(base.Handler):
-        @action(renderer="index.html")
-        def index(self):
-            log.debug("testing logging; entered Main.index()")
-            return {"project":"Zzz"}
+Pylons is more specific about actions. An action must be a method in a
+controller class, the class must inherit from a compatible base class, and the
+class must be located in a module determined by the class's name. The action
+may take arguments corresponding to routing variables, and it normally ends
+with "return render(TEMPLATE_NAME)", which renders an HTML string. Magic global
+variables contain the current request, response, session, cache, application
+globals, and a URL generator.
+
+A Pyramid view *function* takes a ``Request`` and returns a ``Response``. But
+if the ``@view_config`` has a ``renderer=`` argument, it returns a dict of
+template variables instead. The renderer invokes the specified template with
+the variables, and generates the ``Response``. This is similar to TurboGears. 
+It has advantages in unit testing and with alternate output formats (such as
+JSON). That's because ``@view_config`` *does not change the function's arguments
+or return value*. It merely sets function attributes which affect how the view
+is registered. So a unit test that calls the view function directly gets back
+the dict of variables, not a HTML string.
+
+In the example, the ``renderer=`` arg names a template. Because the filename
+ends in ".pt", Pyramid recognizes it as a Chameleon template and invokes the
+Chameleon renderer. The renderer fills the template with the variables and
+generates a ``Response``. A Mako renderer is also available, and non-template
+renderers for JSON and other formats. The view's return value is whatever type
+the renderer accepts. Template renderers normally accept dicts, while
+non-template renderers may accept other types.
+
+A view *method* is like a view function, except that the ``request`` argument is 
+passed to the class's constructor rather than to the method. So a view class is
+normally defined like this::
+
+    class MyViewClass(object):
+        def __init__(self, request):
+            self.request = request
+
+        @view_config(route_name='home', renderer='templates/mytemplate.pt')
+        def my_view(self):
+            # req = self.request
+            one = DBSession.query(MyModel).filter(MyModel.name=='one').first()
+            return {'one':one, 'project':'Zzz'}
+
+Later we'll see a ``Handler`` base class that takes this a step further. 
+
+The ``route_name=`` argument to ``@view_config`` tells which route to attach
+this view to. It's a required argument when using URL dispatch. Several
+optional arguments are available to specify a permission the user must have to
+invoke the view, and what kinds of requests the view matches (this is to limit
+the view to certain HTTP methods, certain routing variable values, certain
+query parameter values, 
+
+optional arguments:
+
+permission
+
+    A string naming a permission that the current user must have in order to
+    invoke the view.
+
+http_cache
+
+    Affects the 'Expires' and 'Cache-Control' HTTP headers in the response.
+    This tells the browser whether to cache the response and for how long.
+    The value may be an integer specifying the number of seconds to cache,
+    a ``datetime.timedelta`` instance, or zero to prevent caching. This is
+    equivalent to calling ``request.response.cache_expires(value)`` within the
+    view code.
+
+
+
 
 This is clearly different from Pylons, and the ``@action`` decorator looks a
 bit like TurboGears. The decorator has three optional arguments:
@@ -554,123 +733,6 @@ Two others you should know about:
    callable, and I also hold ``add_view`` arguments that ``config.scan`` will
    pick up and apply.  I can also decorate a class or a method in a class.
 
-
-Route arguments and predicates
-------------------------------
-
-``config.add_handler`` accepts a large number of keyword
-arguments. We'll list the ones most commonly used with Pylons-like applications
-here. For full documentation see the `add_route
-<http://docs.pylonsproject.org/projects/pyramid/1.0/api/config.html#pyramid.config.Configurator.add_route>`_
-API. Most of these arguments can also be used with ``config.add_route``.
-
-The arguments are divided into *predicate arguments* and *non-predicate
-arguments*.  Predicate arguments determine whether the route matches the
-current request: all predicates must pass in order for the route to be chosen.
-Non-predicate arguments do not affect whether the route matches.
-
-name
-
-    [Non-predicate] The first positional arg; required. This must be a unique
-    name for the route, and is used in views and templates to generate the URL.
-
-pattern
-
-    [Predicate] The second positional arg; required. This is the URL path with
-    optional "{variable}" placeholders; e.g., "/articles/{id}" or
-    "/abc/{filename}.html". The leading slash is optional. By default the
-    placeholder matches all characters up to a slash, but you can specify a
-    regex to make it match less (e.g., "{variable:\d+}" for a numeric variable)
-    or more ("{variable:.*}" to match the entire rest of the URL including
-    slashes). The substrings matched by the placeholders will be available as
-    *request.matchdict* in the view.
-
-    A wildcard syntax "\*varname" matches the rest of the URL and puts it into
-    the matchdict as a tuple of segments instead of a single string.  So a
-    pattern "/foo/{action}/\*fizzle" would match a URL "/foo/edit/a/1" and
-    produce a matchdict ``{'action': u'edit', 'fizzle': (u'a', u'1')}``.
-
-    Two special wildcards exist, "\*traverse" and "\*subpath". These are used
-    in advanced cases to do traversal on the right side of the URL, and should
-    be avoided otherwise.
-
-factory
-
-    [Non-predicate] A callable (or asset spec). In URL dispatch, this returns a
-    *root resource* which is also used as the *context*. If you don't specify
-    this, a default root will be used. In traversal, the root contains one
-    or more resources, and one of them will be chosen as the context.
-
-xhr
-
-    [Predicate] True if the request must have an "X-Reqested-With" header. Some
-    Javascript libraries (JQuery, Prototype, etc) set this header in AJAX
-    requests.
-
-request_method
-
-    [Predicate] An HTTP method: "GET", "POST", "HEAD", "DELETE", "PUT". Only
-    requests of this type will match the route.
-
-path_info
-
-    [Predicate] A regex compared to the URL path (the part of the URL after the
-    application prefix but before the query string). The URL must match this
-    regex in order for the route to match the request.
-
-request_param
-
-    [Predicate] If the value doesn't contain "=" (e.g., "q"), the request must
-    have the specified parameter (a GET or POST variable). If it does contain
-    "=" (e.g., "name=value"), the parameter must have the specified value.
-
-    This is especially useful when tunnelling other HTTP methods via
-    POST. Web browsers can't submit a PUT or DELETE method via a form, so it's
-    customary to use POST and to set a parameter ``_method="PUT"``. The
-    framework or application sees the "_method" parameter and pretends the
-    other HTTP method was requested. In Pyramid you can do this with
-    ``request_param="_method=PUT``.
-
-header
-
-    [Predicate] If the value doesn't contain ":"; it  specifies an HTTP header
-    which must be present in the request (e.g., "If-Modified-Since"). If it
-    does contain ":", the right side is a regex which the header value must
-    match; e.g., "User-Agent:Mozilla/.\*". The header name is case insensitive.
-
-accept
-
-    [Predicate] A MIME type such as "text/plain", or a wildcard MIME type with
-    a star on the right side ("text/\*") or two stars ("\*/\*"). The request
-    must have an "Accept:" header containing a matching MIME type.
-
-custom_predicates
-
-    [Predicate] A sequence of callables which will be called in order to
-    determine whether the route matches the request. The callables should
-    return ``True`` or ``False``. If any callable returns ``False``, the route
-    will not match the request. The callables are called with two arguments,
-    ``info`` and ``request``. ``request`` is the current request. ``info`` is a
-    dict which contains the following::
-    
-        info["match"]  =>  the match dict for the current route
-        info["route"].name  =>  the name of the current route
-        info["route"].pattern  =>  the URL pattern of the current route
-
-    Use custom predicates argument when none of the other predicate args fit
-    your situation.  See
-    <http://docs.pylonsproject.org/projects/pyramid/1.0/narr/urldispatch.html#custom-route-predicates>`
-    in the Pyramid manual for examples.
-
-    You can modify the match dict to affect how the view will see it. For
-    instance, you can look up a model object based on its ID and put the object
-    in the match dict under another key. If the record is not found in the
-    model, you can return False to prevent the route from matching the request;
-    this will ultimately case HTTPNotFound if no other route or traversal
-    matches the URL.  The difference between doing this and returning
-    HTTPNotFound in the view is that in the latter case the following routes
-    and traversal will never be consulted. That may or may not be an advantage
-    depending on your application.
 
 View arguments
 --------------
@@ -1072,3 +1134,4 @@ mod_proxy, or mod_wsgi, or whatever else you prefer.
 .. _API: api.html
 .. _minimal application: http://docs.pylonsproject.org/projects/pyramid/en/1.2-branch/narr/firstapp.html
 .. _asset syntax: http://docs.pylonsproject.org/projects/pyramid/en/1.2-branch/narr/assets.html#asset-specifications
+.. _SQLAlchemy manual: http://www.sqlalchemy.org/docs/

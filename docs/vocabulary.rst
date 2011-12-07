@@ -14,7 +14,7 @@ View (View Callable)
 
     A function or method equivalent to a Pylons controller action. It takes a
     ``Request`` object representing a web request, and returns a ``Response``
-    object.  (The return value may be different when using a renderer.)
+    object.  (The return value may be different when using a *renderer*.)
 
 View Class (Handler)
 
@@ -43,41 +43,48 @@ URL Dispatch
 
 Traversal
 
-    Pyramid's other routing mechanism, which looks up a view and a context by
-    matching the URL to a node in a resource tree.  Most simple Akhet
-    applications do not use traversal, and this manual does not cover how to
-    use it.  Nevertheless, we'll briefly explain what it is.
+    Pyramid's other routing mechanism, which maps the URL's components to a
+    recursive object-oriented data structure.  Traversal is an advanced topic;
+    beginners are advised to stick to URL dispatch at first. Traversal is
+    useful mainly in applications that allow users to define arbitrary URL
+    subtrees, such as a content-management system (CMS) or a web-based file
+    manager. URL dispatch, in contrast, works better when the URLs are known
+    ahead of time or when they're a fixed depth (e.g., "/articles/{id}"). 
 
-    Traversal is especially suited to situations where URLs can be arbitrarily
-    deep in ways that are unknown at application startup, such as a CMS system
-    with an article at "/section/subsection/custom-sub-subsection/my-article".
-    URL dispatch works only with URLs at a fixed depth, where specific
-    variables correspond to known segments; e.g., "/articles/{id}".
-
-    Traversal runs *after* all URL dispatch routes have been tried. It's
-    possible in advanced usage to create a "hybrid" application where the left
-    part of the URL corresponds to a route, and traversal is applied to the
-    remainder of the URL.
-
-Resource Tree, Root, Resource
-
-    In traversal, a *resource tree* is a nested dict-like structure such as a
-    ZODB object database or a group of nested dicts. The outermost container
-    object is the *root*. Each value in the nested dicts is a *resource*.
-
-    In URL dispatch, the *root* can be any object. Normally you don't specify
-    it, and Pyramid provides a default root.
+    If no route matches the URL, Pyramid tries traversal as a fallback. The
+    data structure is null by default, so this is a no-op.
 
 Context
 
-    In traversal, the last resource traversed is the *context*. The context is
-    available to the view as ``request.context``. The context acts as a second
-    kind of model (separate from your "models" package), and it may also
-    provide information for authorization.
+    An object accessible to the view, which tells the "context" it was invoked
+    in. This does not exist in Pylons. It's an additional piece of information
+    distinct from the routing variables, query parameters, and other aspects of
+    the request. It plays an important role in traversal, and in some advanced
+    usages of URL dispatch.
 
-    In URL dispatch, the context is normally the same as the root, an
-    unimportant default object. However, you can override the context on a
-    per-route basis to provide authorization information or data objects.
+Resource Tree, Root, Resource, Root Factory
+
+    These are all used in traversal, and in some advanced usages of URL
+    dispatch.
+
+    A *resource tree* is the data structure that traversal maps the URL to.
+    It's a recursive dict-like structure. The top-level node is called the
+    *root*. A *root factory* is a callable that returns a *root*; i.e., the top
+    node of a live resource tree.  The *resource tree* is most commonly a ZODB
+    database, but it can also be implemented in SQL or on-the-fly (by a root
+    object with a clever ``.__getitem__`` method that creates child nodes on
+    demand). 
+
+    If the request URL is "/a/b/c", traversal maps it to
+    ``root["a"]["b"]["c"]``.  The final node (i.e., the value of the "c" key)
+    is called the *resource*. That object is delivered to the view as the
+    *context*.
+
+    In URL dispatch, a *root factory* is normally not specified, and it
+    defaults to a null factory which causes the *context* to be ``None``. 
+    However, you can specify a custom *root factory* at either the top level or
+    on an individual route. In this case, the factory should return a
+    *resource* which will **be** the *context*.
 
 Request
 
