@@ -16,15 +16,15 @@ reversal?  Mainly because it's so much work to maintain a scaffold. (The
 `scaffold rant`_ appendix has the full details.) Also, Pyramid 1.3 consolidates
 the built-in scaffolds to three well-chosen ones.
 
-=================    ==========  ====================    ====================
-Routing mechanism    Database    Pyramid 1.3 scaffold    Pyramid 1.2 scaffold
-=================    ==========  ====================    ====================
+=================    ==========  ====================    ======================
+Routing mechanism    Database    Pyramid 1.3 scaffold    Pyramid 1.2.4 scaffold
+=================    ==========  ====================    ======================
 URL dispatch         SQLAlchemy  **alchemy**             routesalchemy
 URL dispatch         \-          **starter**             \-
 Traversal            ZODB        **zodb**                zodb
 Traversal            SQLAlchemy  \-                      alchemy
 Traversal            \-          \-                      starter
-=================    ==========  ====================    ====================
+=================    ==========  ====================    ======================
 
 The Pyramid 1.3 scaffolds emphasize on the two most widely-used application
 styles: URL dispatch with SQLAlchemy, and traversal with ZODB. The scaffold
