@@ -4,8 +4,10 @@ Installing Pyramid and Creating Applications
 Here are the basic steps to install Pyramid and Akhet and create an
 application. For more details see the `Installing Pyramid`_ and `Creating a
 Pyramid Project`_ chapters in the Pyramid manual.  New users should also do
-the `SQLAlchemy + URL Dispatch Wiki Tutorial`_, which explains Pyramid while
-you build a simple wiki application. 
+the `SQLAlchemy + URL Dispatch Wiki Tutorial (Wiki2)`_, which explains Pyramid
+while you build a simple wiki application. The following chapters will walk
+through this application. For convenience, a prebuilt tarball
+of the application is available: wiki2-tutorial.tar.gz_ [#]_.
 
 The steps here are effectively the same as
 the installation chapter of the Wiki tutorial; we're just using pip rather than
@@ -17,10 +19,6 @@ the virtualenv makes it easier to delete/recreate the virtualenv if it gets
 hosed, and to run the application under multiple virtualenvs (e.g., to see how
 it works under different Python versions, different Pyramid versions, and
 different dependency versions). 
-
-Our sample application is called "Zzz"; it contains a Python package ``zzz``. A
-prebuilt tarball is available: Zzz.tar.gz_ [#]_.  The following chapters will
-walk through this default application.
 
 These steps assume you have Python, virtualenv_, and SQLite_ installed.
 
@@ -148,7 +146,12 @@ egg_info), *Zzz.egg* (easy_install directory or ZIP file), and *Zzz.egg-link*
 if present.
 
 
-.. [#] The tarball was built with Pyramid 1.3-dev (2011-12-02, rev.
+.. [#] Copied from the Pyramid repository, directory
+   *docs/tutorials/wiki2/src/tests* (renamed 'tests' directory to
+   'wiki2-tutorial'). Revision dated 2011-12-08, ID
+   674636494b7e546598ac3adb094c3dca6f6b8c9e.
+
+The tarball was built with Pyramid 1.3-dev (2011-12-02, rev.
    d5666e630a08c943a22682540aa51174cee6851f), Python 2.7.2, on Ubuntu 11.10
    (Linux). 
 
@@ -156,8 +159,8 @@ if present.
 .. _virtualenv: http://pypi.python.org/pypi/virtualenv
 .. _SQLite: http://sqlite.org
 .. _submodules: http://schacon.github.com/git/git-submodule.html
-.. _Zzz.tar.gz: _static/Zzz.tar.gz
 .. _Installing Pyramid: http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/install.html
 .. _Creating a Pyramid Project: http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/project.html
-.. _SQLAlchemy + URL Dispatch Wiki Tutorial: http://docs.pylonsproject.org/projects/pyramid/en/latest/tutorials/wiki2/installation.html
+.. _SQLAlchemy + URL Dispatch Wiki Tutorial (wiki2): http://docs.pylonsproject.org/projects/pyramid/en/latest/tutorials/wiki2/installation.html
+.. _wiki2-tutorial.tar.gz: _static/wiki2-tutorial.tar.gz
 .. _new hotness: http://python-distribute.org/pip_distribute.png
