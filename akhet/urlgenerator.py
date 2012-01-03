@@ -12,7 +12,7 @@ sure what's best here so we're leaving them commented and you can define them in
 a subclass however you wish. That's better than releasing a bad API which we'll
 then have to change and break existing apps.
 
-Contributed by Michael Mericikel. Modified by Mike Orr.
+Contributed by Michael Merickel. Modified by Mike Orr.
 """
 
 from pyramid.decorator import reify
