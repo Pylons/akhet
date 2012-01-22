@@ -1,4 +1,3 @@
-syntax: glob
 .coverage
 Akhet.egg-info
 *.egg
