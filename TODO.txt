@@ -1,5 +1,8 @@
 Delete 'akhet' scaffold and 'paster_templates' directory; remove entry points.
 
+Add a pony and unicorn to the demo app, by porting ``paste.pony`` to a view.
+(Or make into a tween?)
+
 Does Akhet without scaffolds require 'pyramid' dependency? If so, which
 versions, and how will it handle future Pyramid version changes? Is it still
 depending on Paste or PasteScript?
