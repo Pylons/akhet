@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+  <head>
+    <title>${self.title()}</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="keywords" content="python web application" />
+    <meta name="description" content="pyramid web application" />
+    <link rel="shortcut icon" href="${url.app}/favicon.ico" />
+    <link rel="stylesheet" href="${url.app}/stylesheets/default.css" type="text/css" media="screen" charset="utf-8" />
+${self.head_extra()}
+  </head>
+  <body>
+    <div id="header">
+    <img src="${url.app}/images/pyramid-negative.png" alt="" />
+    </div>
+
+<div id="content">
+<div id="flash-messages">
+% for message in request.session.pop_flash():
+    <div class="info">${message}</div>
+% endfor
+</div>
+
+<!-- *** BEGIN page content *** -->
+<h1 id="title">${self.body_title()}</h1>
+${self.body()}
+<!-- *** END page content ***-->
+</div>
+
+    <div id="footer">
+    Powered by the <a href="http://pylonsproject.org">Pyramid Web Framework</a>
+    </div>
+  </body>
+</html>
+
+
+#### title() method ##########################################################
+## Return the default title for the <title></title> tag.  
+## It can't contain HTML tags.
+## Pages can override this to specify a different title.
+##############################################################################
+<%def name="title()">${project}</%def>
+
+
+#### body_title() method #####################################################
+## Return the default title for the page body.
+## It can contain HTML tags.
+## The default is to return the same as title().
+##############################################################################
+<%def name="body_title()">${self.title()}</%def>
+
+
+#### head_extra() method #####################################################
+## Pages can override this to add additional stylesheets,
+## Javascripts, meta tags, or other things to the HTML head section.
+##############################################################################
+<%def name="head_extra()">
+</%def>

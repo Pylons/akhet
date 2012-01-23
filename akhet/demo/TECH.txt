@@ -1,0 +1,14 @@
+How the Akhet demo was made
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+1. Create an Akhet application "ZAkhet" using Akhet 1.0.2 and Pyramid 1.2:
+   "pyramid1.2/bin/paster create -t akhet ZAkhet".
+2. Copy ZAkhet/zakhet directory to akhet/demo.
+3. Chdir to akhet/demo.
+4. Replace 'handlers' directory with a class-based view in views.py, using the
+   standard ``@view_config``.
+5. Add requirements.txt.
+6. Update subscriber.py to reflect new renderer globals and add an 'includeme'.
+7. Update __init__.py to remove SQLAlchemy and pyramid_tm, keep Beaker sessions
+   and '.html', use the subscribers readme, and scan the views.
+8. Add __main__.py to launch the package from the command line.

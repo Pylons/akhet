@@ -1,0 +1,102 @@
+@import url('reset.css');
+
+body {
+    background-color: rgb(243,241,234);
+    font-family: helvetica, verdana, sans-serif;
+    color: rgb(66,66,66)
+}
+
+#header {
+	background-color: rgb(36,36,36);
+    padding: 10px 15px 30px 5%;
+    -webkit-box-shadow: 0 30px 80px #cfa84b;
+    -moz-box-shadow: 0 30px 80px #cfa84b;
+    box-shadow: 0 30px 80px #cfa84b;
+	text-shadow: 2px 2px 5px rgb(0,0,0);
+}
+
+#footer {
+    width: 90%;
+    margin: 10px auto;
+    font-size: 0.75em;
+    text-align: right;
+    opacity: 0.5;
+}
+
+#footer:hover {
+    opacity: 1;
+}
+
+a, a:link, a:visited {
+    text-decoration: none;
+    color: blue;
+}
+
+#content {
+    width: 90%;
+    margin: -20px auto 0px auto;
+    background-color: rgb(252,250,244);
+    padding: 15px;
+    -webkit-box-shadow: 0px 0px 11px #d4cbb5;
+    -moz-box-shadow: 0px 0px 11px #d4cbb5;
+    box-shadow: 0px 0px 11px #d4cbb5;
+	-moz-border-radius: 15px;
+	border-radius: 15px; 
+}
+
+h2 {
+    margin-top: 1em;
+}
+
+h3 {
+    margin-left: 40px;
+}
+
+ul.links {
+    margin: 0;
+}
+
+ul.links ul {
+    padding-left: 20px;
+}
+
+li {
+    margin: 0.25em 0;
+}
+
+
+/* flash */
+#flash-messages {
+    padding: 0px;
+    clear: both;
+}
+
+#flash-messages > div {
+    margin: 5px 0px 5px 0px;
+    font-size: 0.75em;
+    padding: 5px 5px 5px 25px;
+    background-repeat: no-repeat;
+    background-position: 5px center;
+    list-style: none;
+}
+
+#flash-messages .notice, #flash-messages .info {
+    background-color: #DAFFE5;
+    border: 1px solid #25A24B;
+    border-left: 5px solid;
+    color: #25A24B;
+}
+
+#flash-messages .warning {
+    background-color: #FFECA1;
+    border: 1px solid #E57C00;
+    border-left: 5px solid;
+    color: #000000;
+}
+
+#flash-messages .error {
+    background-color: #FFECEC;
+    border: 1px solid #B90D0D;
+    border-left: 5px solid;
+    color: #B90D0D;
+}

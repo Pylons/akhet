@@ -3,6 +3,7 @@
 - Move repository to Github (from Butbucket); convert to Git (from Mercurial).
   Rename all "v" tags, removing the prefix (v1.0.1 -> 1.0.1), so that they sort
   in Git before the "pyramid_sqla" tags, and to follow Pyramid's precedent.
+- Demo program in 'akhet.demo'.  (Run as "python -m akhet.demo".)
 - Revamp documentation to focus on Pyramid's 'alchemy' scaffold.
 - Delete 'akhet' scaffold.
 
