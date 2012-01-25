@@ -18,6 +18,7 @@ def main(global_config, **settings):
 
     # Add routes and views.
     config.add_route("home", "/")
+    config.include("akhet.pony")
     config.add_static_route("akhet.demo", "static", cache_max_age=3600)
     config.scan()
 
