@@ -10,7 +10,8 @@ class ViewTests(unittest.TestCase):
         testing.tearDown()
 
     def test_my_view(self):
-        from .views import my_view
+        from .views import MyViews
         request = testing.DummyRequest()
-        info = my_view(request)
-        self.assertEqual(info['project'], 'PyramidPylons')
+        handler = MyViews(request)
+        info = handler.index()
+        self.assertEqual(info['project'], 'Akhet Demo')

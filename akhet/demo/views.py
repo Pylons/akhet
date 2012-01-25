@@ -25,4 +25,4 @@ class MyViews(Handler):
             # redirect to.
 
         # Return a dict of template variables for the renderer.
-        return {"project": "AkhetDemo"}
+        return {"project": "Akhet Demo"}
