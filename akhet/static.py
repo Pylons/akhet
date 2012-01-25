@@ -1,5 +1,10 @@
 import pkg_resources
-from pyramid.view import static
+from pyramid.static import static_view
+
+def includeme(config):
+    """Add static route support to the Configurator.
+    """
+    config.add_directive('add_static_route', add_static_route)
 
 def add_static_route(config, package, subdir, cache_max_age=3600,
     **add_route_args):
@@ -51,7 +56,7 @@ def add_static_route(config, package, subdir, cache_max_age=3600,
     name = add_route_args.pop("name", "static")
     pattern = "/*subpath"
     asset = "%s:%s" % (package, subdir)
-    view = static(asset, cache_max_age)
+    view = static_view(asset, cache_max_age)
     pred = StaticViewPredicate(package, subdir)
     custom_predicates = add_route_args.pop("custom_predicates", [])
     custom_predicates = list(custom_predicates)

@@ -1,6 +1,6 @@
 import unittest
 
-import pyramid.view
+import pyramid.static
 
 import akhet
 import akhet.static
@@ -29,7 +29,7 @@ class TestAddStaticRoute(unittest.TestCase):
         self.assertEqual(route["kw"]["custom_predicates"][0].__class__,
             akhet.static.StaticViewPredicate)
         self.assertEqual(route["kw"]["view"].__class__,
-            pyramid.view.static)
+            pyramid.static.static_view)
 
     def test_has_no_name(self):
         config = DummyConfig()
