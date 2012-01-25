@@ -1,4 +1,3 @@
-import akhet.static as static
 from pyramid.config import Configurator
 import pyramid_beaker
 
@@ -15,10 +14,11 @@ def main(global_config, **settings):
     # Configure renderers and event subscribers.
     config.add_renderer(".html", "pyramid.mako_templating.renderer_factory")
     config.include(".subscribers")
+    config.include("akhet.static")
 
     # Add routes and views.
-    config.add_route('home', '/')
-    static.add_static_route(config, "akhet.demo", "static", cache_max_age=3600)
+    config.add_route("home", "/")
+    config.add_static_route("akhet.demo", "static", cache_max_age=3600)
     config.scan()
 
     return config.make_wsgi_app()
