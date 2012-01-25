@@ -1,4 +1,4 @@
-Copyright (c) 2010-2011, Mike Orr <sluggoster@gmail.com>
+Copyright (c) 2010-2012, Mike Orr and contributors
 
 MIT License -- http://www.opensource.org/licenses/mit-license
 

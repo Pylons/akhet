@@ -1,9 +1,12 @@
-Akhet is a Pylons-like application template for the Pyramid web framework,
-along with a small library to make Pyramid a bit easier to use. It has
-extensive documentation that covers the differences between Pylons and Pyramid
-and can serve as a gentle introduction to the Pyramid manual.
+Akhet is a Pyramid library and demo application with a Pylons-inspired API. 
 
 Documentation is in the 'docs' directory.
 
-(c) 2010-2011 Mike Orr
-Copying and derivations permitted under the MIT license, see LICENSE.txt.
+(c) 2010-2012 Mike Orr and contributors. 
+Copying and derivations permitted under MIT license; see LICENSE.txt.
+
+Contributors:
+* Mike Orr <sluggoster@gmail.com>: author.
+* Mike Merickel: urlparse module.
+* Marcin Lulek: Demo stylesheet.
+* pony.py is derived from "paste.pony" by Ian Bicking (http://pythonpaste.org/).
