@@ -8,7 +8,7 @@ class Handler(object):
     def __init__(self, request):
         self.request = request
 
-class MyViews(Handler):
+class Main(Handler):
 
     @view_config(route_name="home", renderer="index.html")
     def index(self):
