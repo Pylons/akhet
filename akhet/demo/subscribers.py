@@ -30,6 +30,7 @@ def add_renderer_globals(event):
     request = event.get("request") or threadlocal.get_current_request()
     if not request:
         return
+    renderer_globals["r"] = request
     #renderer_globals["c"] = request.tmpl_context
     #try:
     #    renderer_globals["session"] = request.session
