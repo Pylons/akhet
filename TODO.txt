@@ -1,10 +1,14 @@
 Delete 'akhet' scaffold and 'paster_templates' directory; remove entry points.
 
-Add a pony and unicorn to the demo app, by porting ``paste.pony`` to a view.
-(Or make into a tween?)
-
-Does Akhet without scaffolds require 'pyramid' dependency? If so, which
-versions, and how will it handle future Pyramid version changes? Is it still
-depending on Paste or PasteScript?
+Convert demo app to CSS Zen Garden format; add some alternate styles.
+(http://www.csszengarden.com/)
+Possible styles:   
+  * #212 - Make 'em Proud!  http://www.csszengarden.com/?cssfile=212/212.css
+  * #209 - CSS Co., Ltd.  http://www.csszengarden.com/?cssfile=209/209.css
+We'd have to modify the stylesheets to remove images and Zen Garden-specific
+content. We'd have to disclose that the stylesheets are under a Creative 
+Commons NONCOMMERCIAL license (http://creativecommons.org/licenses/by-nc-sa/1.0/).
+The images aren't necessarily under this license, but we don't want image bloat
+anyway.
 
 Subclass the Pygments 'console' lexer to recognize virtualenv prompt prefix.
