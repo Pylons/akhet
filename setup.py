@@ -15,13 +15,11 @@ requires = [
     ]
 
 entry_points = """
-    [paste.paster_create_template]
-    akhet=akhet.paster_templates:AkhetProjectTemplate
 """
 
 setup(name="Akhet",
       version="2.0b1",
-      description="Pyramid application templates inspired by Pylons 1.",
+      description="A Pyramid library and demo app with a Pylons-inspired API.",
       long_description=README,
       #long_description=README + "\n\n" +  CHANGES,
       classifiers=[
