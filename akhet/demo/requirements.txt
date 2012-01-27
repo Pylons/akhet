@@ -1,3 +1,2 @@
 pyramid
-pyramid_beaker
 pyramid_debugtoolbar
