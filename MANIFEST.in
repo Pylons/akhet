@@ -1,5 +1,5 @@
 recursive-include docs *
-recursive-include akhet/paster_templates *
+recursive-include akhet/demo *
 include *.txt
 prune docs/_build
 global-exclude *.pyc

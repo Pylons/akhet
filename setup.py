@@ -15,6 +15,8 @@ requires = [
     ]
 
 entry_points = """
+    [paste.app_factory]
+    demo = akhet.demo:main
 """
 
 setup(name="Akhet",
