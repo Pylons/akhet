@@ -1,6 +1,6 @@
 Akhet
 =====
-:Version: 2.0b1, released XXXX-XX-XX
+:Version: 2.0, released XXXX-XX-XX
 :PyPI: http://pypi.python.org/pypi/Akhet
 :Docs: http://docs.pylonsproject.org/projects/akhet/dev/
 :Source: https://bitbucket.org/sluggo/akhet (Mercurial)

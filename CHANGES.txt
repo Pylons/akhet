@@ -1,4 +1,4 @@
-2.0b1 (unreleased)
+2.0 (unreleased)
 ------------------
 - Move repository to Github (from Butbucket); convert to Git (from Mercurial).
   Rename all "v" tags, removing the prefix (v1.0.1 -> 1.0.1), so that they sort
