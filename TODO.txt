@@ -1,4 +1,12 @@
-Delete 'akhet' scaffold and 'paster_templates' directory; remove entry points.
+Version 2.0
+===========
+
+Future ideas
+============
+
+Access log tween. Needs actual response status. Suppress with logging
+configuration.
+"localhost.localdomain - - [28/Jan/2012 22:42:00] "GET / HTTP/1.1" 500 50656"
 
 Convert demo app to CSS Zen Garden format; add some alternate styles.
 (http://www.csszengarden.com/)
