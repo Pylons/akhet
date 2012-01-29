@@ -1,5 +1,5 @@
 import logging
-from wsgiref.simple_server import make_server
+import waitress
 
 import akhet.demo
 
@@ -24,8 +24,6 @@ def serve():
     logging.getLogger("akhet.demo").setLevel(logging.DEBUG)
 
     app = akhet.demo.main({}, **settings)
-    httpd = make_server(host, port, app)
-    print('Starting HTTP server on http://%s:%s' % (host, port))
-    httpd.serve_forever()
+    waitress.serve(app, host=host, port=port)
 
 if __name__ == "__main__":  serve()
