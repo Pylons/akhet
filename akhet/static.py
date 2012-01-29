@@ -57,12 +57,11 @@ def add_static_route(config, package, subdir, cache_max_age=3600,
     pattern = "/*subpath"
     asset = "%s:%s" % (package, subdir)
     view = static_view(asset, cache_max_age)
-    pred = StaticViewPredicate(package, subdir)
-    custom_predicates = add_route_args.pop("custom_predicates", [])
-    custom_predicates = list(custom_predicates)
-    custom_predicates.insert(0, pred)
-    config.add_route(name, pattern, view=view, 
-        custom_predicates=custom_predicates, **add_route_args)
+    custom_preds = add_route_args.pop("custom_predicates", [])
+    preds = [StaticViewPredicate(package, subdir)]
+    preds.extend(custom_preds)
+    config.add_route(name, pattern, custom_predicates=preds, **add_route_args)
+    config.add_view(view, route_name=name)
 
 #### Private stuff
 

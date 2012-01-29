@@ -28,7 +28,7 @@ class TestAddStaticRoute(unittest.TestCase):
         self.assertEqual(route["name"], "myname")
         self.assertEqual(route["kw"]["custom_predicates"][0].__class__,
             akhet.static.StaticViewPredicate)
-        self.assertEqual(route["kw"]["view"].__class__,
+        self.assertEqual(config.views["myname"].__class__,
             pyramid.static.static_view)
 
     def test_has_no_name(self):
@@ -56,11 +56,18 @@ class TestStaticViewPredicate(unittest.TestCase):
         inst = self._makeOne("akhet", "tests")
         self.assertEqual(inst({"match":{"subpath":("wont.py",)}}, None), False)
 
+
 class DummyConfig(object):
     def __init__(self):
         self.routes = []
+        self.views = {}   # ``{route_name: view}``
         self.directives = {}
 
     def add_route(self, name, pattern, **kw):
         self.routes.append({"name":name, "pattern":pattern, "kw":kw})
+
+    def add_view(self, view, **kw):
+        route_name = kw.get("route_name")
+        if route_name:
+            self.views[route_name] = view
 
