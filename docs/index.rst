@@ -3,8 +3,8 @@ Akhet
 :Version: 2.0, released XXXX-XX-XX
 :PyPI: http://pypi.python.org/pypi/Akhet
 :Docs: http://docs.pylonsproject.org/projects/akhet/dev/
-:Source: https://bitbucket.org/sluggo/akhet (Mercurial)
-:Bugs: https://bitbucket.org/sluggo/akhet/issues
+:Source: https://github.com/Pylons/akhet
+:Bugs: https://github.com/Pylons/akhet/issues
 :Discuss: pylons-discuss_ list
 
 Akhet is a set of tutorial-level documentation and convenience code for
@@ -26,18 +26,10 @@ Python 3 and drop Python 2.5, as Pyramid 1.3 is doing.
    :maxdepth: 2
 
    intro
-   vocabulary
    usage
    architecture
    default_content
-   transaction_manager
-   model_examples
-   auth
-   testing
-   i18n
-   migration
    api
-   other_pyramid_features
    changes
    unfinished
    rant_scaffold
