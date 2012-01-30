@@ -7,29 +7,37 @@ Akhet
 :Bugs: https://github.com/Pylons/akhet/issues
 :Discuss: pylons-discuss_ list
 
-Akhet is a set of tutorial-level documentation and convenience code for
-Pyramid_. Version 2 focuses more heavily on documentation, and does not contain
-an application scaffold [#]_. Instead the documentation shows how to customize
-Pyramid's built-in scaffolds to give a Pylons-like environment. The
-documentation walks through the default application's structure, providing a
-supplement to the Pyramid documentation and showing how the structure differs
-from Pylons.  It also discusses some alternative APIs and the
-tradeoffs between them. The Akhet library (the convenience classes) are
-unchanged in this release.
+Akhet is a Pyramid_ library and demo application with a Pylons-like feel.
+Earlier versions of Akhet had an application scaffold, but version 2 replaces
+it with the demo app. Much of the version 1 manual was moved to the Pyramid
+Cookbook (the `Pyramid for Pylons Users`_ guide).
+(The guide is not yet available as of January 2012.) 
+The Akhet Python library is unchanged in version 2.
 
-Akhet 2.0 runs on Python 2.5 - 2.7.   The next version will probably add
-Python 3 and drop Python 2.5, as Pyramid 1.3 is doing.
+The library and demo app have different goals, so the demo app is distribued
+separately. The library focuses on backward compatibility, minimal
+dependencies, and accepts only things that can be maintained long-term.  The
+demo app is more adventurous, and may contain incompatible changes from version
+to version. The demo's main purpose is to contain the templates, stylesheets,
+and large chunks of code from the old scaffold that you may want to copy into
+your application. In the future, the demo will become more of a testing ground
+for new techniques.
+
+The library runs on Python 2.5 - 2.7, and has been tested with Pyramid
+1.3a6 and 1.2.4 on Ubuntu Linux 11.10.  The next version will focus on Python 3
+support and will drop Python 2.5. The demo app currently has the same
+compatibility range as the library.
 
 
 
 .. toctree::
    :maxdepth: 2
 
+   library
+   demo
    intro
-   usage
    architecture
    default_content
-   api
    changes
    unfinished
    rant_scaffold

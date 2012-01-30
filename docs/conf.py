@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# pyramid_sqla documentation build configuration file, created by
-# sphinx-quickstart on Tue Dec 21 15:59:18 2010.
+# Akhet documentation build configuration file.
 #
 # This file is execfile()d with the current directory set to its containing dir.
 #
@@ -136,7 +135,7 @@ html_theme = 'pyramid'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+#html_static_path = ['_static']
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
@@ -174,7 +173,7 @@ html_static_path = ['_static']
 #html_file_suffix = ''
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'pyramid_sqladoc'
+htmlhelp_basename = 'akhetdoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -188,7 +187,7 @@ htmlhelp_basename = 'pyramid_sqladoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'pyramid_sqla.tex', u'pyramid\\_sqla Documentation',
+  ('index', 'akhet.tex', u'akhet Documentation',
    u'Mike Orr', 'manual'),
 ]
 
