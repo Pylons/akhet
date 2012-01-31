@@ -19,16 +19,6 @@ def add_static_route(config, package, subdir, cache_max_age=3600,
     the next route or traversal. The route name is 'static', which must not
     conflict with your application's other routes.
 
-    Usage in the application's __init__.py::
-
-        from akhet.static import add_static_route
-        add_static_route(config, "myapp", "static")
-
-    Or, more conveniently::
-
-        config.include("akhet")
-        config.add_static_route("myapp", "static")
-
     This serves URLs from the "static" directory in package "myapp".
 
     Arguments:
@@ -50,6 +40,7 @@ def add_static_route(config, package, subdir, cache_max_age=3600,
       application must have a unique name.) 'pattern' and 'view' may not be
       specified and will raise TypeError if they are.
     """
+
     for bad_arg in ["pattern", "view"]:
         if bad_arg in add_route_args:
             raise TypeError("keyword arg '%s' is not allowed")

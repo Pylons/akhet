@@ -8,20 +8,20 @@ Akhet
 :Discuss: pylons-discuss_ list
 
 Akhet is a Pyramid_ library and demo application with a Pylons-like feel.
-Earlier versions of Akhet had an application scaffold, but version 2 replaces
-it with the demo app. Much of the version 1 manual was moved to the Pyramid
-Cookbook (the `Pyramid for Pylons Users`_ guide).
+Earlier versions had an application scaffold, but version 2 replaces
+it with the demo app. Much of the version 1 manual was moved to the `Pyramid
+Cookbook`_ (as the `Pyramid for Pylons Users`_ guide).  
 (The guide is not yet available as of January 2012.) 
 The Akhet Python library is unchanged in version 2.
 
-The library and demo app have different goals, so the demo app is distribued
-separately. The library focuses on backward compatibility, minimal
-dependencies, and accepts only things that can be maintained long-term.  The
-demo app is more adventurous, and may contain incompatible changes from version
-to version. The demo's main purpose is to contain the templates, stylesheets,
-and large chunks of code from the old scaffold that you may want to copy into
-your application. In the future, the demo will become more of a testing ground
-for new techniques.
+The library and demo app have different dependencies and goals, so the demo app
+is distribued separately. The library focuses on backward compatibility,
+minimal dependencies, and accepts only things that can be maintained long-term.
+The demo app is more adventurous, and may contain incompatible changes from
+version to version. The demo's main purpose is to contain the templates,
+stylesheets, and large chunks of code from the old scaffold that you may want
+to copy into your application. In the future, the demo will become more of a
+testing ground for new techniques.
 
 The library runs on Python 2.5 - 2.7, and has been tested with Pyramid
 1.3a6 and 1.2.4 on Ubuntu Linux 11.10.  The next version will focus on Python 3
@@ -33,7 +33,7 @@ compatibility range as the library.
 .. toctree::
    :maxdepth: 2
 
-   library
+   library/index
    demo
    intro
    architecture
@@ -51,12 +51,4 @@ The word "akhet" is the name of the hieroglyph that is Pylons' icon: a sun
 shining over two pylons. It means "horizon" or "mountain of light".
 
 
-
-.. [#] The term "scaffold" is the same as "application template", "paster
-   template", and "skeleton". Pyramid has standardized on the term "scaffold"
-   to avoid confusion with HTML templates. 
-
-
-.. _Pyramid: http://docs.pylonshq.com/pyramid/dev/
-.. _pylons-discuss: http://groups.google.com/group/pylons-discuss
-
+.. include:: links.rst
