@@ -5,10 +5,14 @@
   in Git before the "pyramid_sqla" tags, and to follow Pyramid's precedent.
 
 - Demo program in 'akhet.demo'.  (Run as "python -m akhet.demo".)
-- We have a pony. (akhet.pony, based on paste.pony)
-- Include for ``add_static_route`` is now "akhet.static" instead of "akhet".
-- Revamp documentation to focus on Pyramid's 'alchemy' scaffold.
 - Delete 'akhet' scaffold.
+- We have a pony. (akhet.pony, based on paste.pony)
+- Move non-Akhet-specific parts of the manual to the Pyramid Cookbook (as the
+  "Pyramid for Pylons Users" guide).
+- Include for ``add_static_route`` is now "akhet.static" instead of "akhet".
+- The URL generator's ``route`` method can generate either an absolute
+  (qualified) URL or a path-only (unqualified) URL, overriding the instance's
+  default mode.
 
 1.0.2 (2011-07-20)
 ------------------

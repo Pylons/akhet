@@ -83,8 +83,9 @@ class URLGenerator(object):
         are recognized:
 
         * ``_query``: the query parameters. May be a dict-like object with
-          a ``.items()`` method or a sequence of 2-tuples.
+          an ``.items()`` method or a sequence of 2-tuples.
         * ``_anchor``: the URL's "#ancor" fragment without the "#".
+        * ``_qualified``: override the constructor's "qualified" flag.
         * ``_app_url``: override the "scheme://host" prefix. (This also causes
           the result to be qualified if it wouldn't otherwise be.)
         * Other keyword args override path variables defined in the route.
@@ -92,7 +93,8 @@ class URLGenerator(object):
         If the relevant route has a *pregenerator* defined, it may modify the
         elements or keyword args.
         """
-        if self.qualified or "_app_url" in kw:
+        qualified = kw.get("_qualified", self.qualified)
+        if qualified or "_app_url" in kw:
             return url.route_url(route_name, self.request, *elements, **kw)
         else:
             return url.route_path(route_name, self.request, *elements, **kw)

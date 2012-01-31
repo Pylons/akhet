@@ -59,6 +59,22 @@ class TestURLGenerator(unittest.TestCase):
         result = inst.route('home', 'a', _query={'b':'1'})
         self.assertEqual(result, '/a?b=1')
 
+    def test_route_qualified_override(self):
+        self.config.add_route('home', '/')
+        context = testing.DummyResource()
+        request = testing.DummyRequest()
+        inst = self._makeOne(context, request, False)
+        result = inst.route('home', 'a', _query={'b':'1'}, _qualified=True)
+        self.assertEqual(result, 'http://example.com/a?b=1')
+
+    def test_route_notqualified_override(self):
+        self.config.add_route('home', '/')
+        context = testing.DummyResource()
+        request = testing.DummyRequest()
+        inst = self._makeOne(context, request, True)
+        result = inst.route('home', 'a', _query={'b':'1'}, _qualified=False)
+        self.assertEqual(result, '/a?b=1')
+
     def test___call__(self):
         self.config.add_route('home', '/')
         context = testing.DummyResource()
