@@ -5,6 +5,9 @@
 We have a pony and a unicorn.
 """
 
+import base64
+import zlib
+
 from pyramid.response import Response
 
 def includeme(config):
@@ -61,7 +64,9 @@ def view(request):
         data = PONY
         link = "add horn!"
         url = req.path + "?horn=1"
-    animal = data.decode("base64").decode("zlib")
+    #animal = data.decode("base64").decode("zlib")
+    data = base64.b64decode(data)
+    animal = zlib.decompress(data)
     html = TEMPLATE.format(animal=animal, url=url, link=link, home=home)
     return Response(html)
 
