@@ -35,7 +35,6 @@ compatibility range as the library.
 
    library/index
    demo
-   intro
    architecture
    default_content
    changes
