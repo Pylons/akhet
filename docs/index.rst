@@ -34,9 +34,11 @@ compatibility range as the library.
    :maxdepth: 2
 
    library/index
-   demo
-   architecture
-   default_content
+   demo/index
+
+.. toctree::
+   :maxdepth: 1
+
    changes
    unfinished
    rant_scaffold

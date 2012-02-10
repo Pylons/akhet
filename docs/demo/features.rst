@@ -1,5 +1,5 @@
-Demo Application
-%%%%%%%%%%%%%%%%
+Usage and Features
+%%%%%%%%%%%%%%%%%%
 
 The Akhet demo application includes Mako templates, a stylesheet and reset
 stylesheet, and a basic view class to get you started. It shows the Akhet
@@ -53,4 +53,4 @@ scaffold:
   you need them.
 
 
-.. include:: links.rst
+.. include:: ../links.rst
