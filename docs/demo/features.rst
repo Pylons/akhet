@@ -6,9 +6,9 @@ stylesheet, and a basic view class to get you started. It shows the Akhet
 library features in action. It's based on the former Akhet application scaffold
 and what users have reported doing since the scaffold was released.
 
-The demo is available not shipped with the Akhet package due to its greater
-dependencies and changingness. You can install it from its source repository
-like any Pyramid application:
+The demo is not shipped with the Akhet package due to its larger number of
+dependencies and more frequent changes.  You can install it from its source
+repository like any Pyramid application:
 
 .. code-block::  console
 
