@@ -18,9 +18,6 @@ repository like any Pyramid application:
     (myenv)$ pip install -e .
     (myenv)$ pserve development.ini
 
-Features
-========
-
 The demo has the following features ported from the former 'akhet' scaffold
 (which are not in the standard Pyramid scaffolds):
 
@@ -32,7 +29,7 @@ The demo has the following features ported from the former 'akhet' scaffold
   generator 'url', and instructions for adding additional ones.
 * Serve static files at any URL, without being limited by URL prefixes.
 * Listen on localhost:5000 by defalt.
-* Session configuration.
+* Beaker session and cache configuration.
 * Demonstration of flash messages and logging.
 
 

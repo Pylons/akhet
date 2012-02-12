@@ -1,103 +1,94 @@
-Default templates and stylesheet
-================================
+Templates and stylesheets
+=========================
 
-The default home page was redesigned in Akhet 1.0 final to be a simple base you
-can start with and add to if you wish. It consists of four files:
+The demo's Mako templates and stylesheets are designed to function
+in a variety of environments, so you can copy them to your application as a starting
+point.  The following files are included:
 
-* A home page, *zzz/templates/index.html*
-* A site template, *zzz/templates/site.html*
-* A stylesheet, *zzz/static/stylesheets/default.css*
-* A "reset" stylesheet, *zzz/static/stylesheets/reset.css*
+* A home page, *akhet_demo/templates/index.html*
+* A site template, *akhet_demo/templates/site.html*
+* A stylesheet, *akhet_demo/static/stylesheets/default.css*
+* A "reset" stylesheet, *akhet_demo/static/stylesheets/reset.css*
 
 The HTML files are Mako templates. The stylesheets are static files.
 
 index.html
 ----------
 
-This is a page template, so it contains the specific text for this page. It
-contains just the HTML body, not the tags around it or the HTML header. Those
-will be added by the site template. The first three lines are Mako constructs:
+This is a page template, so it contains only the unique parts of this page. The
+first three lines are Mako constructs:
 
 .. code-block:: mako
    :linenos:
 
     <%inherit file="/site.html" />
-    <%def name="title()">${project}</%def>
-    <%def name="body_title()">Hello, ${project}!</%def>
+    <%def name="title()">Hello, ${project}!</%def>
+    <%def name="ht_title()">${project}</%def>
 
 Line 1 makes the template inherit from the site template, which will add the
-surrounding HTML tags. 
+site's header and footer.  Lines 2 and 3 are Mako methods. They output the body
+title and the head title respectively. 
 
-Lines 2 and 3 are Mako methods; they return values which will be used by
-the site template.  Line 2 is the title for the "<title>" tag. Line 3 is the
-title to display inside the page. 'project' is a variable the view method
-passes via its return dict. The rest of the page is ordinary HTML so we
-won't bother showing it.
+The "${varname}" syntax is a placeholder which will output the named variable.
+Template variables can come from several sources: (1) keys in the view's return
+dict, (2) template globals specified in *akhet_demo/subscribers.py*, (3) local
+variables defined in the template, (4) built-in Mako variables like ``self``.
+
+The rest of the file is a big chunk of HTML that will be plugged into the site
+template. Mako implicitly puts this chunk in a method named "body", which can
+be called from other templates as we'll see in a moment.
 
 Site template
 -------------
 
-The site template contains everything around the page content: the "<html>"
-container tag, the HTML header, and the parts of the page body that are the
-same on every page. The most important construct here is the "${self.body()}"
-placeholder, which is where the entire page template will be rendered. Mako's
-'self' construct chooses the highest-level variable available, which allows a
-page template to override a default value in a parent template the way Python
-class attributes override superclass attributes.
+The site template contains the "complete" HTML document, with
+placeholders to plug in content from the page template.  The most important
+placeholder here is "${self.body()}", which outputs the body of the
+highest-level template in the inheritance chain. 
 
-The "<head>" section contains the usual title, character set, stylesheet, and
-the like. You can modify these as you wish.
+The template also calls "self.title()" and "self.ht_title()", and defines
+default implementations for these methods. The default body title is blank; the
+default head title is whatever the body title returns. So you can just set
+"title" in your pages and forget about "ht_title" if you want. Sometimes you'll
+have to make them different, however: (1) The head title can't contain HTML
+tags like <em> -- it will display them literally rather than changing the font.
+(2) Sometimes the body title is too wordy for the head title. (3) Many sites
+want the site name in the head title. A general rule of thumb for the head
+title is something like "Page Title &mdash; Site Name". Search engines rank the
+head title highly, so it should contain all the essential words that describe
+the page, and it should be less than sixty or so characters long so it fits on
+one line.
 
-The "<body>" section contains a standardized header and footer; you can modify
-these as you wish to put the same doodads on all your pages. 
+There's one more method in the site template, "head_extra". It also is blank by
+default, but page templates can override it to add additional tags in the head.
 
-Three "<%def>" methods are defined at the bottom of the file, which page
-templates can override:
+The other kind of placeholder in the site template is "${url.app}", which is
+used to form static URLs like "${url.app}/stylesheets.default.css". "url" is
+the URL generator, which the subscriber puts into the template namespace.
+"url.app" is the application's URL prefix. This is normally empty for a
+top-level application mounted at "/". But if the application is mounted at a
+sub-URL like "/site1", that will be what "url.app" is set to.
 
-.. method:: head_extra()
+Normally you'd generate URLs by route name, such as "${url('home')}" or its
+full form "${url.route('home')}". But static URLs don't have a route name. If
+we were using Pyramid's static view there would be another way to generate
+them, but the demo uses the static route so it can't do that. So we're left
+with literal URLs relative to the application prefix.
 
-   Override this to put extra tags into the <head> section like page-specific
-   styles, Javascript, or metadata. The default is empty.
-
-.. method:: title()
-
-   We saw this in the page template. Put the title for the <title> tag here.
-   The default is empty: no title.
-
-.. method:: body_title()
-
-   Put the title for the page body here. The default is to be the same as
-   ``title``. You can override it if you want different wording, or to put
-   embedded HTML tags in the body title. (The <title> can't have embedded HTML
-   tags: the browser would display them literally.)
-
-The site template also has a stanza to display flash messages:
-
-.. code-block:: mako
-
-   <div id="content">
-   <div id="flash-messages">
-   % for message in request.session.pop_flash():
-       <div class="info">${message}</div>
-   % endfor
-   </div>
-
-Flash messages are a queue of messages in the session which are displayed on
-the next page rendered. Normally a view will push a success or failure message
-and redirect, and the redirected-to page will display the message. If you call
-'pop_flash' without a queue name, the default queue is used. This is enough for
-many programs. You can also define multiple queues for different kinds of
-messages, and then pop each queue separately and display it in a different way.
-For instance:
+The template displays flash messages, which a view may have pushed into the
+session before redirecting. The code for this is:
 
 .. code-block:: mako
 
-    % for message in request.session.pop_flash("error"):
-        <div class="error">${message}</div>
+    <div id="content">
+    <div id="flash-messages">
+    % for message in request.session.pop_flash():
+        <div class="info">${message}</div>
     % endfor
-    % for message in request.session.pop_flash("warn"):
-        <div class="error">${warning}</div>
-    % endfor
+    </div>
+
+The stylesheet displays it all pretty-like.
+
 
 Reset stylesheet
 ----------------
@@ -111,9 +102,9 @@ some overrides. Meyers does remove some attributes which have generally
 been assumed to be intrinsic to the tag, such as margins around <p> and <h\*>.
 His reasoning is that you should start with nothing and consciously re-add the
 styles you want. Some people may find this attitude to be overkill. The reset
-stylesheet is just provided as a service if you want to use it. In any case, we
-re-add some expected styles, and I also set <dt> to bold which is a pet peeve
-of mine.
+stylesheet is just provided as a service if you want to use it. In any case, I
+have re-added some expected styles, and also set <dt> to boldface which is a
+pet peeve of mine.
 
 If you want something with more bells and whistles, some Pyramid developers
 recommend `HTML5 Boilerplate`_.
@@ -129,5 +120,5 @@ stylesheet. It defines some styles the default home page needs. You'll probably
 want to adjust them for your layout.
 
 The bottom section has styles for flash messages. The ".info" stanza is used by
-the default application. The ".warning" and ".error" styles are not used by
-default but are provided as extras.
+the demo. The ".warning" and ".error" styles are not used by
+the demo but are provided as extras.
