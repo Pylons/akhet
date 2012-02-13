@@ -1,4 +1,4 @@
-Full Changelog
+Full changelog
 %%%%%%%%%%%%%%
 
 .. include:: ../CHANGES.txt

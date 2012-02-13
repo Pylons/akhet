@@ -1,4 +1,4 @@
-Appendix: Rant about Scaffolds and PasteScript
+Appendix: Rant about scaffolds and PasteScript
 ----------------------------------------------
 
 The main reason the 'akhet' scaffold is gone is that maintaining it turned out

@@ -1,34 +1,40 @@
 Akhet
-=====
-:Version: 2.0, released XXXX-XX-XX
+%%%%%
+
+:Version: 2.0, released 2012-02-12
+:Docs-Updated: same
 :PyPI: http://pypi.python.org/pypi/Akhet
 :Docs: http://docs.pylonsproject.org/projects/akhet/dev/
 :Source: https://github.com/Pylons/akhet
 :Bugs: https://github.com/Pylons/akhet/issues
 :Discuss: pylons-discuss_ list
+:Author: `Mike Orr <mailto:sluggoster@gmail.com>`_
+:Contributors: Michael Merickel, Marcin Lulek
 
 Akhet is a Pyramid_ library and demo application with a Pylons-like feel.
-Earlier versions had an application scaffold, but version 2 replaces
-it with the demo app. Much of the version 1 manual was moved to the `Pyramid
-Cookbook`_ (as the `Pyramid for Pylons Users`_ guide).  
-(The guide is not yet available as of January 2012.) 
-The Akhet Python library is unchanged in version 2.
 
-The library and demo app have different dependencies and goals, so the demo app
-is distribued separately. The library focuses on backward compatibility,
-minimal dependencies, and accepts only things that can be maintained long-term.
-The demo app is more adventurous, and may contain incompatible changes from
-version to version. The demo's main purpose is to contain the templates,
-stylesheets, and large chunks of code from the old scaffold that you may want
-to copy into your application. In the future, the demo will become more of a
-testing ground for new techniques.
+**Main changes in version 2: (A)** The 'akhet' scaffold gone, replaced by a demo
+application, which you can cut and paste from. **(B)** General Pyramid/Pylons
+material has been moved out of the manual to the `Pyramid Cookbook`_, section
+`Pyramid for Pylons Users`_ guide. *(The guide is not yet online as of February
+2012.)* **(C)** The include for static routes has changed to "akhet.static", but
+"akhet" is still allowed for backward compatibility. **(D)** A new pony module.
+**(E)** The repository is now on GitHub in the Pylons Project.
 
-The library runs on Python 2.5 - 2.7, and has been tested with Pyramid
-1.3a6 and 1.2.4 on Ubuntu Linux 11.10.  The next version will focus on Python 3
-support and will drop Python 2.5. The demo app currently has the same
-compatibility range as the library.
+The demo is distributed separately from the Akhet. Its repository URL is in the
+Demo section.
 
+Akhet runs on Python 2.5 - 2.7. Version 2 has been tested on Pyramid
+1.3a6 and 1.2.4 using Pyramid 2.7.2 on Ubuntu Linux 11.10.  The next Akhet
+version, 2.1, will focus on Python 3 and will drop Python 2.5.
+The demo application currently has the same compatibility range as Akhet
+itself.
 
+The word "akhet" is the name of the hieroglyph that is Pylons' icon: a sun
+shining over two pylons. It means "horizon" or "mountain of light".
+
+Documentation Contents
+======================
 
 .. toctree::
    :maxdepth: 2
@@ -40,16 +46,14 @@ compatibility range as the library.
    :maxdepth: 1
 
    changes
-   unfinished
    rant_scaffold
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. 
+   * :ref:`genindex`
+   * :ref:`modindex`
+   * :ref:`search`
 
 
-The word "akhet" is the name of the hieroglyph that is Pylons' icon: a sun
-shining over two pylons. It means "horizon" or "mountain of light".
 
 
 .. include:: links.rst

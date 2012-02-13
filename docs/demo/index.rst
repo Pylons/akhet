@@ -1,9 +1,9 @@
-Demo Application
+Demo application
 %%%%%%%%%%%%%%%%
 
 .. toctree::
    :maxdepth: 1
 
-   features
+   usage
    content
    details

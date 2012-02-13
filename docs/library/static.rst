@@ -8,15 +8,15 @@ file exists, it falls back to the dynamic application. This static route helper
 works the same way: it works as an overlay on "/", so the route matches only if
 the file exists, otherwise Pyramid falls through to the next route. The
 difference is that Pylons' static app is a WSGI middleware, while the static
-route helper registers an ordinary route and a view. By convention the static
-route is put last in the route list, but it can go anywhere in the list.
+route helper registers an ordinary route and a view. By convention you put the static
+route last in the route list, but it can go anywhere in the list.
 
 Pyramid's standard `static view`_, in contrast, works only with a URL prefix like
 "/static"; it can't serve top-level URLs like "/robots.txt" and "/favicon.ico".
 If you want a separate disjunct prefix like "/w3c" (for "/w3c/p3p.xml", the
 Internet standard for a machine-readable privacy policy), you'd have to
-configure a separate view and static directory for that prefix. With the route
-helper, you don't have to configure anything extra, just create a file
+configure a separate view and static directory for that prefix. With the static route
+helper you don't have to configure anything extra, just create a file
 "myapp/static/w3c/p3p.xml" and you're done.
 
 The static route helper does have some disadvantages compared to Pyramid's
@@ -68,5 +68,10 @@ The API is from Pyramid's early days, so it makes an asset spec out of
 also searches only a single directory rather than a search path. These
 limitations may be relaxed in a future version.
 
+Changes in version 2
+====================
+
+The include module is now "akhet.static"; in version 1 it was "akhet". A
+backward compatibility shim is in place.
 
 .. include:: ../links.rst

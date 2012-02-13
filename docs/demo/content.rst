@@ -1,7 +1,7 @@
 Templates and stylesheets
 =========================
 
-The demo's Mako templates and stylesheets are designed to function
+The demo's templates and stylesheets are designed to function
 in a variety of environments, so you can copy them to your application as a starting
 point.  The following files are included:
 
@@ -27,7 +27,10 @@ first three lines are Mako constructs:
 
 Line 1 makes the template inherit from the site template, which will add the
 site's header and footer.  Lines 2 and 3 are Mako methods. They output the body
-title and the head title respectively. 
+title (the <h1> at the top of the page) and the head title (the <title> tag)
+respectively.  Mako templates and methods are not literally Python classes and
+methods -- they compile to modules and functions respectively -- but Mako
+treats them in a way that's similar to classes and methods.
 
 The "${varname}" syntax is a placeholder which will output the named variable.
 Template variables can come from several sources: (1) keys in the view's return
@@ -46,21 +49,28 @@ placeholders to plug in content from the page template.  The most important
 placeholder here is "${self.body()}", which outputs the body of the
 highest-level template in the inheritance chain. 
 
-The template also calls "self.title()" and "self.ht_title()", and defines
-default implementations for these methods. The default body title is blank; the
-default head title is whatever the body title returns. So you can just set
-"title" in your pages and forget about "ht_title" if you want. Sometimes you'll
-have to make them different, however: (1) The head title can't contain HTML
-tags like <em> -- it will display them literally rather than changing the font.
-(2) Sometimes the body title is too wordy for the head title. (3) Many sites
-want the site name in the head title. A general rule of thumb for the head
-title is something like "Page Title &mdash; Site Name". Search engines rank the
-head title highly, so it should contain all the essential words that describe
-the page, and it should be less than sixty or so characters long so it fits on
-one line.
+Note the difference between calling "${body()}" and "${self.body()}". The
+former calls a <%def> method defined in the same template. The latter calls the
+highest-level <%def> method with that name in the inheritance chain, which may
+be in a different template.
 
-There's one more method in the site template, "head_extra". It also is blank by
-default, but page templates can override it to add additional tags in the head.
+The site template also calls "self.title()" and "self.ht_title()", and defines
+default implementations for these methods. The default body title outputs
+nothing (resulting in an empty title); the default head title is whatever the
+body title returns. So you can just define a "title" in your pages and forget about
+"ht_title" if it's the same. But there are times when you'll want to make them
+different: 
+
+* When the body title contains embedded HTML tags like <em>. The head title
+  can't contain these because it will display them literally rather than
+  changing the font.
+* Sometimes the body title is too wordy for the head title.
+* Many sites want the site's name in the head title. A general rule of thumb is
+  "Short Page Title &emdash; Site Name". Or if you're part of a large
+  organization: "Short Page Title | Site Name | Organization Name". Search
+  engines pay special attention to the head title, so it should contain all the
+  essential words that describe the page, and it should be less than sixty or
+  so characters so it can be displayed in a variety of contexts.
 
 The other kind of placeholder in the site template is "${url.app}", which is
 used to form static URLs like "${url.app}/stylesheets.default.css". "url" is
@@ -70,10 +80,10 @@ top-level application mounted at "/". But if the application is mounted at a
 sub-URL like "/site1", that will be what "url.app" is set to.
 
 Normally you'd generate URLs by route name, such as "${url('home')}" or its
-full form "${url.route('home')}". But static URLs don't have a route name. If
-we were using Pyramid's static view there would be another way to generate
-them, but the demo uses the static route so it can't do that. So we're left
-with literal URLs relative to the application prefix.
+full form "${url.route('home')}". But static URLs don't have a route name, and
+the URL generator does not have a ``static`` method (although you can define
+one in a subclass). So we're left with literal URLs relative to the application
+prefix.
 
 The template displays flash messages, which a view may have pushed into the
 session before redirecting. The code for this is:
@@ -109,6 +119,9 @@ pet peeve of mine.
 If you want something with more bells and whistles, some Pyramid developers
 recommend `HTML5 Boilerplate`_.
 It's also based on Meyer's stylesheet.
+
+We're exploring stylesheet compilers like Less, but this version of the demo
+does not include one.
 
 .. _HTML5 Boilerplate: http://html5boilerplate.com/
 
