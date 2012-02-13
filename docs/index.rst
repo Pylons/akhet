@@ -4,7 +4,7 @@ Akhet
 :Version: 2.0, released 2012-02-12
 :Docs-Updated: same
 :PyPI: http://pypi.python.org/pypi/Akhet
-:Docs: http://docs.pylonsproject.org/projects/akhet/dev/
+:Docs: http://readthedocs.org/docs/akhet/en/latest/
 :Source: https://github.com/Pylons/akhet
 :Bugs: https://github.com/Pylons/akhet/issues
 :Discuss: pylons-discuss_ list
