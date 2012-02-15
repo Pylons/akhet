@@ -23,8 +23,9 @@ application:
     $ virtualenv --no-site-packages ~/directory/myvenv
     $ source ~/directory/myvenv/bin/activate
     (myvenv)$ git clone git://github.com/mikeorr/akhet_demo
-    (myenv)$ pip install -e .
-    (myenv)$ pserve development.ini
+    (myvenv)$ cd akhet_demo
+    (myvenv)$ pip install -e .
+    (myvenv)$ pserve development.ini
 
 Features
 ========
